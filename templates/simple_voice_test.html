@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Voice Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #eee;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #00ccff;
+            text-align: center;
+        }
+        
+        .test-section {
+            background-color: #333;
+            border: 1px solid #00ccff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        button {
+            background-color: #00ccff;
+            color: #222;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0099cc;
+        }
+        
+        .audio-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #444;
+            border-radius: 8px;
+        }
+        
+        #audioPlayer {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #444;
+            border: 1px solid #666;
+            color: #fff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AlphaVox Simple Voice Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Voice Options</h2>
+        <p>Click a button to hear a sample of the voice:</p>
+        
+        <button onclick="testVoice('us_male', 'neutral', 'moderate')">US Male</button>
+        <button onclick="testVoice('uk_male', 'neutral', 'moderate')">UK Male</button>
+        <button onclick="testVoice('friendly_male', 'neutral', 'moderate')">Friendly Male</button>
+        
+        <h3>Emotion Tests (US Male)</h3>
+        <button onclick="testVoice('us_male', 'positive', 'moderate')">Happy</button>
+        <button onclick="testVoice('us_male', 'negative', 'moderate')">Sad</button>
+        <button onclick="testVoice('us_male', 'urgent', 'strong')">Urgent</button>
+        
+        <div class="audio-section">
+            <h3>Current Audio</h3>
+            <div id="voiceInfo">No voice selected yet</div>
+            <audio id="audioPlayer" controls></audio>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Custom Text Test</h2>
+        <input type="text" id="customText" placeholder="Enter text to speak" value="Hello, this is a test of the AlphaVox male voice.">
+        <button onclick="testCustomText()">Generate Speech</button>
+    </div>
+    
+    <div class="test-section">
+        <a href="/" style="display: inline-block; margin-top: 20px; color: #00ccff; text-decoration: none;">← Back to Home</a>
+    </div>
+    
+    <script>
+        function testVoice(voiceId, emotion, emotionTier) {
+            const sampleText = "This is a sample of the " + voiceId.replace('_', ' ') + " voice. How does it sound?";
+            generateSpeech(sampleText, voiceId, emotion, emotionTier);
+            
+            document.getElementById('voiceInfo').textContent = 
+                `Voice: ${voiceId}, Emotion: ${emotion}, Intensity: ${emotionTier}`;
+        }
+        
+        function testCustomText() {
+            const text = document.getElementById('customText').value;
+            if (!text) return;
+            
+            generateSpeech(text, 'us_male', 'neutral', 'moderate');
+            
+            document.getElementById('voiceInfo').textContent = 
+                `Voice: us_male, Custom text`;
+        }
+        
+        function generateSpeech(text, voiceId, emotion, emotionTier) {
+            fetch('/api/generate_speech', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: text,
+                    voice_id: voiceId,
+                    emotion: emotion,
+                    emotion_tier: emotionTier
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.speech_url) {
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    
+                    // Add timestamp to bypass browser cache
+                    audioPlayer.src = data.speech_url + '?t=' + new Date().getTime();
+                    
+                    // Handle errors
+                    audioPlayer.onerror = function() {
+                        console.error('Error playing audio');
+                        alert('Error playing audio. Please try again.');
+                    };
+                    
+                    // Play when ready
+                    audioPlayer.oncanplaythrough = function() {
+                        audioPlayer.play()
+                            .catch(err => {
+                                console.error('Play error:', err);
+                                alert('Error playing audio: ' + err.message);
+                            });
+                    };
+                } else {
+                    alert('Error generating speech');
+                }
+            })
+            .catch(error => {
+                console.error('Request error:', error);
+                alert('Error connecting to speech service');
+            });
+        }
+    </script>
+</body>
+</html>

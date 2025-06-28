@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Facts | AlphaVox{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-lightbulb me-2 text-warning"></i>Learning Facts
+                    </h3>
+                    <div>
+                        <a href="/learning/topics" class="btn btn-outline-primary cyber-btn-sm me-2">
+                            <i class="fas fa-list me-1"></i>All Topics
+                        </a>
+                        <a href="/learning" class="btn btn-outline-primary cyber-btn-sm">
+                            <i class="fas fa-graduation-cap me-1"></i>Learning Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="lead">
+                                Discover interesting facts about communication, assistive technology, and more.
+                                Filter by topic to find specific information.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="topicFilter">Filter by Topic</label>
+                                </div>
+                                <select class="form-select bg-dark text-white" id="topicFilter">
+                                    <option value="all" selected>All Topics</option>
+                                    {% for topic in topics %}
+                                        <option value="{{ topic.name }}">{{ topic.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Facts Grid -->
+                    <div class="row g-4" id="facts-container">
+                        {% for fact in facts %}
+                            <div class="col-lg-4 col-md-6 fact-item" data-topic="{{ fact.topic }}">
+                                <div class="card h-100 bg-dark border-warning cyber-card-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-lightbulb text-warning me-2"></i>Fact #{{ loop.index }}
+                                            </h5>
+                                            <span class="badge bg-secondary">{{ fact.topic }}</span>
+                                        </div>
+                                        
+                                        <p>{{ fact.content|truncate(150) }}</p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <small class="text-muted">Source: {{ fact.source }}</small>
+                                            <a href="/learning/facts/{{ fact.id }}" class="btn btn-sm btn-outline-warning cyber-btn-sm">
+                                                <i class="fas fa-info-circle me-1"></i>View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        {% if not facts %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>No facts available in the database yet.
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fact filtering functionality
+    const topicFilter = document.getElementById('topicFilter');
+    const factItems = document.querySelectorAll('.fact-item');
+    
+    if (topicFilter) {
+        topicFilter.addEventListener('change', function() {
+            const selectedTopic = this.value;
+            
+            factItems.forEach(item => {
+                if (selectedTopic === 'all' || item.getAttribute('data-topic') === selectedTopic) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

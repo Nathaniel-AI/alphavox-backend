@@ -1,0 +1,476 @@
+{% extends 'layout.html' %}
+
+{% block title %}AlphaVox - Neural Learning Core{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .neural-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(rgba(0, 148, 255, 0.1) 2px, transparent 2px),
+            radial-gradient(rgba(0, 148, 255, 0.15) 2px, transparent 2px);
+        background-size: 30px 30px;
+        background-position: 0 0, 15px 15px;
+        z-index: -1;
+        pointer-events: none;
+    }
+    
+    .neural-pulse {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: linear-gradient(to top, 
+            rgba(0, 30, 60, 0.3), 
+            rgba(0, 0, 0, 0));
+        z-index: -1;
+        animation: pulse 8s infinite ease-in-out;
+        pointer-events: none;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 0.1; }
+        50% { opacity: 0.3; }
+    }
+    
+    .system-card {
+        border: 1px solid rgba(0, 148, 255, 0.6);
+        background: linear-gradient(to bottom, 
+            rgba(0, 20, 40, 0.8), 
+            rgba(0, 10, 30, 0.8));
+        box-shadow: 0 0 20px rgba(0, 148, 255, 0.2);
+    }
+    
+    .system-card .card-header {
+        background: linear-gradient(to right, 
+            rgba(0, 40, 80, 0.6), 
+            rgba(0, 20, 50, 0.6));
+        border-bottom: 1px solid rgba(0, 148, 255, 0.6);
+    }
+    
+    .learning-card {
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .learning-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 25px rgba(0, 148, 255, 0.4);
+    }
+    
+    .neural-btn {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 148, 255, 0.6);
+        background: linear-gradient(to bottom, 
+            rgba(0, 60, 120, 0.8), 
+            rgba(0, 30, 80, 0.8));
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .neural-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.1) 100%
+        );
+        transform: rotate(30deg);
+        transition: transform 0.5s;
+    }
+    
+    .neural-btn:hover {
+        box-shadow: 0 0 15px rgba(0, 148, 255, 0.5);
+        transform: translateY(-2px);
+    }
+    
+    .neural-btn:hover::after {
+        transform: rotate(30deg) translate(10%, 10%);
+    }
+    
+    .neural-result {
+        font-family: 'Share Tech Mono', monospace;
+        background-color: rgba(0, 20, 40, 0.7);
+        color: #0094ff;
+        border: 1px solid rgba(0, 148, 255, 0.4);
+        border-radius: 4px;
+        padding: 15px;
+        height: 150px;
+        overflow-y: auto;
+    }
+    
+    .root-cause-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+    
+    .root-emotional_state { background-color: #ff5c8d; }
+    .root-sensory_trigger { background-color: #4fc3f7; }
+    .root-communication_intent { background-color: #66bb6a; }
+    .root-social_context { background-color: #ffca28; }
+    .root-cognitive_load { background-color: #ab47bc; }
+    .root-unknown { background-color: #78909c; }
+
+    .insight-item {
+        padding: 10px 15px;
+        border-left: 3px solid #0094ff;
+        margin-bottom: 10px;
+        background: rgba(0, 40, 80, 0.3);
+        border-radius: 4px;
+    }
+    
+    .confidence-badge {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: rgba(0, 30, 60, 0.8);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="neural-grid"></div>
+    <div class="neural-pulse"></div>
+    
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5 cyber-title text-center">Neural Learning Core</h1>
+            <p class="lead text-center">Advanced learning system for understanding user behavior patterns</p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card system-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 cyber-title"><i class="fas fa-brain me-2"></i>Interaction Analyzer</h5>
+                </div>
+                <div class="card-body">
+                    <form id="interactionForm">
+                        <div class="mb-3">
+                            <label for="inputType" class="form-label">Input Type</label>
+                            <select class="form-select" id="inputType">
+                                <option value="gesture">Gesture</option>
+                                <option value="symbol">Symbol</option>
+                                <option value="text" selected>Text</option>
+                                <option value="sound">Sound</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="inputContent" class="form-label">Input Content</label>
+                            <input type="text" class="form-control" id="inputContent" placeholder="Enter text or symbol name">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="emotionSelect" class="form-label">Emotional State</label>
+                            <select class="form-select" id="emotionSelect">
+                                <option value="positive">Positive</option>
+                                <option value="neutral" selected>Neutral</option>
+                                <option value="negative">Negative</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="inquisitive">Inquisitive</option>
+                                <option value="confused">Confused</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="intentInput" class="form-label">Intent</label>
+                            <input type="text" class="form-control" id="intentInput" placeholder="e.g., request_help, communicate_need" value="communicate">
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn neural-btn">
+                                <i class="fas fa-brain me-2"></i>Analyze Interaction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card system-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 cyber-title"><i class="fas fa-chart-network me-2"></i>Analysis Results</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>Root Cause Analysis</h6>
+                        <div class="neural-result" id="analysisResult">
+                            <div class="text-center text-light">
+                                <small>Analysis results will appear here</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Root Cause Legend</h6>
+                        <div class="d-flex flex-wrap">
+                            <div class="me-3 mb-2">
+                                <span class="root-cause-indicator root-emotional_state"></span> Emotional State
+                            </div>
+                            <div class="me-3 mb-2">
+                                <span class="root-cause-indicator root-sensory_trigger"></span> Sensory Trigger
+                            </div>
+                            <div class="me-3 mb-2">
+                                <span class="root-cause-indicator root-communication_intent"></span> Communication Intent
+                            </div>
+                            <div class="me-3 mb-2">
+                                <span class="root-cause-indicator root-social_context"></span> Social Context
+                            </div>
+                            <div class="me-3 mb-2">
+                                <span class="root-cause-indicator root-cognitive_load"></span> Cognitive Load
+                            </div>
+                            <div class="me-3 mb-2">
+                                <span class="root-cause-indicator root-unknown"></span> Unknown
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card system-card">
+                <div class="card-header">
+                    <h5 class="mb-0 cyber-title"><i class="fas fa-lightbulb me-2"></i>User Insights</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card learning-card">
+                                <div class="card-body">
+                                    <h6 class="cyber-title">Total Interactions</h6>
+                                    <h2 class="text-center mt-3 mb-3" id="totalInteractions">0</h2>
+                                    <p class="small mb-0 text-center"><small>Accumulated learning data points</small></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card learning-card">
+                                <div class="card-body">
+                                    <h6 class="cyber-title">Dominant Root Cause</h6>
+                                    <h3 class="text-center mt-3 mb-3" id="dominantCause">Unknown</h3>
+                                    <p class="small mb-0 text-center"><small>Primary behavior driver</small></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card learning-card">
+                                <div class="card-body">
+                                    <h6 class="cyber-title">Intent Diversity</h6>
+                                    <h2 class="text-center mt-3 mb-3" id="intentDiversity">0</h2>
+                                    <p class="small mb-0 text-center"><small>Unique communication intents</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6 class="mb-3">Detected Pattern Insights</h6>
+                        <div id="insightsList">
+                            <div class="text-center py-4">
+                                <p class="text-muted">Submit interactions to generate insights</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 col-md-6 mx-auto mt-4">
+                        <button id="refreshInsights" class="btn neural-btn">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh Insights
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get user insights on load
+    fetchUserInsights();
+    
+    // Handle form submission
+    document.getElementById('interactionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const inputType = document.getElementById('inputType').value;
+        const inputContent = document.getElementById('inputContent').value;
+        const emotion = document.getElementById('emotionSelect').value;
+        const intent = document.getElementById('intentInput').value;
+        
+        if (!inputContent) {
+            alert('Please enter input content');
+            return;
+        }
+        
+        // Prepare interaction data
+        const interaction = {
+            type: inputType,
+            input: inputContent,
+            emotion: emotion,
+            intent: intent,
+            confidence: 0.8,  // Default confidence
+            context: {
+                time_of_day: new Date().toTimeString().slice(0, 5)  // Current time in HH:MM format
+            }
+        };
+        
+        // Send to API
+        fetch('/api/learn_root_cause', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ interaction: interaction })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                displayAnalysisResult(data, interaction);
+                // Refresh insights after new data
+                setTimeout(fetchUserInsights, 1000);
+            } else {
+                document.getElementById('analysisResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        ${data.message || 'Error processing interaction'}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('analysisResult').innerHTML = `
+                <div class="alert alert-danger">
+                    Error connecting to server: ${error.message}
+                </div>
+            `;
+        });
+    });
+    
+    // Refresh insights button
+    document.getElementById('refreshInsights').addEventListener('click', function() {
+        fetchUserInsights();
+    });
+    
+    function displayAnalysisResult(data, interaction) {
+        const rootCause = data.root_cause;
+        const confidence = (data.confidence * 100).toFixed(1);
+        
+        let confidenceClass = 'text-danger';
+        if (data.confidence > 0.7) confidenceClass = 'text-success';
+        else if (data.confidence > 0.4) confidenceClass = 'text-warning';
+        
+        const timestamp = new Date().toLocaleTimeString();
+        
+        document.getElementById('analysisResult').innerHTML = `
+            <div class="mb-3">
+                <strong>Input:</strong> ${interaction.type} - ${interaction.input}<br>
+                <strong>Intent:</strong> ${interaction.intent}<br>
+                <strong>Emotion:</strong> ${interaction.emotion}<br>
+                <strong>Time:</strong> ${timestamp}
+            </div>
+            <div class="mt-3 pt-3 border-top">
+                <h6><span class="root-cause-indicator root-${rootCause}"></span>
+                Root Cause: ${formatRootCause(rootCause)}</h6>
+                <p>Confidence: <span class="${confidenceClass}">${confidence}%</span></p>
+            </div>
+        `;
+    }
+    
+    function fetchUserInsights() {
+        // Get insights for current user
+        fetch('/api/user_insights/current')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                displayInsights(data.insights, data.summary);
+            } else {
+                document.getElementById('insightsList').innerHTML = `
+                    <div class="alert alert-info">
+                        No insights available yet. Continue interacting with the system.
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('insightsList').innerHTML = `
+                <div class="alert alert-danger">
+                    Error fetching insights: ${error.message}
+                </div>
+            `;
+        });
+    }
+    
+    function displayInsights(insights, summary) {
+        // Update summary stats
+        document.getElementById('totalInteractions').textContent = summary.total_interactions || 0;
+        document.getElementById('dominantCause').textContent = formatRootCause(summary.dominant_root_cause || 'unknown');
+        document.getElementById('intentDiversity').textContent = summary.intent_diversity || 0;
+        
+        // Update insights list
+        const insightsList = document.getElementById('insightsList');
+        
+        if (!insights || insights.length === 0) {
+            insightsList.innerHTML = `
+                <div class="text-center py-4">
+                    <p class="text-muted">No significant patterns detected yet</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let insightsHTML = '';
+        insights.forEach(insight => {
+            const frequency = (insight.frequency * 100).toFixed(0);
+            insightsHTML += `
+                <div class="insight-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6 class="mb-1">
+                            <span class="root-cause-indicator root-${insight.root_cause}"></span>
+                            ${formatRootCause(insight.root_cause)}
+                        </h6>
+                        <span class="confidence-badge">${frequency}%</span>
+                    </div>
+                    <p class="mb-0 small">${insight.description}</p>
+                </div>
+            `;
+        });
+        
+        insightsList.innerHTML = insightsHTML;
+    }
+    
+    function formatRootCause(rootCause) {
+        // Convert snake_case to Title Case with spaces
+        if (!rootCause) return 'Unknown';
+        
+        return rootCause
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+});
+</script>
+{% endblock %}

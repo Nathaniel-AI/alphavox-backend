@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Camera Test - AlphaVox</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .status-banner {
+            background-color: #ff5722;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .camera-container {
+            width: 100%;
+            max-width: 640px;
+            height: 480px;
+            margin: 0 auto 20px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 3px solid #333;
+        }
+
+        #webcam {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .placeholder-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 80%;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button.secondary {
+            background-color: #2196F3;
+        }
+
+        button.secondary:hover {
+            background-color: #0b7dda;
+        }
+
+        .guide-container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .guide-step {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .indicator.active {
+            background-color: #4CAF50;
+        }
+
+        .indicator.inactive {
+            background-color: #F44336;
+        }
+
+        .log-container {
+            background-color: #000;
+            color: #4CAF50;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .camera-container {
+                height: auto;
+                aspect-ratio: 4/3;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>iOS/Mac Camera Test</h1>
+
+        <div id="deviceInfo" class="status-banner">
+            Detecting device...
+        </div>
+
+        <div class="camera-container">
+            <div id="placeholder" class="placeholder-text">
+                <h3>Camera feed will appear here</h3>
+                <p>Click the "Enable Camera" button below to request access</p>
+            </div>
+            <video id="webcam" autoplay playsinline style="display: none;"></video>
+        </div>
+
+        <div class="button-row">
+            <button id="enableCamera">Enable Camera</button>
+            <button id="checkSupport" class="secondary">Check Camera Support</button>
+            <button id="showGuide" class="secondary">Show iOS/Mac Guide</button>
+        </div>
+
+        <div class="status-container">
+            <div class="status-indicator">
+                <div id="cameraStatus" class="indicator inactive"></div>
+                <span>Camera Status: <strong id="cameraStatusText">Not Active</strong></span>
+            </div>
+        </div>
+
+        <div id="iosGuide" class="guide-container" style="display: none;">
+            <h3>iOS/Mac Camera Access Guide</h3>
+
+            <div class="guide-step">
+                <h4>For iOS Devices:</h4>
+                <ol>
+                    <li>Open <strong>Settings</strong> app</li>
+                    <li>Scroll down and tap <strong>Safari</strong></li>
+                    <li>Tap <strong>Camera</strong> under "Settings for Websites"</li>
+                    <li>Select <strong>Allow</strong> for this website</li>
+                    <li>Return to Safari and reload this page</li>
+                </ol>
+            </div>
+
+            <div class="guide-step">
+                <h4>For Mac Devices:</h4>
+                <ol>
+                    <li>Open <strong>System Preferences</strong></li>
+                    <li>Select <strong>Security & Privacy</strong> then <strong>Privacy</strong> tab</li>
+                    <li>Select <strong>Camera</strong> from the left sidebar</li>
+                    <li>Ensure your browser is checked in the list</li>
+                    <li>You may need to unlock the padlock (bottom left) to make changes</li>
+                    <li>Reload this page after making changes</li>
+                </ol>
+            </div>
+
+            <div class="button-row">
+                <button id="retryCamera">Retry Camera Access</button>
+            </div>
+        </div>
+
+        <div id="logContainer" class="log-container">
+            <div class="log-entry">Camera test page loaded</div>
+        </div>
+    </div>
+
+    <script src="/static/js/ios-camera-helper.js"></script>
+    <script>
+        // Helper function to simplify element selection
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        // Helper function to add log entries
+        function log(message) {
+            console.log(`[Camera Test] ${message}`);
+            const logContainer = $('logContainer');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = message;
+            logContainer.insertBefore(entry, logContainer.firstChild);
+        }
+
+        // Detect iOS or Mac device
+        function detectDevice() {
+            const userAgent = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+            const isMac = /Mac/.test(userAgent);
+            const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+
+            log(`User Agent: ${userAgent}`);
+            log(`iOS detected: ${isIOS}, Mac detected: ${isMac}, Safari: ${isSafari}`);
+
+            const deviceInfo = $('deviceInfo');
+            deviceInfo.innerHTML = `
+                <strong>Device:</strong> ${isIOS ? 'iOS' : isMac ? 'Mac' : 'Other'} | 
+                <strong>Browser:</strong> ${isSafari ? 'Safari' : 'Other Browser'}
+            `;
+
+            return { isIOS, isMac, isSafari };
+        }
+
+        // Check camera support
+        function checkCameraSupport() {
+            const hasMediaDevices = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            const hasSecureContext = window.isSecureContext;
+
+            const supportInfo = {
+                mediaDevicesSupported: !!navigator.mediaDevices,
+                getUserMediaSupported: hasMediaDevices,
+                secureContext: hasSecureContext,
+                protocol: window.location.protocol
+            };
+
+            log(`Media Devices API supported: ${supportInfo.mediaDevicesSupported}`);
+            log(`getUserMedia supported: ${supportInfo.getUserMediaSupported}`);
+            log(`Secure context: ${supportInfo.secureContext}`);
+            log(`Protocol: ${supportInfo.protocol}`);
+
+            if (!hasSecureContext) {
+                alert('Secure context required. Camera access requires HTTPS.');
+                return false;
+            }
+
+            if (!hasMediaDevices) {
+                alert('Your browser does not support camera access.');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Enable camera access
+        async function enableCamera() {
+            try {
+                if (!checkCameraSupport()) {
+                    return;
+                }
+
+                log('Requesting camera access...');
+
+                const constraints = {
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+                const webcam = $('webcam');
+                webcam.srcObject = stream;
+                webcam.style.display = 'block';
+                $('placeholder').style.display = 'none';
+
+                // Update status
+                $('cameraStatus').className = 'indicator active';
+                $('cameraStatusText').textContent = 'Active';
+
+                log('Camera access granted successfully');
+                log(`Camera resolution: ${webcam.videoWidth}x${webcam.videoHeight}`);
+
+                return stream;
+            } catch (error) {
+                log(`Camera error: ${error.message}`);
+                console.error('Camera access error:', error);
+
+                // Update status
+                $('cameraStatus').className = 'indicator inactive';
+                $('cameraStatusText').textContent = 'Error: ' + error.message;
+
+                // Show guide for permission issues
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    $('iosGuide').style.display = 'block';
+                } else {
+                    alert(`Camera error: ${error.message}`);
+                }
+
+                return null;
+            }
+        }
+
+        // Attach event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            log('Page loaded, initializing camera test');
+
+            // Detect device type
+            const deviceInfo = detectDevice();
+
+            // Add button event listeners
+            $('enableCamera').addEventListener('click', enableCamera);
+            $('checkSupport').addEventListener('click', checkCameraSupport);
+            $('showGuide').addEventListener('click', () => {
+                $('iosGuide').style.display = 'block';
+                log('Displaying iOS/Mac camera guide');
+            });
+            $('retryCamera').addEventListener('click', enableCamera);
+        });
+    </script>
+</body>
+</html>

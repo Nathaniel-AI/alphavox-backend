@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block title %}Color Scheme Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Color Scheme Settings</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Available Color Schemes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for scheme_name in schemes %}
+                        <button type="button" class="list-group-item list-group-item-action {% if scheme_name == current_scheme_name %}active{% endif %}"
+                                onclick="selectScheme('{{ scheme_name }}')">
+                            {{ scheme_name|capitalize }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Preview</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Current scheme: {{ current_scheme_name|capitalize }}</h6>
+                    <div class="d-flex flex-wrap">
+                        {% for color_name, color_value in current_scheme.items() %}
+                        <div class="mx-2 mb-3">
+                            <div style="width: 50px; height: 50px; background-color: {{ color_value }}; border: 1px solid #ddd"></div>
+                            <small>{{ color_name }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectScheme(schemeName) {
+    fetch('/api/color-schemes/current', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            scheme: schemeName
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            window.location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}

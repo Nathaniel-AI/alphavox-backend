@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Stemming Research</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css" rel="stylesheet">
+    <link href="/static/css/stemming.css" rel="stylesheet">
+    <style>
+        :root {
+            --theme-primary: #6c757d;
+            --theme-secondary: #495057;
+            --theme-accent: #adb5bd;
+            --theme-background: #212529;
+            --theme-text: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--theme-background);
+            color: var(--theme-text);
+            transition: all 0.3s ease;
+        }
+
+        .card {
+            background-color: var(--theme-secondary);
+            border-color: var(--theme-accent);
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+    <div class="container py-4">
+        <header class="text-center mb-5">
+            <h1 class="display-4">AlphaVox</h1>
+            <p class="lead">Stemming Research Platform</p>
+            <nav class="nav nav-pills flex-column flex-sm-row mb-3">
+                <a class="flex-sm-fill text-sm-center nav-link active" href="/stemming">
+                    <i data-feather="scissors"></i> Stemming Demo
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="/stemming-research">
+                    <i data-feather="book-open"></i> Research Analysis
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="/">
+                    <i data-feather="home"></i> Main Platform
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="/education">
+                    <i data-feather="layers"></i> Education Hub
+                </a>
+            </nav>
+        </header>
+
+        <main id="main-content">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card mb-4">
+                        <h2 class="h4 mb-3">
+                            <i data-feather="file-text" class="me-2"></i> 
+                            Stemming Research Platform
+                        </h2>
+                        <p>
+                            Stemming is a natural language processing technique that reduces words to their root form (stem).
+                            This research platform implements an academic-level Porter stemming algorithm with enhancements 
+                            for neurodivergent communication analysis.
+                        </p>
+                        <p>
+                            <span class="badge bg-primary">PhD-Level Research</span>
+                            <span class="badge bg-info">Neurodivergent Communication</span>
+                            <span class="badge bg-secondary">Porter Algorithm</span>
+                        </p>
+                    </div>
+
+                    <div class="card mb-4">
+                        <h3 class="h5 mb-3">Text Stemming Analysis</h3>
+                        <div class="form-group mb-3">
+                            <label for="textInput">Enter text to analyze:</label>
+                            <textarea 
+                                id="textInput" 
+                                class="form-control" 
+                                rows="5" 
+                                placeholder="Enter text for stemming and pattern analysis..."
+                                aria-describedby="textInputHelp"
+                            ></textarea>
+                            <div id="textInputHelp" class="form-text">
+                                For best results, enter several sentences to analyze patterns.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <button id="stemTextBtn" class="btn btn-primary">
+                                <i data-feather="scissors"></i> Stem Text
+                            </button>
+                            <button id="analyzeBtn" class="btn btn-info">
+                                <i data-feather="bar-chart-2"></i> Full Pattern Analysis
+                            </button>
+                        </div>
+
+                        <div id="loadingSpinner" class="loading-spinner">
+                            <div class="spinner-border text-light" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Processing text...</p>
+                        </div>
+
+                        <div id="resultsSection" style="display: none;">
+                            <h4 class="h6 mb-3">Stemming Results</h4>
+                            <div id="stemmingResults" class="research-section"></div>
+                        </div>
+
+                        <div id="analysisSection" style="display: none;">
+                            <h4 class="h6 mb-3">Pattern Analysis</h4>
+                            <div id="analysisResults" class="research-section"></div>
+
+                            <div class="metrics-section">
+                                <h5 class="h6 mb-3">Linguistic Metrics</h5>
+                                <div class="row" id="metricsRow"></div>
+                            </div>
+
+                            <div class="metrics-section mt-3">
+                                <h5 class="h6 mb-3">Neurodivergent Communication Patterns</h5>
+                                <div id="patternResults"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="h5 mb-3">Example Stem Pairs</h3>
+                        <p class="text-muted mb-3">
+                            Examples of words and their stemmed versions using the enhanced Porter algorithm:
+                        </p>
+
+                        <div id="examplePairs" class="mb-3">
+                            <div class="stem-pair">
+                                <span class="stem-original">connecting</span>
+                                <span class="stem-arrow">→</span>
+                                <span class="stem-result">connect</span>
+                            </div>
+                            <div class="stem-pair">
+                                <span class="stem-original">conditional</span>
+                                <span class="stem-arrow">→</span>
+                                <span class="stem-result">condit</span>
+                            </div>
+                            <div class="stem-pair">
+                                <span class="stem-original">happiness</span>
+                                <span class="stem-arrow">→</span>
+                                <span class="stem-result">happi</span>
+                            </div>
+                            <div class="stem-pair">
+                                <span class="stem-original">traditionally</span>
+                                <span class="stem-arrow">→</span>
+                                <span class="stem-result">tradit</span>
+                            </div>
+                            <div class="stem-pair">
+                                <span class="stem-original">communication</span>
+                                <span class="stem-arrow">→</span>
+                                <span class="stem-result">communic</span>
+                            </div>
+                        </div>
+
+                        <p>
+                            <a href="/stemming-research" class="btn btn-outline-info">
+                                <i data-feather="book-open"></i> View Advanced Research
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Feather icons
+            feather.replace();
+
+            // DOM elements
+            const textInput = document.getElementById('textInput');
+            const stemTextBtn = document.getElementById('stemTextBtn');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const resultsSection = document.getElementById('resultsSection');
+            const stemmingResults = document.getElementById('stemmingResults');
+            const analysisSection = document.getElementById('analysisSection');
+            const analysisResults = document.getElementById('analysisResults');
+            const metricsRow = document.getElementById('metricsRow');
+            const patternResults = document.getElementById('patternResults');
+
+            // Event listeners
+            stemTextBtn.addEventListener('click', async () => {
+                const text = textInput.value.trim();
+                if (!text) {
+                    alert('Please enter some text to analyze');
+                    return;
+                }
+
+                showLoading();
+                try {
+                    const stemmed = await stemText(text);
+                    showStemmingResults(stemmed);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while processing your text');
+                } finally {
+                    hideLoading();
+                }
+            });
+
+            analyzeBtn.addEventListener('click', async () => {
+                const text = textInput.value.trim();
+                if (!text) {
+                    alert('Please enter some text to analyze');
+                    return;
+                }
+
+                showLoading();
+                try {
+                    const analysis = await analyzePatterns(text);
+                    showAnalysisResults(analysis);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while analyzing your text');
+                } finally {
+                    hideLoading();
+                }
+            });
+
+            // API functions
+            async function stemText(text) {
+                const response = await fetch('/api/stem', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to stem text');
+                }
+
+                return await response.json();
+            }
+
+            async function analyzePatterns(text) {
+                const response = await fetch('/api/analyze-patterns', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to analyze patterns');
+                }
+
+                return await response.json();
+            }
+
+            // UI helper functions
+            function showLoading() {
+                loadingSpinner.style.display = 'block';
+                resultsSection.style.display = 'none';
+                analysisSection.style.display = 'none';
+            }
+
+            function hideLoading() {
+                loadingSpinner.style.display = 'none';
+            }
+
+            function showStemmingResults(data) {
+                resultsSection.style.display = 'block';
+
+                // Create a comparison display
+                const originalText = data.original;
+                const stemmedText = data.stemmed;
+
+                stemmingResults.innerHTML = `
+                    <div class="mb-3">
+                        <h6>Original Text:</h6>
+                        <p class="original-text">${originalText}</p>
+                    </div>
+                    <div>
+                        <h6>Stemmed Text:</h6>
+                        <p class="stemmed-text">${stemmedText}</p>
+                    </div>
+                `;
+            }
+
+            function showAnalysisResults(data) {
+                // Show both stemming and analysis results
+                showStemmingResults(data);
+                analysisSection.style.display = 'block';
+
+                const analysis = data.analysis;
+
+                // Display analysis summary
+                analysisResults.innerHTML = `
+                    <p>
+                        Text analysis complete. This text contains 
+                        <strong>${analysis.statistics.total_words}</strong> total words with 
+                        <strong>${analysis.statistics.unique_words}</strong> unique words, reduced to 
+                        <strong>${analysis.statistics.unique_stems}</strong> unique stems.
+                    </p>
+                `;
+
+                // Display metrics
+                metricsRow.innerHTML = '';
+                const metrics = [
+                    { name: 'Type-Token Ratio', value: analysis.statistics.type_token_ratio.toFixed(2), description: 'Lexical diversity measure' },
+                    { name: 'Avg Word Length', value: analysis.statistics.average_word_length.toFixed(1), description: 'Average characters per word' },
+                    { name: 'Stem Reduction', value: (analysis.statistics.stem_reduction_ratio * 100).toFixed(1) + '%', description: 'Word to stem reduction' },
+                    { name: 'Vocabulary Richness', value: analysis.research_metrics.vocabulary_richness.toFixed(2), description: 'Academic measure of vocabulary' }
+                ];
+
+                metrics.forEach(metric => {
+                    const metricDiv = document.createElement('div');
+                    metricDiv.className = 'col-md-3 col-6 mb-3 text-center';
+                    metricDiv.innerHTML = `
+                        <div>
+                            <div class="metric-value">${metric.value}</div>
+                            <div class="metric-name">${metric.name}</div>
+                            <small class="text-muted">${metric.description}</small>
+                        </div>
+                    `;
+                    metricsRow.appendChild(metricDiv);
+                });
+
+                // Display neurodivergent patterns
+                patternResults.innerHTML = '';
+
+                // Filler words
+                const fillerWordsDiv = document.createElement('div');
+                fillerWordsDiv.className = 'mb-3';
+                fillerWordsDiv.innerHTML = `
+                    <h6>Filler Word Analysis</h6>
+                    <p>
+                        Filler words make up <strong>${(analysis.neurodivergent_patterns.filler_word_ratio * 100).toFixed(1)}%</strong> 
+                        of the text.
+                    </p>
+                `;
+
+                if (analysis.neurodivergent_patterns.filler_words.length > 0) {
+                    fillerWordsDiv.innerHTML += '<div class="filler-words">';
+                    analysis.neurodivergent_patterns.filler_words.forEach(word => {
+                        fillerWordsDiv.innerHTML += `<span class="word-card">${word}</span>`;
+                    });
+                    fillerWordsDiv.innerHTML += '</div>';
+                } else {
+                    fillerWordsDiv.innerHTML += '<p>No common filler words detected.</p>';
+                }
+
+                patternResults.appendChild(fillerWordsDiv);
+
+                // Repeated patterns
+                const repeatedPatternsDiv = document.createElement('div');
+                repeatedPatternsDiv.className = 'mt-4';
+                repeatedPatternsDiv.innerHTML = '<h6>Repetition Patterns</h6>';
+
+                const bigrams = Object.entries(analysis.neurodivergent_patterns.repeated_bigrams);
+                const trigrams = Object.entries(analysis.neurodivergent_patterns.repeated_trigrams);
+
+                if (bigrams.length > 0 || trigrams.length > 0) {
+                    if (bigrams.length > 0) {
+                        repeatedPatternsDiv.innerHTML += '<p>Repeated word pairs:</p>';
+                        bigrams.sort((a, b) => b[1] - a[1]);
+                        const bigramsList = document.createElement('div');
+                        bigramsList.className = 'mb-3';
+                        bigrams.slice(0, 5).forEach(([phrase, count]) => {
+                            bigramsList.innerHTML += `
+                                <div class="pattern-item">
+                                    <strong>"${phrase}"</strong> - repeated ${count} times
+                                </div>
+                            `;
+                        });
+                        repeatedPatternsDiv.appendChild(bigramsList);
+                    }
+
+                    if (trigrams.length > 0) {
+                        repeatedPatternsDiv.innerHTML += '<p>Repeated word triplets:</p>';
+                        trigrams.sort((a, b) => b[1] - a[1]);
+                        const trigramsList = document.createElement('div');
+                        trigramsList.className = 'mb-3';
+                        trigrams.slice(0, 5).forEach(([phrase, count]) => {
+                            trigramsList.innerHTML += `
+                                <div class="pattern-item">
+                                    <strong>"${phrase}"</strong> - repeated ${count} times
+                                </div>
+                            `;
+                        });
+                        repeatedPatternsDiv.appendChild(trigramsList);
+                    }
+                } else {
+                    repeatedPatternsDiv.innerHTML += '<p>No significant repetition patterns detected.</p>';
+                }
+
+                patternResults.appendChild(repeatedPatternsDiv);
+            }
+        });
+    </script>
+</body>
+</html>

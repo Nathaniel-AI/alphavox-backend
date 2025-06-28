@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox Hardware Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .result-panel {
+            min-height: 100px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .controls {
+            margin-top: 15px;
+        }
+        button {
+            padding: 8px 16px;
+            margin-right: 8px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .status {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        #video-container {
+            width: 640px;
+            height: 480px;
+            border: 1px solid #ddd;
+            margin-top: 15px;
+            background-color: #000;
+        }
+        #volume-meter {
+            width: 100%;
+            height: 20px;
+            background-color: #eee;
+            margin-top: 10px;
+        }
+        #volume-level {
+            height: 100%;
+            width: 0%;
+            background-color: #28a745;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AlphaVox Hardware Test</h1>
+        <p>This page tests your microphone and camera for AlphaVox.</p>
+        
+        <div class="section">
+            <h2>Microphone Test</h2>
+            <div class="status" id="mic-status">Microphone: Initializing...</div>
+            <div id="volume-meter">
+                <div id="volume-level"></div>
+            </div>
+            <div class="controls">
+                <button id="start-mic-btn">Start Microphone</button>
+                <button id="stop-mic-btn" disabled>Stop Microphone</button>
+                <button id="record-btn" disabled>Record (5s)</button>
+            </div>
+            <div class="result-panel" id="speech-result">
+                <p>Recognized speech will appear here...</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Camera Test</h2>
+            <div class="status" id="camera-status">Camera: Initializing...</div>
+            <div class="controls">
+                <button id="start-camera-btn">Start Camera</button>
+                <button id="stop-camera-btn" disabled>Stop Camera</button>
+            </div>
+            <div id="video-container">
+                <img id="video-feed" src="" width="640" height="480" style="display: none;" />
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Available Devices</h2>
+            <div>
+                <h3>Audio Input Devices</h3>
+                <ul id="audio-devices-list">
+                    <li>Loading audio devices...</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <a href="{{ url_for('home') }}" class="button">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Audio context for processing audio
+        let audioContext;
+        let audioStream;
+        let mediaRecorder;
+        let recordedChunks = [];
+        let recordingInterval;
+        let micGainNode;
+        let analyser;
+        let isRecording = false;
+        let isProcessingAudio = false;
+        
+        // Initialize the audio devices list
+        fetch('/api/audio/devices')
+            .then(response => response.json())
+            .then(devices => {
+                const devicesList = document.getElementById('audio-devices-list');
+                devicesList.innerHTML = '';
+                
+                if (devices.length === 0) {
+                    devicesList.innerHTML = '<li>No audio input devices found</li>';
+                    return;
+                }
+                
+                devices.forEach(device => {
+                    const li = document.createElement('li');
+                    li.textContent = `${device.name} (${device.channels} channels)` + 
+                                  (device.default ? ' (Default)' : '');
+                    devicesList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching audio devices:', error);
+                document.getElementById('audio-devices-list').innerHTML = 
+                    '<li>Error loading audio devices</li>';
+            });
+
+        // Start microphone button
+        document.getElementById('start-mic-btn').addEventListener('click', function() {
+            startMicrophone();
+        });
+
+        // Stop microphone button
+        document.getElementById('stop-mic-btn').addEventListener('click', function() {
+            stopMicrophone();
+        });
+
+        // Record button
+        document.getElementById('record-btn').addEventListener('click', function() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        });
+
+        // Start camera button
+        document.getElementById('start-camera-btn').addEventListener('click', function() {
+            startCamera();
+        });
+
+        // Stop camera button
+        document.getElementById('stop-camera-btn').addEventListener('click', function() {
+            stopCamera();
+        });
+
+        // Start the microphone
+        function startMicrophone() {
+            const micStatus = document.getElementById('mic-status');
+            micStatus.textContent = 'Microphone: Requesting access...';
+            micStatus.className = 'status';
+            
+            // Request microphone access
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    audioStream = stream;
+                    
+                    // Initialize audio context
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const source = audioContext.createMediaStreamSource(stream);
+                    
+                    // Create gain node for volume control
+                    micGainNode = audioContext.createGain();
+                    micGainNode.gain.value = 1.0;
+                    
+                    // Create analyser for volume meter
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 256;
+                    
+                    // Connect nodes
+                    source.connect(micGainNode);
+                    micGainNode.connect(analyser);
+                    
+                    // Start volume meter
+                    visualizeVolume();
+                    
+                    // Update UI
+                    micStatus.textContent = 'Microphone: Active';
+                    micStatus.className = 'status success';
+                    document.getElementById('start-mic-btn').disabled = true;
+                    document.getElementById('stop-mic-btn').disabled = false;
+                    document.getElementById('record-btn').disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error accessing microphone:', error);
+                    micStatus.textContent = 'Microphone: Error - ' + error.message;
+                    micStatus.className = 'status error';
+                });
+        }
+
+        // Stop the microphone
+        function stopMicrophone() {
+            if (audioStream) {
+                // Stop all audio tracks
+                audioStream.getAudioTracks().forEach(track => track.stop());
+                audioStream = null;
+                
+                // Close audio context
+                if (audioContext) {
+                    audioContext.close().then(() => {
+                        audioContext = null;
+                    });
+                }
+                
+                // Update UI
+                const micStatus = document.getElementById('mic-status');
+                micStatus.textContent = 'Microphone: Stopped';
+                micStatus.className = 'status';
+                document.getElementById('start-mic-btn').disabled = false;
+                document.getElementById('stop-mic-btn').disabled = true;
+                document.getElementById('record-btn').disabled = true;
+                document.getElementById('volume-level').style.width = '0%';
+                
+                // If recording, stop it
+                if (isRecording) {
+                    stopRecording();
+                }
+            }
+        }
+
+        // Visualize volume meter
+        function visualizeVolume() {
+            if (!audioContext || !analyser) return;
+            
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            const volumeLevel = document.getElementById('volume-level');
+            
+            function draw() {
+                if (!analyser) return;
+                
+                requestAnimationFrame(draw);
+                analyser.getByteFrequencyData(dataArray);
+                
+                // Calculate average volume level
+                let sum = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                    sum += dataArray[i];
+                }
+                const average = sum / dataArray.length;
+                
+                // Convert to percentage (0-100%)
+                const volume = Math.min(100, Math.max(0, average * 100 / 256));
+                
+                // Update volume meter
+                volumeLevel.style.width = volume + '%';
+                
+                // If volume is high enough and not already processing, process audio
+                if (volume > 10 && !isProcessingAudio && !isRecording) {
+                    processAudioChunk();
+                }
+            }
+            
+            draw();
+        }
+
+        // Process an audio chunk for speech recognition
+        function processAudioChunk() {
+            if (!audioContext || !audioStream || isProcessingAudio) return;
+            
+            isProcessingAudio = true;
+            
+            // Create a new recorder to capture a short audio clip
+            const recorder = new MediaRecorder(audioStream);
+            const chunks = [];
+            
+            recorder.ondataavailable = e => {
+                if (e.data.size > 0) {
+                    chunks.push(e.data);
+                }
+            };
+            
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                
+                reader.onload = () => {
+                    // Convert to base64
+                    const base64data = reader.result.split(',')[1];
+                    
+                    // Send to server for processing
+                    fetch('/api/audio/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ audio_data: base64data })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        // Update UI with recognition result
+                        const speechResult = document.getElementById('speech-result');
+                        if (result.text) {
+                            speechResult.innerHTML = `<p><strong>Recognized:</strong> ${result.text}</p>` +
+                                                    `<p><strong>Confidence:</strong> ${(result.confidence * 100).toFixed(1)}%</p>`;
+                        } else if (result.error) {
+                            speechResult.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+                        } else {
+                            speechResult.innerHTML = `<p>No speech detected</p>`;
+                        }
+                        
+                        isProcessingAudio = false;
+                    })
+                    .catch(error => {
+                        console.error('Error processing audio:', error);
+                        document.getElementById('speech-result').innerHTML = 
+                            `<p class="error">Error processing audio: ${error.message}</p>`;
+                        isProcessingAudio = false;
+                    });
+                };
+                
+                reader.readAsDataURL(blob);
+            };
+            
+            // Record for 2 seconds
+            recorder.start();
+            setTimeout(() => {
+                if (recorder.state === 'recording') {
+                    recorder.stop();
+                }
+            }, 2000);
+        }
+
+        // Start recording audio for explicit processing
+        function startRecording() {
+            if (!audioStream) return;
+            
+            isRecording = true;
+            recordedChunks = [];
+            
+            // Update UI
+            document.getElementById('record-btn').textContent = 'Stop Recording';
+            document.getElementById('speech-result').innerHTML = '<p>Recording...</p>';
+            
+            // Create media recorder
+            mediaRecorder = new MediaRecorder(audioStream);
+            
+            mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+            
+            mediaRecorder.onstop = () => {
+                // Process the recording
+                const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                
+                reader.onload = () => {
+                    // Convert to base64
+                    const base64data = reader.result.split(',')[1];
+                    
+                    // Send to server for processing
+                    fetch('/api/audio/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ audio_data: base64data })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        // Update UI with recognition result
+                        const speechResult = document.getElementById('speech-result');
+                        if (result.text) {
+                            speechResult.innerHTML = `<p><strong>Recognized:</strong> ${result.text}</p>` +
+                                                    `<p><strong>Confidence:</strong> ${(result.confidence * 100).toFixed(1)}%</p>`;
+                        } else if (result.error) {
+                            speechResult.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+                        } else {
+                            speechResult.innerHTML = `<p>No speech detected</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error processing recording:', error);
+                        document.getElementById('speech-result').innerHTML = 
+                            `<p class="error">Error processing recording: ${error.message}</p>`;
+                    });
+                };
+                
+                reader.readAsDataURL(blob);
+                
+                // Reset recording state
+                isRecording = false;
+                document.getElementById('record-btn').textContent = 'Record (5s)';
+            };
+            
+            // Start recording
+            mediaRecorder.start();
+            
+            // Set a timeout to stop recording after 5 seconds
+            setTimeout(() => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+            }, 5000);
+        }
+
+        // Stop recording
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        }
+
+        // Start the camera
+        function startCamera() {
+            const cameraStatus = document.getElementById('camera-status');
+            const videoFeed = document.getElementById('video-feed');
+            
+            cameraStatus.textContent = 'Camera: Loading eye tracking feed...';
+            cameraStatus.className = 'status';
+            
+            // Make video element visible
+            videoFeed.style.display = 'block';
+            
+            // Set the video feed source to the eye tracking stream
+            videoFeed.src = '/video_feed';
+            
+            // Update UI
+            cameraStatus.textContent = 'Camera: Active (Eye Tracking)';
+            cameraStatus.className = 'status success';
+            document.getElementById('start-camera-btn').disabled = true;
+            document.getElementById('stop-camera-btn').disabled = false;
+        }
+
+        // Stop the camera
+        function stopCamera() {
+            const cameraStatus = document.getElementById('camera-status');
+            const videoFeed = document.getElementById('video-feed');
+            
+            // Hide video element
+            videoFeed.style.display = 'none';
+            videoFeed.src = '';
+            
+            // Update UI
+            cameraStatus.textContent = 'Camera: Stopped';
+            cameraStatus.className = 'status';
+            document.getElementById('start-camera-btn').disabled = false;
+            document.getElementById('stop-camera-btn').disabled = true;
+        }
+    </script>
+</body>
+</html>

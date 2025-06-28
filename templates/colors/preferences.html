@@ -1,0 +1,1058 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<title>AlphaVox - Color Preferences</title>
+
+<style>
+    /* Global transition for all elements */
+    * {
+        transition: background-color 0.5s ease, 
+                   color 0.5s ease, 
+                   border-color 0.5s ease, 
+                   box-shadow 0.5s ease,
+                   transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    /* Custom scrollbar for smoother interaction */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary-color);
+    }
+
+    .color-preview {
+        width: 100%;
+        height: 150px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .color-preview:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: opacity 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    .color-preview:hover:after {
+        opacity: 1;
+    }
+
+    .color-swatch {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 5px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 2px solid transparent;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .color-swatch:hover {
+        transform: scale(1.15);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    .color-swatch.selected {
+        border-color: white;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    }
+
+    .scheme-card {
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        height: 100%;
+        position: relative;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    }
+
+    .scheme-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    }
+    
+    .scheme-card:active {
+        transform: translateY(-2px);
+        transition: all 0.1s ease;
+    }
+
+    .scheme-preview {
+        display: flex;
+        margin-top: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 25px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .scheme-color {
+        flex: 1;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .scheme-color:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    
+    .scheme-color:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .emotion-scheme-card {
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 2px solid transparent;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    }
+
+    .emotion-scheme-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--primary-color);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    }
+    
+    .emotion-scheme-card:active {
+        transform: translateY(-2px);
+        transition: all 0.1s ease;
+    }
+
+    .accessibility-checkbox {
+        margin-right: 10px;
+    }
+
+    .custom-range::-webkit-slider-thumb {
+        background: var(--primary-color);
+        transition: background 0.3s ease;
+    }
+
+    .custom-range::-moz-range-thumb {
+        background: var(--primary-color);
+        transition: background 0.3s ease;
+    }
+
+    #colorPreferences {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    #previewPanel {
+        position: sticky;
+        top: 20px;
+    }
+
+    .color-value {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.9rem;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .color-value:hover {
+        opacity: 1;
+    }
+
+    .primary-element {
+        background-color: var(--primary-color);
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transform: translateZ(0);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    .primary-element:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .secondary-element {
+        background-color: var(--secondary-color);
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transform: translateZ(0);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    .secondary-element:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .accent-element {
+        background-color: var(--accent-color);
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transform: translateZ(0);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    .accent-element:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .text-element {
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        background-color: var(--surface-color);
+        color: var(--text-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transform: translateZ(0);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    .text-element:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    /* Loading animation */
+    @keyframes pulse {
+        0% { opacity: 0.6; }
+        50% { opacity: 1; }
+        100% { opacity: 0.6; }
+    }
+    
+    .loading {
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+    
+    /* Button enhancements */
+    .cyber-btn {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cyber-btn:after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%);
+        transform-origin: 50% 50%;
+    }
+    
+    .cyber-btn:focus:after {
+        animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+        0% {
+            transform: scale(0, 0);
+            opacity: 0.5;
+        }
+        20% {
+            transform: scale(25, 25);
+            opacity: 0.3;
+        }
+        100% {
+            opacity: 0;
+            transform: scale(40, 40);
+        }
+    }
+    
+    /* Toast notifications */
+    .color-toast {
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        z-index: 9999;
+        min-width: 250px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        transform: translateX(150%);
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .color-toast.show {
+        transform: translateX(0);
+    }
+    
+    /* Button pulse animation */
+    @keyframes pulse-animation {
+        0% {
+            box-shadow: 0 0 0 0 rgba(var(--primary-rgb, 0, 180, 216), 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(var(--primary-rgb, 0, 180, 216), 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(var(--primary-rgb, 0, 180, 216), 0);
+        }
+    }
+    
+    .pulse-animation {
+        animation: pulse-animation 1.5s infinite;
+        position: relative;
+    }
+    
+    .pulse-animation:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 4px;
+        animation: pulse-animation 1.5s infinite;
+        z-index: -1;
+    }
+    
+    /* Loading spinner styles */
+    .loading-spinner {
+        text-align: center;
+        color: white;
+    }
+    
+    /* Fix for the nextElementSibling issue */
+    .color-swatch-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Smooth card transitions */
+    .cyber-card {
+        transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
+                    box-shadow 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
+                    border-color 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="cyber-title">Color Preferences</h1>
+            <p class="text-muted">Customize the appearance of AlphaVox to match your preferences and needs.</p>
+        </div>
+    </div>
+
+    <div class="row" id="colorPreferences">
+        <div class="col-lg-8">
+            <!-- Custom Color Generator -->
+            <div class="cyber-card mb-4">
+                <div class="card-body">
+                    <h3 class="mb-3">Generate Custom Color Scheme</h3>
+                    <p>Create a personalized color scheme based on your preferences.</p>
+
+                    <form id="colorPreferenceForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="colorPreference" class="form-label">Primary Color</label>
+                                <select class="form-control cyber-input" id="colorPreference" name="color_preference">
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="red">Red</option>
+                                    <option value="orange">Orange</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="teal">Teal</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="cyan">Cyan</option>
+                                    <option value="gray">Gray</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="emotion" class="form-label">Emotional Tone</label>
+                                <select class="form-control cyber-input" id="emotion" name="emotion">
+                                    <option value="neutral">Neutral</option>
+                                    <option value="calm">Calm & Relaxed</option>
+                                    <option value="energetic">Energetic & Vibrant</option>
+                                    <option value="focused">Focused & Concentrated</option>
+                                    <option value="positive">Positive & Uplifting</option>
+                                    <option value="serious">Serious & Professional</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="contrast" class="form-label">Contrast Level</label>
+                                <select class="form-control cyber-input" id="contrast" name="contrast">
+                                    <option value="medium">Medium (Standard)</option>
+                                    <option value="high">High (Maximum Readability)</option>
+                                    <option value="low">Low (Subtle)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="brightness" class="form-label">Brightness</label>
+                                <select class="form-control cyber-input" id="brightness" name="brightness">
+                                    <option value="dark">Dark Mode</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="bright">Bright Mode</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Accessibility Needs</label>
+                            <div class="d-flex flex-wrap">
+                                <div class="form-check me-4 mb-2">
+                                    <input class="form-check-input accessibility-checkbox" type="checkbox" 
+                                           name="accessibility_needs" value="colorblind" id="colorblindCheck">
+                                    <label class="form-check-label" for="colorblindCheck">
+                                        Colorblind-friendly
+                                    </label>
+                                </div>
+                                <div class="form-check me-4 mb-2">
+                                    <input class="form-check-input accessibility-checkbox" type="checkbox" 
+                                           name="accessibility_needs" value="reduced_motion" id="reducedMotionCheck">
+                                    <label class="form-check-label" for="reducedMotionCheck">
+                                        Reduced motion
+                                    </label>
+                                </div>
+                                <div class="form-check me-4 mb-2">
+                                    <input class="form-check-input accessibility-checkbox" type="checkbox" 
+                                           name="accessibility_needs" value="high_legibility" id="highLegibilityCheck">
+                                    <label class="form-check-label" for="highLegibilityCheck">
+                                        High legibility
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="button" id="generateBtn" class="btn btn-primary cyber-btn">
+                                <i class="fas fa-magic me-2"></i> Generate Color Scheme
+                            </button>
+                            <button type="button" id="applyCustomBtn" class="btn btn-success cyber-btn ms-2" disabled>
+                                <i class="fas fa-check me-2"></i> Apply Scheme
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Predefined Color Schemes -->
+            <div class="cyber-card mb-4">
+                <div class="card-body">
+                    <h3 class="mb-3">Predefined Color Schemes</h3>
+                    <p>Choose from our carefully designed color schemes.</p>
+
+                    <div class="row">
+                        {% for scheme_id, scheme in predefined_schemes.items() %}
+                        <div class="col-md-4 mb-4">
+                            <div class="cyber-card scheme-card" data-scheme-id="{{ scheme_id }}">
+                                <div class="card-body">
+                                    <h5>{{ scheme.name }}</h5>
+                                    <small class="text-muted">{{ scheme.description }}</small>
+                                    <div class="scheme-preview">
+                                        <div class="scheme-color" style="background-color: {{ scheme.primary }};"></div>
+                                        <div class="scheme-color" style="background-color: {{ scheme.secondary }};"></div>
+                                        <div class="scheme-color" style="background-color: {{ scheme.accent }};"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emotion-Based Color Schemes -->
+            <div class="cyber-card">
+                <div class="card-body">
+                    <h3 class="mb-3">Emotion-Based Schemes</h3>
+                    <p>Choose a color scheme based on your emotional needs.</p>
+
+                    <div class="row">
+                        {% for emotion_id, scheme in emotion_schemes.items() %}
+                        <div class="col-md-4 mb-4">
+                            <div class="cyber-card emotion-scheme-card" data-emotion-id="{{ emotion_id }}">
+                                <div class="card-body">
+                                    <h5>{{ scheme.name }}</h5>
+                                    <small class="text-muted">{{ scheme.description }}</small>
+                                    <div class="scheme-preview">
+                                        <div class="scheme-color" style="background-color: {{ scheme.primary }};"></div>
+                                        <div class="scheme-color" style="background-color: {{ scheme.secondary }};"></div>
+                                        <div class="scheme-color" style="background-color: {{ scheme.accent }};"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Live Preview -->
+            <div class="cyber-card" id="previewPanel">
+                <div class="card-body">
+                    <h3 class="mb-3">Live Preview</h3>
+                    
+                    <div class="color-preview" id="colorPreview" style="background-color: {{ current_scheme.background }};">
+                        <div class="p-3">
+                            <div class="primary-element">
+                                <h5 style="color: {{ current_scheme.text }}">Primary Element</h5>
+                            </div>
+                            <div class="secondary-element">
+                                <h5 style="color: {{ current_scheme.text }}">Secondary Element</h5>
+                            </div>
+                            <div class="accent-element">
+                                <h5 style="color: {{ current_scheme.text }}">Accent Element</h5>
+                            </div>
+                            <div class="text-element">
+                                <p>This is how your text will appear in content areas.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Current Color Values</h5>
+                        <div class="row">
+                            <div class="col-6 mb-2">
+                                <div class="color-swatch-container">
+                                    <div class="color-swatch me-2" id="primarySwatch" style="background-color: {{ current_scheme.primary }};"></div>
+                                    <div class="swatch-info">
+                                        <div>Primary</div>
+                                        <small class="color-value" id="primaryValue">{{ current_scheme.primary }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <div class="color-swatch-container">
+                                    <div class="color-swatch me-2" id="secondarySwatch" style="background-color: {{ current_scheme.secondary }};"></div>
+                                    <div class="swatch-info">
+                                        <div>Secondary</div>
+                                        <small class="color-value" id="secondaryValue">{{ current_scheme.secondary }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <div class="color-swatch-container">
+                                    <div class="color-swatch me-2" id="backgroundSwatch" style="background-color: {{ current_scheme.background }};"></div>
+                                    <div class="swatch-info">
+                                        <div>Background</div>
+                                        <small class="color-value" id="backgroundValue">{{ current_scheme.background }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <div class="color-swatch-container">
+                                    <div class="color-swatch me-2" id="surfaceSwatch" style="background-color: {{ current_scheme.surface }};"></div>
+                                    <div class="swatch-info">
+                                        <div>Surface</div>
+                                        <small class="color-value" id="surfaceValue">{{ current_scheme.surface }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <div class="color-swatch-container">
+                                    <div class="color-swatch me-2" id="textSwatch" style="background-color: {{ current_scheme.text }};"></div>
+                                    <div class="swatch-info">
+                                        <div>Text</div>
+                                        <small class="color-value" id="textValue">{{ current_scheme.text }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <div class="color-swatch-container">
+                                    <div class="color-swatch me-2" id="accentSwatch" style="background-color: {{ current_scheme.accent }};"></div>
+                                    <div class="swatch-info">
+                                        <div>Accent</div>
+                                        <small class="color-value" id="accentValue">{{ current_scheme.accent }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="button" id="resetBtn" class="btn btn-outline-secondary cyber-btn">
+                            <i class="fas fa-undo me-2"></i> Reset to Default
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Current scheme for preview
+    let currentPreviewScheme = {
+        primary: "{{ current_scheme.primary }}",
+        secondary: "{{ current_scheme.secondary }}",
+        background: "{{ current_scheme.background }}",
+        surface: "{{ current_scheme.surface }}",
+        text: "{{ current_scheme.text }}",
+        accent: "{{ current_scheme.accent }}"
+    };
+
+    // Custom scheme generated by form
+    let customGeneratedScheme = null;
+    let toastQueue = [];
+    let isToastVisible = false;
+    
+    // Initialize the page with animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate cards in sequence
+        const cards = document.querySelectorAll('.scheme-card, .emotion-scheme-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 + (index * 50));
+        });
+        
+        // Add hover listeners for swatches to show color value tooltip
+        const swatches = document.querySelectorAll('.color-swatch');
+        swatches.forEach(swatch => {
+            const container = swatch.closest('.color-swatch-container');
+            if (container) {
+                const valueEl = container.querySelector('.color-value');
+                if (valueEl) {
+                    const colorValue = valueEl.textContent;
+                    swatch.setAttribute('title', colorValue);
+                }
+            }
+        });
+    });
+
+    // Update the preview with new values with smooth animation
+    function updatePreview(scheme) {
+        // Show loading animation
+        const previewPanel = document.getElementById('previewPanel');
+        previewPanel.classList.add('loading');
+        
+        // Add a slight delay for visual effect
+        setTimeout(() => {
+            // Update CSS variables for global theme
+            document.documentElement.style.setProperty('--primary-color', scheme.primary);
+            document.documentElement.style.setProperty('--secondary-color', scheme.secondary);
+            document.documentElement.style.setProperty('--background-color', scheme.background);
+            document.documentElement.style.setProperty('--surface-color', scheme.surface);
+            document.documentElement.style.setProperty('--text-color', scheme.text);
+            document.documentElement.style.setProperty('--accent-color', scheme.accent);
+            
+            // Update swatch colors with animated transition
+            animateColorChange('primarySwatch', currentPreviewScheme.primary, scheme.primary);
+            animateColorChange('secondarySwatch', currentPreviewScheme.secondary, scheme.secondary);
+            animateColorChange('backgroundSwatch', currentPreviewScheme.background, scheme.background);
+            animateColorChange('surfaceSwatch', currentPreviewScheme.surface, scheme.surface);
+            animateColorChange('textSwatch', currentPreviewScheme.text, scheme.text);
+            animateColorChange('accentSwatch', currentPreviewScheme.accent, scheme.accent);
+            
+            // Update color values
+            document.getElementById('primaryValue').textContent = scheme.primary;
+            document.getElementById('secondaryValue').textContent = scheme.secondary;
+            document.getElementById('backgroundValue').textContent = scheme.background;
+            document.getElementById('surfaceValue').textContent = scheme.surface;
+            document.getElementById('textValue').textContent = scheme.text;
+            document.getElementById('accentValue').textContent = scheme.accent;
+            
+            // Update preview background with animation
+            const colorPreview = document.getElementById('colorPreview');
+            colorPreview.style.transition = 'background-color 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)';
+            colorPreview.style.backgroundColor = scheme.background;
+            
+            // Update current preview scheme
+            currentPreviewScheme = {...scheme};
+            
+            // Remove loading animation
+            setTimeout(() => {
+                previewPanel.classList.remove('loading');
+            }, 300);
+        }, 200);
+    }
+    
+    // Animate color change for a swatch
+    function animateColorChange(elementId, fromColor, toColor) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        // Create subtle scale animation
+        element.style.transform = 'scale(1.1)';
+        element.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.6)';
+        
+        // Change color
+        setTimeout(() => {
+            element.style.backgroundColor = toColor;
+        }, 150);
+        
+        // Revert scale animation
+        setTimeout(() => {
+            element.style.transform = 'scale(1)';
+            element.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        }, 300);
+    }
+
+    // Generate a custom color scheme based on form preferences
+    document.getElementById('generateBtn').addEventListener('click', function() {
+        // Add active state to button
+        this.classList.add('active');
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Generating...';
+        
+        // Get form data
+        const formData = new FormData(document.getElementById('colorPreferenceForm'));
+        
+        // Send to server to generate scheme
+        fetch('/colors/generate', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Reset button state
+            this.classList.remove('active');
+            this.innerHTML = '<i class="fas fa-magic me-2"></i> Generate Color Scheme';
+            
+            if (data.success && data.scheme) {
+                // Store the generated scheme
+                customGeneratedScheme = data.scheme;
+                
+                // Update the preview with animation
+                updatePreview(data.scheme);
+                
+                // Enable the apply button with animation
+                const applyBtn = document.getElementById('applyCustomBtn');
+                applyBtn.disabled = false;
+                applyBtn.classList.add('pulse-animation');
+                setTimeout(() => applyBtn.classList.remove('pulse-animation'), 1000);
+                
+                // Show success message
+                showToast('Custom color scheme generated successfully!');
+            } else {
+                showToast('Error generating color scheme', 'error');
+            }
+        })
+        .catch(error => {
+            // Reset button state
+            this.classList.remove('active');
+            this.innerHTML = '<i class="fas fa-magic me-2"></i> Generate Color Scheme';
+            
+            console.error('Error:', error);
+            showToast('Error communicating with server', 'error');
+        });
+    });
+
+    // Apply the custom generated scheme
+    document.getElementById('applyCustomBtn').addEventListener('click', function() {
+        if (customGeneratedScheme) {
+            // Add active state to button
+            this.classList.add('active');
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Applying...';
+            
+            applyScheme('custom', null, customGeneratedScheme);
+        }
+    });
+
+    // Apply predefined scheme when clicked
+    document.querySelectorAll('.scheme-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Add selected visual indicator
+            document.querySelectorAll('.scheme-card').forEach(c => c.style.borderColor = 'transparent');
+            this.style.borderColor = 'var(--primary-color)';
+            this.style.borderWidth = '2px';
+            
+            const schemeId = this.dataset.schemeId;
+            applyScheme('predefined', schemeId);
+        });
+    });
+
+    // Apply emotion-based scheme when clicked
+    document.querySelectorAll('.emotion-scheme-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Add selected visual indicator
+            document.querySelectorAll('.emotion-scheme-card').forEach(c => c.style.borderColor = 'transparent');
+            this.style.borderColor = 'var(--primary-color)';
+            this.style.borderWidth = '2px';
+            
+            const emotionId = this.dataset.emotionId;
+            applyScheme('emotion', emotionId);
+        });
+    });
+
+    // Reset to default scheme
+    document.getElementById('resetBtn').addEventListener('click', function() {
+        // Add active state to button
+        this.classList.add('active');
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Resetting...';
+        
+        fetch('/colors/reset', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Color scheme reset to default');
+                
+                // Create smooth transition effect before reload
+                const overlayDiv = document.createElement('div');
+                overlayDiv.style.position = 'fixed';
+                overlayDiv.style.top = '0';
+                overlayDiv.style.left = '0';
+                overlayDiv.style.width = '100%';
+                overlayDiv.style.height = '100%';
+                overlayDiv.style.backgroundColor = 'var(--background-color)';
+                overlayDiv.style.zIndex = '9999';
+                overlayDiv.style.opacity = '0';
+                overlayDiv.style.transition = 'opacity 0.5s ease';
+                document.body.appendChild(overlayDiv);
+                
+                setTimeout(() => {
+                    overlayDiv.style.opacity = '1';
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500);
+                }, 100);
+            } else {
+                // Reset button state
+                this.classList.remove('active');
+                this.innerHTML = '<i class="fas fa-undo me-2"></i> Reset to Default';
+                
+                showToast('Error resetting color scheme', 'error');
+            }
+        })
+        .catch(error => {
+            // Reset button state
+            this.classList.remove('active');
+            this.innerHTML = '<i class="fas fa-undo me-2"></i> Reset to Default';
+            
+            console.error('Error:', error);
+            showToast('Error communicating with server', 'error');
+        });
+    });
+
+    // Apply a selected scheme with loading animation
+    function applyScheme(schemeType, schemeId, customScheme = null) {
+        // Create loading overlay
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.classList.add('loading-overlay');
+        loadingOverlay.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Applying color scheme...</p>
+            </div>
+        `;
+        loadingOverlay.style.position = 'fixed';
+        loadingOverlay.style.top = '0';
+        loadingOverlay.style.left = '0';
+        loadingOverlay.style.width = '100%';
+        loadingOverlay.style.height = '100%';
+        loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        loadingOverlay.style.display = 'flex';
+        loadingOverlay.style.justifyContent = 'center';
+        loadingOverlay.style.alignItems = 'center';
+        loadingOverlay.style.zIndex = '9999';
+        loadingOverlay.style.opacity = '0';
+        loadingOverlay.style.transition = 'opacity 0.3s ease';
+        
+        document.body.appendChild(loadingOverlay);
+        
+        // Fade in the overlay
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '1';
+        }, 50);
+        
+        const formData = new FormData();
+        formData.append('scheme_type', schemeType);
+        
+        if (schemeType === 'predefined') {
+            formData.append('scheme_name', schemeId);
+        } else if (schemeType === 'emotion') {
+            formData.append('emotion', schemeId);
+        } else if (schemeType === 'custom' && customScheme) {
+            formData.append('scheme', JSON.stringify(customScheme));
+        }
+        
+        fetch('/colors/apply', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Color scheme applied successfully!');
+                
+                // Create smooth transition effect before reload
+                setTimeout(() => {
+                    // Fade out the overlay completely before reloading
+                    loadingOverlay.style.backgroundColor = 'var(--background-color)';
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500);
+                }, 500);
+            } else {
+                // Remove the loading overlay
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(loadingOverlay);
+                }, 300);
+                
+                showToast('Error applying color scheme', 'error');
+            }
+        })
+        .catch(error => {
+            // Remove the loading overlay
+            loadingOverlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(loadingOverlay);
+            }, 300);
+            
+            console.error('Error:', error);
+            showToast('Error communicating with server', 'error');
+        });
+    }
+
+    // Enhanced toast notification system with queuing
+    function showToast(message, type = 'success') {
+        // Add to queue
+        toastQueue.push({ message, type });
+        
+        // If no toast is visible, show the next one
+        if (!isToastVisible) {
+            processToastQueue();
+        }
+    }
+    
+    function processToastQueue() {
+        if (toastQueue.length === 0) {
+            isToastVisible = false;
+            return;
+        }
+        
+        isToastVisible = true;
+        const { message, type } = toastQueue.shift();
+        
+        // Create toast container if it doesn't exist
+        let toastContainer = document.getElementById('toastContainer');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.top = '20px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '9999';
+            document.body.appendChild(toastContainer);
+        }
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.classList.add('color-toast', 'cyber-card');
+        
+        // Set border color based on type
+        if (type === 'error') {
+            toast.style.borderLeft = '4px solid #e53e3e';
+        } else {
+            toast.style.borderLeft = '4px solid #38a169';
+        }
+        
+        // Set icon based on type
+        let icon = '';
+        if (type === 'error') {
+            icon = '<i class="fas fa-exclamation-circle me-2" style="color: #e53e3e;"></i>';
+        } else {
+            icon = '<i class="fas fa-check-circle me-2" style="color: #38a169;"></i>';
+        }
+        
+        // Set content
+        toast.innerHTML = `
+            <div class="d-flex align-items-center">
+                ${icon}
+                <div>${message}</div>
+            </div>
+        `;
+        
+        // Add to container
+        toastContainer.appendChild(toast);
+        
+        // Trigger animation after a small delay
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 50);
+        
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            
+            // Remove toast after animation completes
+            setTimeout(() => {
+                toastContainer.removeChild(toast);
+                
+                // Process next toast if any
+                processToastQueue();
+            }, 500);
+        }, 3000);
+    }
+    
+    // Color swatch interaction enhancement
+    document.addEventListener('DOMContentLoaded', function() {
+        const colorSwatches = document.querySelectorAll('.color-swatch');
+        colorSwatches.forEach(swatch => {
+            swatch.addEventListener('mouseenter', function() {
+                const container = this.closest('.color-swatch-container');
+                if (container) {
+                    const colorValue = container.querySelector('.color-value');
+                    if (colorValue) {
+                        colorValue.style.opacity = '1';
+                        colorValue.style.transform = 'scale(1.05)';
+                    }
+                }
+            });
+            
+            swatch.addEventListener('mouseleave', function() {
+                const container = this.closest('.color-swatch-container');
+                if (container) {
+                    const colorValue = container.querySelector('.color-value');
+                    if (colorValue) {
+                        colorValue.style.opacity = '0.8';
+                        colorValue.style.transform = 'scale(1)';
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

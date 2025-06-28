@@ -1,0 +1,410 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Journey | AlphaVox{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .progress-topic {
+    height: 15px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .activity-timeline {
+    position: relative;
+    padding-left: 30px;
+  }
+  
+  .activity-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 15px;
+    width: 2px;
+    background-color: #2c3e50;
+  }
+  
+  .timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+  }
+  
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #3498db;
+    border: 2px solid #2c3e50;
+  }
+  
+  .timeline-item.fact-learned::before {
+    background-color: #f39c12;
+  }
+  
+  .timeline-item.topic-explored::before {
+    background-color: #3498db;
+  }
+  
+  .badge-journey {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    margin: 0 5px;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .badge-journey:hover {
+    border-color: #3498db;
+    transform: scale(1.05);
+  }
+  
+  .badge-journey .badge-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #2c3e50;
+    color: white;
+    font-size: 28px;
+  }
+  
+  .badge-journey .badge-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .badge-journey:hover .badge-overlay {
+    opacity: 1;
+  }
+  
+  .badge-locked {
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
+  
+  .recommendation-card {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .recommendation-card:hover {
+    transform: translateY(-5px);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-route me-2"></i>Learning Journey
+                    </h3>
+                    <div>
+                        <a href="/learning/topics" class="btn btn-outline-primary cyber-btn-sm me-2">
+                            <i class="fas fa-list me-1"></i>All Topics
+                        </a>
+                        <a href="/learning" class="btn btn-outline-primary cyber-btn-sm">
+                            <i class="fas fa-graduation-cap me-1"></i>Learning Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Learning Progress Overview -->
+                    <div class="row mb-4">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card bg-dark border-primary h-100 cyber-card-sm">
+                                <div class="card-body text-center">
+                                    <h4 class="cyber-text mb-2">{{ stats.topics_explored }}</h4>
+                                    <p class="text-muted">Topics Explored</p>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" 
+                                            style="width: {{ (stats.topics_explored / stats.total_topics * 100) if stats.total_topics > 0 else 0 }}%;" 
+                                            aria-valuenow="{{ stats.topics_explored }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="{{ stats.total_topics }}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card bg-dark border-info h-100 cyber-card-sm">
+                                <div class="card-body text-center">
+                                    <h4 class="cyber-text mb-2">{{ stats.facts_learned }}</h4>
+                                    <p class="text-muted">Facts Learned</p>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-info" role="progressbar" 
+                                            style="width: {{ (stats.facts_learned / stats.total_facts * 100) if stats.total_facts > 0 else 0 }}%;" 
+                                            aria-valuenow="{{ stats.facts_learned }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="{{ stats.total_facts }}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card bg-dark border-success h-100 cyber-card-sm">
+                                <div class="card-body text-center">
+                                    <h4 class="cyber-text mb-2">{{ stats.learning_days }}</h4>
+                                    <p class="text-muted">Active Days</p>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                            style="width: {{ (stats.learning_days / 30 * 100) if stats.learning_days <= 30 else 100 }}%;" 
+                                            aria-valuenow="{{ stats.learning_days }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="30"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card bg-dark border-warning h-100 cyber-card-sm">
+                                <div class="card-body text-center">
+                                    <h4 class="cyber-text mb-2">
+                                        {{ stats.mastery_level|default('Beginner') }}
+                                    </h4>
+                                    <p class="text-muted">Mastery Level</p>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" 
+                                            style="width: {{ stats.total_mastery_percent|default(0) }}%;" 
+                                            aria-valuenow="{{ stats.total_mastery_percent|default(0) }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <!-- Topic Progress -->
+                            <div class="card bg-dark border-secondary cyber-card-sm mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Topic Progress</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="position: relative; height:300px;">
+                                        <canvas id="topicProgressChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Activity Timeline -->
+                            <div class="card bg-dark border-secondary cyber-card-sm">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recent Activity</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if stats.recent_activities %}
+                                        <div class="activity-timeline">
+                                            {% for activity in stats.recent_activities %}
+                                                <div class="timeline-item {{ activity.event_type }}">
+                                                    <div class="d-flex">
+                                                        <div class="timeline-content">
+                                                            <h6 class="mb-1">
+                                                                {% if activity.event_type == 'topic_explored' %}
+                                                                    Explored Topic: <strong>{{ activity.details.topic }}</strong>
+                                                                {% elif activity.event_type == 'fact_learned' %}
+                                                                    Learned a new fact about <strong>{{ activity.details.topic }}</strong>
+                                                                {% else %}
+                                                                    {{ activity.event_type|capitalize }}
+                                                                {% endif %}
+                                                            </h6>
+                                                            <small class="text-muted">{{ activity.timestamp.split('T')[0] }}</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>No recent learning activity recorded yet.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <!-- Achievements & Badges -->
+                            <div class="card bg-dark border-secondary cyber-card-sm mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Achievements</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <div class="badge-journey" title="First Steps">
+                                            <div class="badge-icon">
+                                                <i class="fas fa-shoe-prints"></i>
+                                            </div>
+                                            <div class="badge-overlay">
+                                                <small>First Steps</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="badge-journey {{ 'badge-locked' if stats.topics_explored < 5 }}" title="Topic Explorer">
+                                            <div class="badge-icon">
+                                                <i class="fas fa-compass"></i>
+                                            </div>
+                                            <div class="badge-overlay">
+                                                <small>Topic Explorer</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="badge-journey {{ 'badge-locked' if stats.facts_learned < 10 }}" title="Fact Collector">
+                                            <div class="badge-icon">
+                                                <i class="fas fa-lightbulb"></i>
+                                            </div>
+                                            <div class="badge-overlay">
+                                                <small>Fact Collector</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="badge-journey {{ 'badge-locked' if stats.learning_days < 7 }}" title="Weekly Scholar">
+                                            <div class="badge-icon">
+                                                <i class="fas fa-calendar-check"></i>
+                                            </div>
+                                            <div class="badge-overlay">
+                                                <small>Weekly Scholar</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="#" class="btn btn-outline-primary cyber-btn-sm w-100">
+                                        <i class="fas fa-trophy me-1"></i>View All Achievements
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Recommendations -->
+                            <div class="card bg-dark border-secondary cyber-card-sm">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recommended Next Steps</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if stats.recommendations %}
+                                        {% for rec in stats.recommendations %}
+                                            <a href="/learning/topics/{{ rec.name }}" class="text-decoration-none">
+                                                <div class="card bg-dark border-primary mb-3 recommendation-card">
+                                                    <div class="card-body">
+                                                        <h6 class="mb-1">{{ rec.name }}</h6>
+                                                        <small class="text-muted">{{ rec.difficulty|capitalize }}</small>
+                                                        {% if rec.reason %}
+                                                            <p class="small mt-2 mb-0">{{ rec.reason }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>Start exploring topics to get personalized recommendations.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Topic Progress Chart
+    var ctx = document.getElementById('topicProgressChart').getContext('2d');
+    
+    // Prepare data
+    var topics = [];
+    var progress = [];
+    
+    {% if stats.topic_progress %}
+        {% for topic_name, topic_progress in stats.topic_progress.items() %}
+            topics.push("{{ topic_name }}");
+            progress.push({{ topic_progress * 100 }});
+        {% endfor %}
+    {% endif %}
+    
+    // If no topics explored yet, add some placeholder data
+    if (topics.length === 0) {
+        topics = ["No topics explored yet"];
+        progress = [0];
+    }
+    
+    var topicChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: topics,
+            datasets: [{
+                label: 'Topic Mastery (%)',
+                data: progress,
+                backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                borderColor: 'rgba(52, 152, 219, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        color: '#aaa'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#aaa'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#fff'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

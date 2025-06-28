@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Enhanced Gesture Test</title>
+    <style>
+        body { background-color: #2c3e50; color: #ecf0f1; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1, h2 { color: #3498db; }
+        .gesture-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; max-width: 800px; margin: 25px auto; }
+        .gesture-btn { background-color: #34495e; color: #ecf0f1; border: 2px solid #3498db; border-radius: 5px; 
+                      padding: 15px 5px; cursor: pointer; transition: all 0.3s ease; }
+        .gesture-btn:hover { background-color: #3498db; transform: scale(1.05); }
+        .custom-gesture { margin: 30px auto; max-width: 500px; }
+        input { padding: 10px; width: 70%; margin-right: 10px; border-radius: 3px; border: none; }
+        button { background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #2980b9; }
+        .status { margin: 20px auto; padding: 15px; background-color: #34495e; border-radius: 5px; max-width: 600px; }
+        .nav-link { color: #3498db; text-decoration: none; display: block; margin: 20px auto; }
+        .nav-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Enhanced Gesture Test</h1>
+    <p>Click on a gesture to hear it spoken or create your own custom gesture below.</p>
+    
+    <div class="gesture-grid">
+        <button class="gesture-btn" data-gesture="blink">Blink</button>
+        <button class="gesture-btn" data-gesture="nod">Nod</button>
+        <button class="gesture-btn" data-gesture="smile">Smile</button>
+        <button class="gesture-btn" data-gesture="wave">Wave</button>
+        <button class="gesture-btn" data-gesture="thumbs_up">Thumbs Up</button>
+        <button class="gesture-btn" data-gesture="peace">Peace Sign</button>
+        <button class="gesture-btn" data-gesture="clap">Clap</button>
+        <button class="gesture-btn" data-gesture="point">Point</button>
+        <button class="gesture-btn" data-gesture="shrug">Shrug</button>
+        <button class="gesture-btn" data-gesture="fist">Fist</button>
+        <button class="gesture-btn" data-gesture="ok">OK Sign</button>
+        <button class="gesture-btn" data-gesture="quiet">Quiet</button>
+    </div>
+    
+    <div class="custom-gesture">
+        <h2>Try Custom Gesture</h2>
+        <input type="text" id="custom-gesture" placeholder="Enter a gesture (e.g., headshake, finger_snap)">
+        <button id="submit-custom">Test</button>
+    </div>
+    
+    <div class="status" id="status">
+        <p>Select a gesture or type your own to test...</p>
+    </div>
+    
+    <!-- Hidden audio element for playing audio -->
+    <audio id="audio-player" style="display: none;"></audio>
+    
+    <a href="{{ url_for('home') }}" class="nav-link">Back to Home</a>
+    
+    <script>
+        // Event listeners for preset gestures
+        document.querySelectorAll('.gesture-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const gesture = this.getAttribute('data-gesture');
+                testGesture(gesture);
+            });
+        });
+        
+        // Event listener for custom gesture
+        document.getElementById('submit-custom').addEventListener('click', function() {
+            const gesture = document.getElementById('custom-gesture').value.trim();
+            if (gesture) {
+                testGesture(gesture);
+            } else {
+                document.getElementById('status').innerHTML = 
+                    '<p style="color: #e74c3c">Please enter a valid gesture name</p>';
+            }
+        });
+        
+        // Function to test gesture
+        function testGesture(gesture) {
+            document.getElementById('status').innerHTML = 
+                `<p>Testing gesture: <strong>${gesture}</strong>...</p>`;
+            
+            // Create a URL for the audio file
+            const audioUrl = `/speak/${gesture}`;
+            
+            // Get the audio player element
+            const audioPlayer = document.getElementById('audio-player');
+            
+            // Set the audio source and play
+            audioPlayer.src = audioUrl;
+            audioPlayer.onloadeddata = () => {
+                // Play the audio when it's loaded
+                audioPlayer.play().catch(err => {
+                    console.error("Audio playback error:", err);
+                });
+                
+                // Update status to show success
+                document.getElementById('status').innerHTML = 
+                    `<p style="color: #2ecc71">✓ Playing audio for: <strong>${gesture}</strong></p>`;
+            };
+            
+            // Handle errors
+            audioPlayer.onerror = () => {
+                document.getElementById('status').innerHTML = 
+                    `<p style="color: #e74c3c">Error playing audio for gesture: <strong>${gesture}</strong></p>`;
+            };
+        }
+    </script>
+</body>
+</html>

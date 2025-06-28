@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AlphaVox - Eye Tracking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AlphaVox Eye Tracking Interface</h1>
+        <div class="section">
+            <div class="alert">AlphaVox needs webcam access to track eye movements.</div>
+            <button class="button button-green" onclick="enableWebcam()">Enable Webcam</button>
+        </div>
+        <div class="section">
+            <div class="alert">Tracking your gaze continuously...</div>
+            <img src="{{ url_for('video_feed') }}" alt="Webcam Feed" class="video-feed">
+            <div class="tracking-status">
+                <p><strong>Tracking Status</strong></p>
+                <p>Gaze: Not detected</p>
+                <p>Blink: No</p>
+            </div>
+            <div class="alert">AI responses will appear here...</div>
+        </div>
+        <div class="section">
+            <div class="alert alert-error">Webcam access required</div>
+            <button class="button button-blue" onclick="analyzeGaze()">Analyze Gaze</button>
+            <button class="button button-blue" onclick="resetTracking()">Reset</button>
+        </div>
+        <a href="{{ url_for('home') }}" class="button button-blue">Back to Home</a>
+    </div>
+    <script>
+        function enableWebcam() {
+            alert('Requesting webcam access...');
+        }
+
+        function analyzeGaze() {
+            fetch('/analyze-eye-tracking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('.tracking-status p:nth-child(2)').textContent = `Gaze: ${data.analysis.gaze_direction}`;
+                document.querySelector('.tracking-status p:nth-child(3)').textContent = `Blink: ${data.analysis.blink_detected ? 'Yes' : 'No'}`;
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+
+        function resetTracking() {
+            document.querySelector('.tracking-status p:nth-child(2)').textContent = 'Gaze: Not detected';
+            document.querySelector('.tracking-status p:nth-child(3)').textContent = 'Blink: No';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+{% extends "layout.html" %}
+
+{% block title %}Color Scheme Customization{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card bg-dark text-white mb-4 cyber-card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-palette me-2"></i>Color Scheme Customization
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Customize AlphaVox's visual appearance to match your preferences or accessibility needs.
+                    </p>
+                    
+                    <div class="mt-4">
+                        <h4>Predefined Schemes</h4>
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white h-100 scheme-card" data-scheme="default">
+                                    <div class="card-body text-center p-3">
+                                        <h5>Default</h5>
+                                        <div class="color-preview">
+                                            <div class="color-swatch" style="background-color: #3498db;"></div>
+                                            <div class="color-swatch" style="background-color: #2ecc71;"></div>
+                                            <div class="color-swatch" style="background-color: #e74c3c;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="card bg-dark text-white h-100 scheme-card" data-scheme="dark">
+                                    <div class="card-body text-center p-3">
+                                        <h5>Dark</h5>
+                                        <div class="color-preview">
+                                            <div class="color-swatch" style="background-color: #3498db;"></div>
+                                            <div class="color-swatch" style="background-color: #2ecc71;"></div>
+                                            <div class="color-swatch" style="background-color: #e74c3c;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="card bg-light text-dark h-100 scheme-card" data-scheme="high_contrast">
+                                    <div class="card-body text-center p-3">
+                                        <h5>High Contrast</h5>
+                                        <div class="color-preview">
+                                            <div class="color-swatch" style="background-color: #0066cc;"></div>
+                                            <div class="color-swatch" style="background-color: #00cc66;"></div>
+                                            <div class="color-swatch" style="background-color: #cc0000;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="card bg-light text-dark h-100 scheme-card" data-scheme="pastel">
+                                    <div class="card-body text-center p-3">
+                                        <h5>Pastel</h5>
+                                        <div class="color-preview">
+                                            <div class="color-swatch" style="background-color: #a6dcef;"></div>
+                                            <div class="color-swatch" style="background-color: #c7f0db;"></div>
+                                            <div class="color-swatch" style="background-color: #ff9a9e;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h4>AI-Generated Scheme</h4>
+                        <p>Use AI to generate a color scheme based on your preferences.</p>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="emotion">Emotion-based</label>
+                                    <select class="form-select" id="emotion">
+                                        <option value="">Select an emotion</option>
+                                        <option value="calm">Calm</option>
+                                        <option value="energetic">Energetic</option>
+                                        <option value="focused">Focused</option>
+                                        <option value="playful">Playful</option>
+                                        <option value="serene">Serene</option>
+                                        <option value="professional">Professional</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="base-color">Base Color</label>
+                                    <input type="color" class="form-control form-control-color w-100" id="base-color" value="#3498db">
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <button type="button" id="generate-scheme" class="btn btn-primary cyber-btn mt-3">
+                                    <i class="fas fa-magic me-1"></i> Generate Scheme
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="generated-scheme" class="mt-4" style="display: none;">
+                            <h5>Generated Scheme</h5>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-12">
+                                    <div class="card bg-dark text-white h-100">
+                                        <div class="card-body">
+                                            <div id="scheme-preview" class="d-flex justify-content-between">
+                                                <!-- Generated colors will be placed here -->
+                                            </div>
+                                            <div class="d-flex justify-content-end mt-3">
+                                                <button type="button" id="apply-scheme" class="btn btn-success cyber-btn">
+                                                    <i class="fas fa-check me-1"></i> Apply Scheme
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h4>Accessibility Settings</h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="reduce-motion">
+                                    <label class="form-check-label" for="reduce-motion">Reduce Motion</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="high-contrast">
+                                    <label class="form-check-label" for="high-contrast">Use High Contrast</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enlarged-text">
+                                    <label class="form-check-label" for="enlarged-text">Enlarged Text</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card bg-dark text-white cyber-card sticky-top" style="top: 20px;">
+                <div class="card-header">
+                    <h4 class="mb-0">Current Scheme</h4>
+                </div>
+                <div class="card-body">
+                    <div id="current-scheme-preview">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Primary:</span>
+                            <div class="color-badge">
+                                <div class="color-square" style="background-color: {{ get_current_scheme().primary }};"></div>
+                                <code>{{ get_current_scheme().primary }}</code>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Secondary:</span>
+                            <div class="color-badge">
+                                <div class="color-square" style="background-color: {{ get_current_scheme().secondary }};"></div>
+                                <code>{{ get_current_scheme().secondary }}</code>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Accent:</span>
+                            <div class="color-badge">
+                                <div class="color-square" style="background-color: {{ get_current_scheme().accent }};"></div>
+                                <code>{{ get_current_scheme().accent }}</code>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Background:</span>
+                            <div class="color-badge">
+                                <div class="color-square" style="background-color: {{ get_current_scheme().background }};"></div>
+                                <code>{{ get_current_scheme().background }}</code>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Text:</span>
+                            <div class="color-badge">
+                                <div class="color-square" style="background-color: {{ get_current_scheme().text }};"></div>
+                                <code>{{ get_current_scheme().text }}</code>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>Preview</h5>
+                        <div class="preview-box p-3 mb-3" style="background-color: {{ get_current_scheme().background }}; color: {{ get_current_scheme().text }}; border: 1px solid {{ get_current_scheme().primary }};">
+                            <h6 style="color: {{ get_current_scheme().primary }};">Sample Heading</h6>
+                            <p class="small mb-2">This is how text will appear with the selected scheme.</p>
+                            <button class="btn btn-sm" style="background-color: {{ get_current_scheme().primary }}; color: white;">Primary Button</button>
+                            <button class="btn btn-sm" style="background-color: {{ get_current_scheme().secondary }}; color: white;">Secondary</button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="button" id="save-settings" class="btn btn-primary cyber-btn">
+                            <i class="fas fa-save me-1"></i> Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS for the color scheme page -->
+<style>
+    .color-preview {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    
+    .color-swatch {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+    }
+    
+    .scheme-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .scheme-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .color-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .color-square {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .preview-box {
+        border-radius: 8px;
+    }
+</style>
+
+<!-- JavaScript for generating and applying color schemes -->
+<script>
+    $(document).ready(function() {
+        // Handle predefined scheme selection
+        $('.scheme-card').click(function() {
+            const scheme = $(this).data('scheme');
+            
+            // Make AJAX call to apply the selected scheme
+            $.post('/color-scheme/apply', { scheme: scheme }, function(response) {
+                if (response.success) {
+                    // Reload the page to apply the new scheme
+                    location.reload();
+                }
+            });
+        });
+        
+        // Handle generating a new scheme
+        $('#generate-scheme').click(function() {
+            const emotion = $('#emotion').val();
+            const baseColor = $('#base-color').val();
+            
+            // Show loading state
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Generating...');
+            
+            // Make AJAX call to generate a new scheme
+            $.post('/color-scheme/generate', { 
+                emotion: emotion,
+                base_color: baseColor
+            }, function(response) {
+                if (response.success) {
+                    // Reset button
+                    $('#generate-scheme').prop('disabled', false)
+                        .html('<i class="fas fa-magic me-1"></i> Generate Scheme');
+                    
+                    // Display the generated scheme
+                    const scheme = response.scheme;
+                    displayGeneratedScheme(scheme);
+                }
+            }).fail(function() {
+                // Reset button on error
+                $('#generate-scheme').prop('disabled', false)
+                    .html('<i class="fas fa-magic me-1"></i> Generate Scheme');
+                
+                alert('There was an error generating the color scheme. Please try again.');
+            });
+        });
+        
+        // Handle applying the generated scheme
+        $('#apply-scheme').click(function() {
+            // Get colors from the preview
+            const colors = [];
+            $('#scheme-preview .color-preview-item').each(function() {
+                colors.push($(this).data('color'));
+            });
+            
+            // Make AJAX call to apply the custom scheme
+            $.post('/color-scheme/apply-custom', { colors: colors }, function(response) {
+                if (response.success) {
+                    // Reload the page to apply the new scheme
+                    location.reload();
+                }
+            });
+        });
+        
+        // Handle saving accessibility settings
+        $('#save-settings').click(function() {
+            const settings = {
+                reduce_motion: $('#reduce-motion').prop('checked'),
+                high_contrast: $('#high-contrast').prop('checked'),
+                enlarged_text: $('#enlarged-text').prop('checked')
+            };
+            
+            // Make AJAX call to save settings
+            $.post('/color-scheme/save-settings', settings, function(response) {
+                if (response.success) {
+                    // Show success message
+                    alert('Settings saved successfully');
+                }
+            });
+        });
+        
+        // Function to display the generated scheme
+        function displayGeneratedScheme(scheme) {
+            // Clear previous preview
+            $('#scheme-preview').empty();
+            
+            // Add each color to the preview
+            for (const [key, value] of Object.entries(scheme)) {
+                $('#scheme-preview').append(`
+                    <div class="color-preview-item" data-color="${value}" data-type="${key}">
+                        <div style="background-color: ${value}; width: 40px; height: 40px; border-radius: 4px;"></div>
+                        <div class="text-center mt-1">
+                            <small>${key}</small>
+                            <br>
+                            <code>${value}</code>
+                        </div>
+                    </div>
+                `);
+            }
+            
+            // Show the generated scheme section
+            $('#generated-scheme').show();
+        }
+    });
+</script>
+{% endblock %}

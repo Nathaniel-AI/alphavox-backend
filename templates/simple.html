@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="display-4 mb-4">Simple Mode</h1>
+                    
+                    <div class="btn-group mb-4" role="group" aria-label="Text size controls">
+                        <button id="decreaseFontSize" class="btn btn-outline-primary">A-</button>
+                        <button id="resetFontSize" class="btn btn-outline-secondary">Reset</button>
+                        <button id="increaseFontSize" class="btn btn-outline-primary">A+</button>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('index') }}" class="btn btn-lg btn-primary">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                        <a href="{{ url_for('enhanced_gesture_test') }}" class="btn btn-lg btn-success">
+                            <i class="fas fa-hand-paper me-2"></i>Test Gestures
+                        </a>
+                        <a href="{{ url_for('eye_tracking_page') }}" class="btn btn-lg btn-info">
+                            <i class="fas fa-eye me-2"></i>Eye Tracking
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const root = document.documentElement;
+    let currentSize = 100;
+
+    function updateFontSize(size) {
+        root.style.setProperty('--base-font-size', `${size}%`);
+        currentSize = size;
+    }
+
+    document.getElementById('increaseFontSize').addEventListener('click', () => {
+        if (currentSize < 200) {
+            updateFontSize(currentSize + 10);
+        }
+    });
+
+    document.getElementById('decreaseFontSize').addEventListener('click', () => {
+        if (currentSize > 70) {
+            updateFontSize(currentSize - 10);
+        }
+    });
+
+    document.getElementById('resetFontSize').addEventListener('click', () => {
+        updateFontSize(100);
+    });
+});
+</script>
+{% endblock %}

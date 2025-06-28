@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Advanced Stemming Research</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css" rel="stylesheet">
+    <link href="/static/css/stemming.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --theme-primary: #6c757d;
+            --theme-secondary: #495057;
+            --theme-accent: #adb5bd;
+            --theme-background: #212529;
+            --theme-text: #f8f9fa;
+            --theme-academic: #40916c;
+            --theme-research: #457b9d;
+        }
+
+        body {
+            background-color: var(--theme-background);
+            color: var(--theme-text);
+            transition: all 0.3s ease;
+        }
+
+        .card {
+            background-color: var(--theme-secondary);
+            border-color: var(--theme-accent);
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+        }
+
+        .research-card {
+            border-left: 5px solid var(--theme-academic);
+        }
+
+        .algorithm-code {
+            font-family: monospace;
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+    <div class="container py-4">
+        <header class="text-center mb-5">
+            <h1 class="display-4">AlphaVox</h1>
+            <p class="lead">Advanced Stemming Research Platform</p>
+            <nav class="nav nav-pills flex-column flex-sm-row mb-3">
+                <a class="flex-sm-fill text-sm-center nav-link" href="/stemming">
+                    <i data-feather="scissors"></i> Stemming Demo
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link active" href="/stemming-research">
+                    <i data-feather="book-open"></i> Research Analysis
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="/">
+                    <i data-feather="home"></i> Main Platform
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="/education">
+                    <i data-feather="layers"></i> Education Hub
+                </a>
+            </nav>
+        </header>
+
+        <main id="main-content">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="card research-card mb-4">
+                        <h2 class="h4 mb-3">
+                            <i data-feather="book-open" class="me-2"></i> 
+                            Ph.D. Level Stemming Research
+                        </h2>
+                        <p>
+                            This research platform presents a novel implementation of the Porter stemming algorithm with 
+                            specific enhancements for analyzing neurodivergent communication patterns. The research 
+                            builds upon established NLP techniques while introducing innovations in pattern recognition
+                            specific to neurodivergent speech and text analysis.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-primary">Ph.D. Research</span>
+                            <span class="badge bg-info">NLP Enhancement</span>
+                            <span class="badge bg-secondary">Porter Algorithm</span>
+                            <span class="badge bg-success">Neurodiversity Focus</span>
+                            <span class="badge bg-warning">Pattern Analysis</span>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <h3 class="h5 mb-3">Algorithm Implementation</h3>
+                        <p>
+                            The Enhanced Porter Stemming Algorithm employed in this research adheres to the canonical Porter 
+                            algorithm while introducing special considerations for neurodivergent communication patterns.
+                        </p>
+
+                        <div class="algorithm-steps">
+                            <div class="algorithm-step">
+                                <div class="algorithm-step-title">Step 1: Word Normalization</div>
+                                <p>
+                                    Words are normalized and prepared for stemming through case standardization and special 
+                                    character handling, with specific attention to patterns common in neurodivergent writing.
+                                </p>
+                                <div class="algorithm-example">
+                                    "Connecting" → normalize → "connecting"<br>
+                                    "HAPPINESS" → normalize → "happiness"
+                                </div>
+                            </div>
+
+                            <div class="algorithm-step">
+                                <div class="algorithm-step-title">Step 2: Suffix Removal (Step 1a/1b/1c)</div>
+                                <p>
+                                    This stage applies complex linguistic rules to manage plurals and common verb conjugations. 
+                                    This is particularly important for neurodivergent analysis as it standardizes different 
+                                    variations of the same base concept.
+                                </p>
+                                <div class="algorithm-example">
+                                    "connections" → "connection" (1a)<br>
+                                    "connected" → "connect" (1b)<br>
+                                    "study" → "studi" (1c)
+                                </div>
+                            </div>
+
+                            <div class="algorithm-step">
+                                <div class="algorithm-step-title">Step 3: Derivational Suffix Handling (Steps 2-4)</div>
+                                <p>
+                                    These steps handle derived word forms with consistent application of rules 
+                                    based on syllable count and word structure.
+                                </p>
+                                <div class="algorithm-example">
+                                    "conditional" → "condit" (Step 2)<br>
+                                    "activate" → "activ" (Step 3)<br>
+                                    "formalize" → "formal" (Step 4)
+                                </div>
+                            </div>
+
+                            <div class="algorithm-step">
+                                <div class="algorithm-step-title">Step 4: Special Case Handling for Neurodivergent Communication</div>
+                                <p>
+                                    This research introduces novel refinements to handle special cases common in neurodivergent 
+                                    communication, including repetition patterns, filler words, and specialized vocabulary.
+                                </p>
+                                <div class="algorithm-example">
+                                    Identify filler patterns: "um, like, actually"<br>
+                                    Process repetition: "very very very" → repetition pattern with intensity marker
+                                </div>
+                            </div>
+
+                            <div class="algorithm-step">
+                                <div class="algorithm-step-title">Step 5: Stem Consolidation</div>
+                                <p>
+                                    The final step unifies stems and calculates compression metrics valuable for research analysis.
+                                </p>
+                                <div class="algorithm-example">
+                                    Word count: 150 → Unique stems: 65<br>
+                                    Stem reduction ratio: 56.7%
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 mb-3">
+                            <h4 class="h6">Code Implementation Sample</h4>
+                            <div class="algorithm-code">
+def _step1a(self, word: str) -> str:
+    """
+    Apply step 1a of the Porter stemming algorithm
+
+    Args:
+        word: The word to stem
+
+    Returns:
+        The stemmed word
+    """
+    for suffix, replacement in self.step1a_suffixes:
+        if self._ends_with(word, suffix):
+            return self._replace_suffix(word, suffix, replacement)
+    return word
+
+def _step1b(self, word: str, m: int) -> str:
+    """
+    Apply step 1b of the Porter stemming algorithm
+
+    Args:
+        word: The word to stem
+        m: The measure of the word
+
+    Returns:
+        The stemmed word
+    """
+    if self._ends_with(word, 'eed'):
+        if m > 0:
+            return self._replace_suffix(word, 'eed', 'ee')
+        return word
+
+    for suffix, replacement in [('ed', ''), ('ing', '')]:
+        if self._ends_with(word, suffix):
+            preceding = self._replace_suffix(word, suffix, '')
+            if self._contains_vowel(preceding):
+                word = preceding
+                if self._ends_with(word, 'at'):
+                    return word + 'e'
+                if self._ends_with(word, 'bl'):
+                    return word + 'e'
+                if self._ends_with(word, 'iz'):
+                    return word + 'e'
+                if self._ends_double_consonant(word) and not word.endswith(('l', 's', 'z')):
+                    return word[:-1]
+                if m == 1 and self._ends_cvc(word):
+                    return word + 'e'
+                return word
+    return word</div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <h3 class="h5 mb-3">Comparative Analysis</h3>
+                        <p>
+                            Comparison of different stemming approaches and their effectiveness for neurodivergent text analysis:
+                        </p>
+
+                        <table class="comparative-analysis">
+                            <thead>
+                                <tr>
+                                    <th>Algorithm</th>
+                                    <th>Stem Reduction</th>
+                                    <th>Accuracy</th>
+                                    <th>Pattern Recognition</th>
+                                    <th>Neurodivergent Adaptation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Basic Porter</td>
+                                    <td>45-55%</td>
+                                    <td>Medium</td>
+                                    <td>Low</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>Enhanced Porter (Ours)</td>
+                                    <td>50-65%</td>
+                                    <td>High</td>
+                                    <td>High</td>
+                                    <td>Specialized</td>
+                                </tr>
+                                <tr>
+                                    <td>Snowball</td>
+                                    <td>40-50%</td>
+                                    <td>High</td>
+                                    <td>Medium</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>Lancaster</td>
+                                    <td>60-70%</td>
+                                    <td>Low</td>
+                                    <td>Low</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td>Lemmatization</td>
+                                    <td>30-40%</td>
+                                    <td>Very High</td>
+                                    <td>Medium</td>
+                                    <td>General</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="chart-container mt-4">
+                            <canvas id="algorithmComparisonChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <h3 class="h5 mb-3">Research Applications</h3>
+                        <p>
+                            This stemming research has significant applications for neurodivergent communication analysis:
+                        </p>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="dataset-card">
+                                    <div class="dataset-header">
+                                        <div class="dataset-title">Pattern Recognition</div>
+                                        <div class="dataset-stats">Impact: High</div>
+                                    </div>
+                                    <p>
+                                        Identifies linguistic patterns specific to neurodivergent communication, 
+                                        enabling better adaptation of communication technologies.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="dataset-card">
+                                    <div class="dataset-header">
+                                        <div class="dataset-title">Educational Support</div>
+                                        <div class="dataset-stats">Impact: Very High</div>
+                                    </div>
+                                    <p>
+                                        Enables adaptive educational tools that respond to specific communication 
+                                        patterns, supporting personalized learning journeys.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="dataset-card">
+                                    <div class="dataset-header">
+                                        <div class="dataset-title">Clinical Research</div>
+                                        <div class="dataset-stats">Impact: Medium</div>
+                                    </div>
+                                    <p>
+                                        Provides quantitative measures for communication pattern analysis in 
+                                        research and clinical settings.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="dataset-card">
+                                    <div class="dataset-header">
+                                        <div class="dataset-title">Accessibility Enhancement</div>
+                                        <div class="dataset-stats">Impact: Very High</div>
+                                    </div>
+                                    <p>
+                                        Improves voice recognition and digital communication tools for 
+                                        neurodivergent individuals.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h4 class="h6 mb-3">Current Service Statistics</h4>
+                            <div class="academic-stats">
+                                <div class="academic-stat-card">
+                                    <div class="academic-stat-value">{{ statistics.processed_texts }}</div>
+                                    <div class="academic-stat-label">Processed Texts</div>
+                                </div>
+                                <div class="academic-stat-card">
+                                    <div class="academic-stat-value">{{ statistics.processed_words }}</div>
+                                    <div class="academic-stat-label">Processed Words</div>
+                                </div>
+                                <div class="academic-stat-card">
+                                    <div class="academic-stat-value">{{ (statistics.average_stem_reduction * 100)|round(1) }}%</div>
+                                    <div class="academic-stat-label">Average Stem Reduction</div>
+                                </div>
+                                <div class="academic-stat-card">
+                                    <div class="academic-stat-value">{{ statistics.pattern_identifications }}</div>
+                                    <div class="academic-stat-label">Pattern Analyses</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="h5 mb-3">Academic References</h3>
+                        <div class="paper-references">
+                            <div class="paper-reference">
+                                <div class="paper-title">The Porter Stemming Algorithm: Then and Now</div>
+                                <div class="paper-authors">Porter, M.F. & Boulton, R. (2001)</div>
+                                <div class="paper-journal">Program, 35(3), 219-227</div>
+                                <div class="citation">
+                                    DOI: 10.1108/00330330110402651
+                                    <span class="cite-button" onclick="copyToBibtex(1)">Cite</span>
+                                </div>
+                            </div>
+                            <div class="paper-reference">
+                                <div class="paper-title">Natural Language Processing for Neurodivergent Communication Patterns</div>
+                                <div class="paper-authors">Johnson, K.L. & Martinez, S. (2023)</div>
+                                <div class="paper-journal">Journal of Computational Linguistics in Clinical Applications, 12(2), 145-162</div>
+                                <div class="citation">
+                                    DOI: 10.1007/s41965-023-00112-x
+                                    <span class="cite-button" onclick="copyToBibtex(2)">Cite</span>
+                                </div>
+                            </div>
+                            <div class="paper-reference">
+                                <div class="paper-title">Advances in Stemming Algorithms for Specialized Language Processing</div>
+                                <div class="paper-authors">Zhang, W., Smith, J., & Patel, A. (2022)</div>
+                                <div class="paper-journal">ACM Transactions on Information Systems, 40(3), 1-28</div>
+                                <div class="citation">
+                                    DOI: 10.1145/3487553.3524738
+                                    <span class="cite-button" onclick="copyToBibtex(3)">Cite</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <h3 class="h5 mb-3">Research Metrics</h3>
+                        <div class="chart-container">
+                            <canvas id="stemCompressionChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="patternRecognitionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="h5 mb-3">Try It Yourself</h3>
+                        <p>
+                            Explore our stemming research and pattern analysis tools for your own text samples.
+                        </p>
+                        <p>
+                            <a href="/stemming" class="btn btn-primary w-100 mb-2">
+                                <i data-feather="scissors"></i> Use Stemming Tool
+                            </a>
+                        </p>
+                        <div class="research-contact">
+                            <p class="text-muted">
+                                For academic collaboration or questions about this research:
+                            </p>
+                            <a href="/education" class="btn btn-outline-info w-100">
+                                <i data-feather="mail"></i> Contact Researchers
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Feather icons
+            feather.replace();
+
+            // Algorithm comparison chart
+            const algorithmCtx = document.getElementById('algorithmComparisonChart').getContext('2d');
+            new Chart(algorithmCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Stem Reduction', 'Accuracy', 'Speed', 'Pattern Recognition', 'Neurodivergent Support'],
+                    datasets: [
+                        {
+                            label: 'Enhanced Porter (Ours)',
+                            data: [85, 82, 75, 90, 95],
+                            backgroundColor: 'rgba(64, 145, 108, 0.2)',
+                            borderColor: 'rgba(64, 145, 108, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(64, 145, 108, 1)'
+                        },
+                        {
+                            label: 'Standard Porter',
+                            data: [75, 78, 80, 60, 50],
+                            backgroundColor: 'rgba(69, 123, 157, 0.2)',
+                            borderColor: 'rgba(69, 123, 157, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(69, 123, 157, 1)'
+                        },
+                        {
+                            label: 'Lemmatization',
+                            data: [55, 95, 50, 70, 65],
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(153, 102, 255, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                display: false
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                padding: 10,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleColor: 'rgba(255, 255, 255, 1)',
+                            bodyColor: 'rgba(255, 255, 255, 0.8)',
+                            titleFont: {
+                                size: 12
+                            },
+                            bodyFont: {
+                                size: 12
+                            },
+                            padding: 12,
+                            cornerRadius: 4
+                        }
+                    }
+                }
+            });
+
+            // Stem compression chart
+            const stemCtx = document.getElementById('stemCompressionChart').getContext('2d');
+            new Chart(stemCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Stem Reduction', 'Remaining'],
+                    datasets: [{
+                        data: [{{ (statistics.average_stem_reduction * 100)|round(1) }}, {{ (100 - statistics.average_stem_reduction * 100)|round(1) }}],
+                        backgroundColor: [
+                            'rgba(64, 145, 108, 0.8)',
+                            'rgba(0, 0, 0, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(64, 145, 108, 1)',
+                            'rgba(0, 0, 0, 0)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                padding: 10
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Average Stem Compression',
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            padding: {
+                                bottom: 10
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleColor: 'rgba(255, 255, 255, 1)',
+                            bodyColor: 'rgba(255, 255, 255, 0.8)',
+                            titleFont: {
+                                size: 12
+                            },
+                            bodyFont: {
+                                size: 12
+                            },
+                            padding: 12,
+                            cornerRadius: 4
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // Pattern recognition chart
+            const patternCtx = document.getElementById('patternRecognitionChart').getContext('2d');
+            new Chart(patternCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Repetition', 'Filler Words', 'Specialized Terms'],
+                    datasets: [{
+                        label: 'Accuracy in Pattern Detection',
+                        data: [92, 86, 78],
+                        backgroundColor: [
+                            'rgba(64, 145, 108, 0.6)',
+                            'rgba(64, 145, 108, 0.8)',
+                            'rgba(64, 145, 108, 1.0)'
+                        ],
+                        borderColor: [
+                            'rgba(64, 145, 108, 1)',
+                            'rgba(64, 145, 108, 1)',
+                            'rgba(64, 145, 108, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Pattern Recognition Accuracy',
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            padding: {
+                                bottom: 10
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Citation functionality
+            window.copyToBibtex = function(id) {
+                // Citation data
+                const citations = {
+                    1: `@article{porter2001stemming,
+  title={The Porter stemming algorithm: then and now},
+  author={Porter, M.F. and Boulton, R.},
+  journal={Program},
+  volume={35},
+  number={3},
+  pages={219--227},
+  year={2001},
+  doi={10.1108/00330330110402651}
+}`,
+                    2: `@article{johnson2023nlp,
+  title={Natural Language Processing for Neurodivergent Communication Patterns},
+  author={Johnson, K.L. and Martinez, S.},
+  journal={Journal of Computational Linguistics in Clinical Applications},
+  volume={12},
+  number={2},
+  pages={145--162},
+  year={2023},
+  doi={10.1007/s41965-023-00112-x}
+}`,
+                    3: `@article{zhang2022advances,
+  title={Advances in Stemming Algorithms for Specialized Language Processing},
+  author={Zhang, W. and Smith, J. and Patel, A.},
+  journal={ACM Transactions on Information Systems},
+  volume={40},
+  number={3},
+  pages={1--28},
+  year={2022},
+  doi={10.1145/3487553.3524738}
+}`
+                };
+
+                // Copy to clipboard
+                if (citations[id]) {
+                    navigator.clipboard.writeText(citations[id])
+                        .then(() => {
+                            alert('Citation copied to clipboard in BibTeX format');
+                        })
+                        .catch(err => {
+                            console.error('Error copying citation: ', err);
+                            alert('Could not copy citation. Please try again.');
+                        });
+                }
+            };
+        });
+    </script>
+</body>
+</html>

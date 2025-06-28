@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Share Instructions{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">How to Find the Share Button</h1>
+
+    <div class="alert alert-info">
+        First, make sure you're in the right view to see the Share button!
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="h4">Step 1: Exit Full Screen Mode</h2>
+            <div class="key-instruction">
+                <p class="mb-0">Press the <kbd>Esc</kbd> key on your keyboard to exit full screen mode</p>
+            </div>
+            <p>After pressing Esc, you should see the Replit editor interface with:</p>
+            <ul>
+                <li>Files panel on the left</li>
+                <li>Code editor in the middle</li>
+                <li>Preview window on the right</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="h4">Step 2: Find the Share Button</h2>
+            <div class="highlight-box">
+                <div class="text-center">
+                    <img src="https://replit.com/public/images/share-button-location.png" alt="Share button location" class="img-fluid step-image">
+                    <div class="arrow-pointer">↑</div>
+                    <div class="text-danger fw-bold">The Share button is here!</div>
+                </div>
+                <p class="mt-3">Look for a blue "Share" button in the top-right corner of the Replit editor window (not in the web application).</p>
+
+                <div class="mt-4 p-3 bg-light border rounded">
+                    <h4 class="h5 mb-3">Text Instructions (if image doesn't load):</h4>
+                    <ol>
+                        <li>Look at the very top of your screen</li>
+                        <li>On the right side of the top bar</li>
+                        <li>Find the blue "Share" button</li>
+                        <li>It's next to your profile picture</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="h4">Still Can't Find It?</h2>
+            <div class="important-note">
+                <p class="mb-2">Make sure you:</p>
+                <ol>
+                    <li>Are not in full screen mode (press Esc if you are)</li>
+                    <li>Can see the Replit editor interface (with files on the left)</li>
+                    <li>Look at the very top of the window, not inside the web application</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="h4">What to Share:</h2>
+            <div class="list-group mb-3">
+                <div class="list-group-item">
+                    <h5 class="mb-1">Share Options:</h5>
+                    <ul>
+                        <li>The "Live App" URL (for testing only the application)</li>
+                        <li>The "Project" URL (to share both the application and its code)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-home me-2"></i>Go to Main Application
+        </a>
+    </div>
+</div>
+{% endblock %}

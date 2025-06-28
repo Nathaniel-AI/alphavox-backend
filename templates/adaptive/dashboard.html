@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block title %}AlphaVox - Adaptive Conversation Settings{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .complexity-container {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .complexity-slider {
+        width: 100%;
+        margin: 20px 0;
+        -webkit-appearance: none;
+        height: 15px;
+        border-radius: 10px;
+        background: linear-gradient(to right, #0066ff, #00ccff);
+        outline: none;
+    }
+    
+    .complexity-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 204, 255, 0.8);
+        cursor: pointer;
+    }
+    
+    .complexity-level {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    
+    .complexity-level span {
+        position: relative;
+        display: inline-block;
+        width: 18%;
+        text-align: center;
+        font-size: 0.9em;
+        padding-top: 10px;
+    }
+    
+    .complexity-level span::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 1px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.5);
+    }
+    
+    .mode-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .mode-option {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(0, 204, 255, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .mode-option:hover, .mode-option.active {
+        background: rgba(0, 204, 255, 0.2);
+        border-color: rgba(0, 204, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+    }
+    
+    .mode-option h4 {
+        color: #00ccff;
+        margin-top: 0;
+    }
+    
+    .mode-option p {
+        font-size: 0.9em;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .advanced-settings {
+        margin-top: 30px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .advanced-settings h3 {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding-bottom: 10px;
+    }
+    
+    .setting-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .setting-label {
+        flex: 1;
+    }
+    
+    .setting-control {
+        flex: 2;
+    }
+    
+    .test-area {
+        margin-top: 30px;
+    }
+    
+    .test-input {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(0, 204, 255, 0.3);
+        border-radius: 5px;
+        color: white;
+        padding: 10px;
+        margin-bottom: 15px;
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .result-container {
+        display: none;
+        margin-top: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .result-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    .result-complexity {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .complexity-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.8em;
+        margin-left: 10px;
+    }
+    
+    .btn-save {
+        background: linear-gradient(to right, #0066ff, #00ccff);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        width: 100%;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-save:hover {
+        box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
+    }
+    
+    .btn-test {
+        background: rgba(0, 204, 255, 0.3);
+        color: white;
+        border: 1px solid rgba(0, 204, 255, 0.5);
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-test:hover {
+        background: rgba(0, 204, 255, 0.5);
+    }
+    
+    /* Glow animations */
+    @keyframes glow {
+        0% { box-shadow: 0 0 5px rgba(0, 204, 255, 0.3); }
+        50% { box-shadow: 0 0 20px rgba(0, 204, 255, 0.5); }
+        100% { box-shadow: 0 0 5px rgba(0, 204, 255, 0.3); }
+    }
+    
+    .mode-option.active {
+        animation: glow 2s infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">
+                <span class="text-primary">Adaptive</span> 
+                <span class="text-info">Conversation</span> 
+                <span class="text-light">Settings</span>
+            </h1>
+            <p class="text-center text-muted mb-5">
+                Control how AlphaVox adjusts the complexity of its responses to match your needs and preferences.
+            </p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <!-- Complexity Level Selector -->
+            <div class="complexity-container">
+                <h3>Complexity Level</h3>
+                <p>Adjust the overall complexity of conversations with AlphaVox</p>
+                
+                <input type="range" min="1" max="5" step="0.1" value="{{ profile.complexity_level }}" class="complexity-slider" id="complexitySlider">
+                
+                <div class="complexity-level">
+                    {% for i in range(1, 6) %}
+                    <span>
+                        {{ complexity_levels[i].name }}
+                    </span>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <h4 id="currentComplexity">{{ complexity_levels[profile.complexity_level|int].name }}</h4>
+                    <p id="complexityDescription">{{ complexity_levels[profile.complexity_level|int].description }}</p>
+                </div>
+            </div>
+            
+            <!-- Adaptation Mode Selection -->
+            <div class="complexity-container">
+                <h3>Adaptation Mode</h3>
+                <p>Choose how AlphaVox adjusts complexity during conversations</p>
+                
+                <div class="mode-options">
+                    {% for mode, description in adaptation_modes.items() %}
+                    <div class="mode-option {% if profile.adaptation_mode == mode %}active{% endif %}" data-mode="{{ mode }}">
+                        <h4>{{ mode|capitalize }}</h4>
+                        <p>{{ description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Advanced Settings -->
+            <div class="advanced-settings">
+                <h3>Advanced Settings</h3>
+                
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <label for="varianceSlider">Complexity Variance</label>
+                        <p class="text-muted small">Controls how much the complexity can vary in adaptive mode</p>
+                    </div>
+                    <div class="setting-control">
+                        <input type="range" min="0" max="1" step="0.1" value="{{ profile.complexity_variance }}" class="form-range" id="varianceSlider">
+                        <div class="text-end"><span id="varianceValue">{{ profile.complexity_variance }}</span></div>
+                    </div>
+                </div>
+                
+                <div class="setting-row">
+                    <div class="setting-label">
+                        <label for="progressionSlider">Progression Factor</label>
+                        <p class="text-muted small">Controls how quickly complexity increases in progressive mode</p>
+                    </div>
+                    <div class="setting-control">
+                        <input type="range" min="0" max="0.5" step="0.01" value="{{ profile.progression_factor }}" class="form-range" id="progressionSlider">
+                        <div class="text-end"><span id="progressionValue">{{ profile.progression_factor }}</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test Area -->
+            <div class="test-area">
+                <h3>Test Adaptation</h3>
+                <p>Enter some text to see how it would be adapted based on your settings</p>
+                
+                <textarea class="test-input" id="testInput" placeholder="Enter some complex text here to see how it would be adapted...">The utilization of advanced machine learning techniques facilitates the implementation of sophisticated natural language processing capabilities, thereby enabling more effective and contextually appropriate communication between computational systems and human interlocutors.</textarea>
+                
+                <div class="mb-3">
+                    <select class="form-select" id="testEmotion">
+                        <option value="">No Emotional Context</option>
+                        <option value="calm">Calm</option>
+                        <option value="happy">Happy</option>
+                        <option value="stressed">Stressed</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+                
+                <div class="text-center">
+                    <button class="btn-test" id="testButton">Test Adaptation</button>
+                </div>
+                
+                <div class="result-container" id="resultContainer">
+                    <h4>Adaptation Result</h4>
+                    
+                    <div class="result-comparison">
+                        <div>
+                            <h5>Original Text</h5>
+                            <p id="originalText"></p>
+                        </div>
+                        <div>
+                            <h5>Adapted Text</h5>
+                            <p id="adaptedText"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-complexity">
+                        <div>
+                            <span>Target Complexity:</span>
+                            <span class="complexity-badge bg-info" id="targetComplexity"></span>
+                        </div>
+                        <div>
+                            <span>Original Complexity:</span>
+                            <span class="complexity-badge bg-secondary" id="originalComplexity"></span>
+                        </div>
+                        <div>
+                            <span>Adapted Complexity:</span>
+                            <span class="complexity-badge bg-success" id="adaptedComplexity"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Save Button -->
+            <button class="btn-save" id="saveButton">Save Settings</button>
+            
+            <!-- Link to History -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('adaptive_conversation.view_interaction_history') }}" class="text-info">View Interaction History</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const complexitySlider = document.getElementById('complexitySlider');
+    const currentComplexity = document.getElementById('currentComplexity');
+    const complexityDescription = document.getElementById('complexityDescription');
+    const modeOptions = document.querySelectorAll('.mode-option');
+    const varianceSlider = document.getElementById('varianceSlider');
+    const varianceValue = document.getElementById('varianceValue');
+    const progressionSlider = document.getElementById('progressionSlider');
+    const progressionValue = document.getElementById('progressionValue');
+    const saveButton = document.getElementById('saveButton');
+    const testButton = document.getElementById('testButton');
+    const testInput = document.getElementById('testInput');
+    const testEmotion = document.getElementById('testEmotion');
+    const resultContainer = document.getElementById('resultContainer');
+    const originalText = document.getElementById('originalText');
+    const adaptedText = document.getElementById('adaptedText');
+    const targetComplexity = document.getElementById('targetComplexity');
+    const originalComplexity = document.getElementById('originalComplexity');
+    const adaptedComplexity = document.getElementById('adaptedComplexity');
+    
+    // Complexity levels information
+    const complexityLevels = {{ complexity_levels|tojson }};
+    
+    // Update complexity display when slider changes
+    complexitySlider.addEventListener('input', function() {
+        const level = Math.floor(this.value);
+        currentComplexity.textContent = complexityLevels[level].name;
+        complexityDescription.textContent = complexityLevels[level].description;
+    });
+    
+    // Update mode selection
+    modeOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all options
+            modeOptions.forEach(opt => opt.classList.remove('active'));
+            // Add active class to clicked option
+            this.classList.add('active');
+        });
+    });
+    
+    // Update variance display
+    varianceSlider.addEventListener('input', function() {
+        varianceValue.textContent = this.value;
+    });
+    
+    // Update progression display
+    progressionSlider.addEventListener('input', function() {
+        progressionValue.textContent = this.value;
+    });
+    
+    // Save settings
+    saveButton.addEventListener('click', function() {
+        const complexityLevel = parseFloat(complexitySlider.value);
+        const adaptationMode = document.querySelector('.mode-option.active').dataset.mode;
+        const complexityVariance = parseFloat(varianceSlider.value);
+        const progressionFactor = parseFloat(progressionSlider.value);
+        
+        // Show loading state
+        saveButton.textContent = 'Saving...';
+        saveButton.disabled = true;
+        
+        // Send settings to server
+        fetch('/adaptive/settings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                complexity_level: complexityLevel,
+                adaptation_mode: adaptationMode,
+                complexity_variance: complexityVariance,
+                progression_factor: progressionFactor
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                saveButton.textContent = 'Settings Saved!';
+                setTimeout(() => {
+                    saveButton.textContent = 'Save Settings';
+                    saveButton.disabled = false;
+                }, 2000);
+            } else {
+                saveButton.textContent = 'Error Saving Settings';
+                setTimeout(() => {
+                    saveButton.textContent = 'Try Again';
+                    saveButton.disabled = false;
+                }, 2000);
+            }
+        })
+        .catch(error => {
+            saveButton.textContent = 'Connection Error';
+            setTimeout(() => {
+                saveButton.textContent = 'Try Again';
+                saveButton.disabled = false;
+            }, 2000);
+        });
+    });
+    
+    // Test adaptation
+    testButton.addEventListener('click', function() {
+        const text = testInput.value.trim();
+        const emotion = testEmotion.value;
+        
+        if (!text) {
+            alert('Please enter some text to test');
+            return;
+        }
+        
+        // Show loading state
+        testButton.textContent = 'Testing...';
+        testButton.disabled = true;
+        
+        // Send test to server
+        fetch('/adaptive/test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: text,
+                emotion: emotion,
+                time_of_day: getCurrentTimeOfDay()
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Display results
+                originalText.textContent = data.original_text;
+                adaptedText.textContent = data.adapted_text;
+                targetComplexity.textContent = `${data.target_complexity.toFixed(1)} (${data.complexity_level_info.name})`;
+                originalComplexity.textContent = data.original_complexity.toFixed(1);
+                adaptedComplexity.textContent = data.adapted_complexity.toFixed(1);
+                
+                // Show result container
+                resultContainer.style.display = 'block';
+                
+                // Reset button
+                testButton.textContent = 'Test Again';
+                testButton.disabled = false;
+            } else {
+                testButton.textContent = 'Error';
+                setTimeout(() => {
+                    testButton.textContent = 'Test Adaptation';
+                    testButton.disabled = false;
+                }, 2000);
+            }
+        })
+        .catch(error => {
+            testButton.textContent = 'Connection Error';
+            setTimeout(() => {
+                testButton.textContent = 'Test Adaptation';
+                testButton.disabled = false;
+            }, 2000);
+        });
+    });
+    
+    // Helper to get current time of day
+    function getCurrentTimeOfDay() {
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 12) return 'morning';
+        if (hour >= 12 && hour < 17) return 'afternoon';
+        if (hour >= 17 && hour < 22) return 'evening';
+        return 'night';
+    }
+});
+</script>
+{% endblock %}

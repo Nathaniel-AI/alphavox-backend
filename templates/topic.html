@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - {{ topic }}</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --theme-primary: #6c757d;
+            --theme-secondary: #495057;
+            --theme-accent: #adb5bd;
+            --theme-background: #212529;
+            --theme-text: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--theme-background);
+            color: var(--theme-text);
+            transition: all 1s ease;
+            line-height: 1.6;
+        }
+
+        .card {
+            background-color: var(--theme-secondary);
+            border-color: var(--theme-accent);
+            transition: all 0.5s ease;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+        }
+
+        .btn-primary {
+            background-color: var(--theme-primary);
+            border-color: var(--theme-primary);
+            transition: all 0.3s ease;
+        }
+
+        /* High Contrast Mode */
+        [data-high-contrast="true"] {
+            --theme-text: #ffffff;
+            --theme-background: #000000;
+        }
+
+        /* Support for reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Focus indicators */
+        :focus {
+            outline: 3px solid var(--theme-primary);
+            outline-offset: 2px;
+        }
+
+        /* Skip link styling */
+        .visually-hidden-focusable:not(:focus):not(:focus-within) {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        .visually-hidden-focusable:focus {
+            position: fixed !important;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            width: auto !important;
+            height: auto !important;
+            padding: 1rem !important;
+            margin: 0 !important;
+            background-color: var(--theme-primary);
+            color: var(--theme-text);
+            text-decoration: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+
+        /* Topic content styles */
+        .topic-header {
+            background-color: var(--theme-secondary);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .topic-content {
+            background-color: rgba(var(--theme-secondary-rgb), 0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .topic-content h2, .topic-content h3 {
+            color: var(--theme-accent);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .topic-content p {
+            margin-bottom: 1.25rem;
+        }
+
+        .topic-content ul, .topic-content ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+        }
+
+        .topic-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-content blockquote {
+            border-left: 4px solid var(--theme-accent);
+            padding-left: 1rem;
+            font-style: italic;
+            margin: 1.5rem 0;
+        }
+
+        .citation-section {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--theme-accent);
+        }
+
+        .citation {
+            font-size: 0.85rem;
+            padding: 0.75rem;
+            background-color: rgba(var(--theme-secondary-rgb), 0.2);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .error-message {
+            padding: 2rem;
+            text-align: center;
+            background-color: rgba(220, 53, 69, 0.1);
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .error-message i {
+            font-size: 3rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+
+        /* Loading indicator */
+        .loading-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--theme-accent);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Add accessibility controls to the header section -->
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+    <div class="container py-4">
+        <header class="text-center mb-4">
+            <h1 class="display-4">AlphaVox</h1>
+            <p class="lead">Education Hub</p>
+            <div class="mb-3">
+                <a href="/" class="btn btn-outline-secondary me-2">
+                    <i data-feather="home"></i> Home
+                </a>
+                <a href="/education" class="btn btn-outline-secondary me-2">
+                    <i data-feather="book-open"></i> Education Hub
+                </a>
+                <a href="/learning-journey" class="btn btn-outline-warning me-2">
+                    <i data-feather="map"></i> Learning Journey
+                </a>
+                <button id="highContrastToggle" class="btn btn-outline-secondary me-2" aria-pressed="false">
+                    <i data-feather="eye"></i> High Contrast
+                </button>
+                <button id="increaseFontSize" class="btn btn-outline-secondary me-2" aria-label="Increase font size">
+                    <i data-feather="plus-circle"></i> A+
+                </button>
+                <button id="decreaseFontSize" class="btn btn-outline-secondary" aria-label="Decrease font size">
+                    <i data-feather="minus-circle"></i> A-
+                </button>
+            </div>
+        </header>
+        <main id="main-content">
+            <div class="topic-header">
+                <h2 class="mb-3">{{ topic }}</h2>
+                <p class="text-muted mb-0">
+                    <i data-feather="info" class="me-1"></i> 
+                    This content is provided by AlphaVox's educational database and is 
+                    regularly updated with the latest research findings.
+                </p>
+            </div>
+
+            {% if error %}
+                <div class="error-message">
+                    <i data-feather="alert-triangle"></i>
+                    <h3>Error Loading Content</h3>
+                    <p>{{ error }}</p>
+                    <a href="/education" class="btn btn-outline-primary mt-3">
+                        <i data-feather="arrow-left"></i> Return to Education Hub
+                    </a>
+                </div>
+            {% else %}
+                <div class="topic-content" id="topicContent">
+                    {% if content %}
+                        <div class="content-text">
+                            {{ content.content|safe }}
+                        </div>
+
+                        {% if content.citations and content.citations|length > 0 %}
+                            <div class="citation-section">
+                                <h3>Sources & Citations</h3>
+                                {% for citation in content.citations %}
+                                    <div class="citation">
+                                        <strong>{{ loop.index }}.</strong> {{ citation }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="loading-indicator">
+                            <div class="loading-spinner"></div>
+                            <p>Loading educational content...</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <h3 class="h5 mb-3">Related Topics</h3>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <a href="/education/nonverbal-communication" class="text-decoration-none">
+                                        <i data-feather="chevron-right" class="me-1"></i> Non-verbal Communication
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="/education/autism-support" class="text-decoration-none">
+                                        <i data-feather="chevron-right" class="me-1"></i> Autism Support Strategies
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="/education/sensory-processing" class="text-decoration-none">
+                                        <i data-feather="chevron-right" class="me-1"></i> Sensory Processing
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="/education/gesture-recognition" class="text-decoration-none">
+                                        <i data-feather="chevron-right" class="me-1"></i> Gesture Recognition in Neurodiversity
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <h3 class="h5 mb-3">Support Resources</h3>
+                            <p>Looking for more information or support?</p>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-secondary">
+                                    <i data-feather="printer"></i> Print This Article
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i data-feather="share-2"></i> Share This Resource
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        // Initialize Feather icons
+        document.addEventListener('DOMContentLoaded', () => {
+            feather.replace();
+
+            // High contrast toggle
+            const highContrastToggle = document.getElementById('highContrastToggle');
+            if (highContrastToggle) {
+                highContrastToggle.addEventListener('click', () => {
+                    const isActive = document.body.getAttribute('data-high-contrast') === 'true';
+                    document.body.setAttribute('data-high-contrast', isActive ? 'false' : 'true');
+                    highContrastToggle.setAttribute('aria-pressed', isActive ? 'false' : 'true');
+                });
+            }
+
+            // Font size controls
+            let currentFontSize = 100;
+            const fontSizeStep = 10;
+            const fontSizeMin = 80;
+            const fontSizeMax = 150;
+
+            const increaseFontSize = document.getElementById('increaseFontSize');
+            const decreaseFontSize = document.getElementById('decreaseFontSize');
+
+            if (increaseFontSize && decreaseFontSize) {
+                increaseFontSize.addEventListener('click', () => {
+                    if (currentFontSize < fontSizeMax) {
+                        currentFontSize += fontSizeStep;
+                        document.body.style.fontSize = `${currentFontSize}%`;
+                    }
+                });
+
+                decreaseFontSize.addEventListener('click', () => {
+                    if (currentFontSize > fontSizeMin) {
+                        currentFontSize -= fontSizeStep;
+                        document.body.style.fontSize = `${currentFontSize}%`;
+                    }
+                });
+            }
+
+            // Print functionality
+            const printButton = document.querySelector('button:has(i[data-feather="printer"])');
+            if (printButton) {
+                printButton.addEventListener('click', () => {
+                    window.print();
+                });
+            }
+
+            // Share functionality
+            const shareButton = document.querySelector('button:has(i[data-feather="share-2"])');
+            if (shareButton && navigator.share) {
+                shareButton.addEventListener('click', () => {
+                    navigator.share({
+                        title: document.title,
+                        url: window.location.href
+                    }).catch(console.error);
+                });
+            } else if (shareButton) {
+                shareButton.addEventListener('click', () => {
+                    alert('Copy this URL to share: ' + window.location.href);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

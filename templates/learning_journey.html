@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Learning Hub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Add color scheme support -->
+    <style>
+        :root {
+            --primary: {{ get_current_scheme().primary }};
+            --secondary: {{ get_current_scheme().secondary }};
+            --background: {{ get_current_scheme().background }};
+            --text: {{ get_current_scheme().text }};
+            --accent: {{ get_current_scheme().accent }};
+        }
+        body {
+            background-color: var(--background);
+            color: var(--text);
+        }
+        .button-blue {
+            background-color: var(--primary);
+        }
+        .button-orange {
+            background-color: var(--accent);
+        }
+        .progress-bar div {
+            background-color: var(--primary) !important;
+        }
+        .learning-nav {
+            display: flex;
+            background-color: var(--secondary);
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .learning-nav a {
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        .learning-nav a.active {
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar" role="navigation" aria-label="Main Navigation">
+        <a href="{{ url_for('home') }}" aria-label="Home">Home</a>
+        <a href="{{ url_for('learning_hub') }}" class="active" aria-label="Learning Hub">Learning Hub</a>
+        <a href="{{ url_for('color_scheme.color_scheme_home') }}" aria-label="Change Color Theme">Color Theme</a>
+        <a href="{{ url_for('ai_control') }}">AI</a>
+    </div>
+    
+    <div class="container">
+        <h1>Learning Hub</h1>
+        
+        <div class="learning-nav" role="navigation" aria-label="Learning Navigation">
+            <a href="{{ url_for('learning_hub') }}" class="active">Overview</a>
+            <a href="{{ url_for('learning_journey') }}">Learning Journey</a>
+            <a href="{{ url_for('education_hub') }}">Education Resources</a>
+            <a href="{{ url_for('learning_progress') }}">Progress Tracking</a>
+            <a href="{{ url_for('learning_recommendations') }}">Recommendations</a>
+        </div>
+        <div class="section">
+            <p>Track your progress through neurodivergent communication topics and discover personalized recommendations.</p>
+        </div>
+        <div class="section">
+            <h2>Overall Progress</h2>
+            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                <div style="width: 50%;" aria-hidden="true"></div>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Recommended Next Steps</h2>
+            <p>Based on your interests & progress, we recommend exploring these topics:</p>
+            <div class="alert alert-error">
+                <p><strong>Non-verbal Communication</strong> (Progress: 0%)</p>
+                <p>Latest research on non-verbal communication methods and their effectiveness.</p>
+                <a href="#" class="button button-blue">Start Learning</a>
+            </div>
+            <div class="alert alert-orange">
+                <p><strong>Gesture Recognition Techniques</strong> (Progress: 27%)</p>
+                <p>Understand common gesture patterns and their integration into daily communication.</p>
+                <a href="#" class="button button-blue">Continue Learning</a>
+            </div>
+            <div class="alert alert-green">
+                <p><strong>Introduction to AlphaVox</strong> (Progress: 55%)</p>
+                <p>Get started with AlphaVox's core features and communication tools.</p>
+                <a href="#" class="button button-blue">Review</a>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Your Learning Roadmap</h2>
+            <div class="alert alert-green">
+                <p><strong>Introduction</strong></p>
+                <p>Learn about AlphaVox basics and setup your profile.</p>
+            </div>
+            <div class="alert alert-orange">
+                <p><strong>Non-verbal Communication</strong></p>
+                <p>Latest research on non-verbal communication methods and their effectiveness.</p>
+            </div>
+            <div class="alert alert-blue">
+                <p><strong>Advanced Gesture Creation</strong></p>
+                <p>Create and customize your own gestures to match your needs.</p>
+            </div>
+            <div class="alert alert-purple">
+                <p><strong>AI Integration</strong></p>
+                <p>Connect and customize AI responses for your needs.</p>
+            </div>
+        </div>
+        <a href="#" class="button button-orange">Continue Your Learning Journey</a>
+        <a href="{{ url_for('home') }}" class="button button-blue">Back to Home</a>
+    </div>
+    
+    <script>
+        // Apply color scheme immediately
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current color scheme from session if available
+            const currentScheme = "{{ session.get('color_scheme', 'default') }}";
+            document.body.setAttribute('data-theme', currentScheme);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}Error - AlphaVox Learning{% endblock %}
+
+{% block content %}
+<div class="container-fluid cyber-container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-body text-center">
+                    <h1 class="text-danger"><i class="fas fa-exclamation-triangle fa-2x mb-4"></i></h1>
+                    <h2>Error</h2>
+                    <p class="lead">{{ message }}</p>
+                    <a href="/learning" class="btn neural-btn mt-4">
+                        <i class="fas fa-arrow-left me-2"></i>Return to Learning Hub
+                    </a>
+                </div>
+                <div class="card-corners"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

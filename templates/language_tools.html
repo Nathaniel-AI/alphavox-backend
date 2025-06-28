@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Language Tools</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --theme-primary: #6c757d;
+            --theme-secondary: #495057;
+            --theme-accent: #adb5bd;
+            --theme-background: #212529;
+            --theme-text: #f8f9fa;
+            --theme-blue: #457b9d;
+            --theme-green: #40916c;
+            --theme-purple: #8338ec;
+            --theme-orange: #ff7d00;
+        }
+
+        body {
+            background-color: var(--theme-background);
+            color: var(--theme-text);
+            transition: all 0.3s ease;
+        }
+
+        .card {
+            background-color: var(--theme-secondary);
+            border-color: var(--theme-accent);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            border-radius: 0.75rem;
+        }
+
+        .feature-card {
+            border-left: 5px solid var(--theme-blue);
+            padding: 1.5rem;
+        }
+
+        .translate-card {
+            border-left-color: var(--theme-blue);
+        }
+
+        .summarize-card {
+            border-left-color: var(--theme-green);
+        }
+
+        .simplify-card {
+            border-left-color: var(--theme-purple);
+        }
+
+        .communication-card {
+            border-left-color: var(--theme-orange);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .feature-header .icon {
+            margin-right: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .feature-header h3 {
+            margin-bottom: 0;
+            font-size: 1.35rem;
+        }
+
+        textarea.form-control, select.form-control {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .result-area {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--theme-accent);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .result-placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .spinner-border {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .btn-primary {
+            background-color: var(--theme-blue);
+            border-color: var(--theme-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #3d6e8d;
+            border-color: #3d6e8d;
+        }
+
+        .btn-success {
+            background-color: var(--theme-green);
+            border-color: var(--theme-green);
+        }
+
+        .btn-success:hover {
+            background-color: #38815f;
+            border-color: #38815f;
+        }
+
+        .btn-info {
+            background-color: var(--theme-purple);
+            border-color: var(--theme-purple);
+        }
+
+        .btn-info:hover {
+            background-color: #7430d8;
+            border-color: #7430d8;
+        }
+
+        .btn-warning {
+            background-color: var(--theme-orange);
+            border-color: var(--theme-orange);
+        }
+
+        .btn-warning:hover {
+            background-color: #e67100;
+            border-color: #e67100;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .citation-section {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .citation-item {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .citation-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Navigation styles */
+        .nav-pills .nav-link.active {
+            background-color: var(--theme-blue);
+        }
+
+        .nav-pills .nav-link {
+            color: var(--theme-text);
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-pills .nav-link svg {
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .feature-card {
+                padding: 1rem;
+            }
+            .feature-header h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+    <div class="container py-4">
+        <header class="text-center mb-5">
+            <h1 class="display-4">AlphaVox</h1>
+            <p class="lead">AI-Powered Language Tools</p>
+            <nav class="nav nav-pills flex-column flex-sm-row mb-3">
+                <a class="flex-sm-fill text-sm-center nav-link" href="/">
+                    <i data-feather="home"></i> Main Platform
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="/stemming">
+                    <i data-feather="scissors"></i> Stemming Tools
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link active" href="/language-tools">
+                    <i data-feather="message-square"></i> Language Tools
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="/education">
+                    <i data-feather="book-open"></i> Education Hub
+                </a>
+            </nav>
+        </header>
+
+        <main id="main-content">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">AI-Powered Language Tools</h2>
+                            <p class="card-text">
+                                These tools use advanced AI to make communication more accessible for neurodivergent individuals.
+                                Transform complex language, create communication aids, translate between languages, and summarize lengthy content.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Translation Tool -->
+                <div class="col-lg-6">
+                    <div class="card feature-card translate-card">
+                        <div class="feature-header">
+                            <div class="icon">
+                                <i data-feather="globe"></i>
+                            </div>
+                            <h3>Language Translation</h3>
+                        </div>
+                        <p>Translate text between languages to support multilingual communication</p>
+                        
+                        <div class="form-group">
+                            <label for="translateText">Text to translate:</label>
+                            <textarea class="form-control" id="translateText" rows="4" placeholder="Enter text to translate..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="targetLanguage">Target language:</label>
+                            <select class="form-control" id="targetLanguage">
+                                <option value="Spanish">Spanish</option>
+                                <option value="French">French</option>
+                                <option value="German">German</option>
+                                <option value="Italian">Italian</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Chinese">Chinese</option>
+                                <option value="Russian">Russian</option>
+                                <option value="Arabic">Arabic</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Portuguese">Portuguese</option>
+                                <option value="Dutch">Dutch</option>
+                                <option value="Swedish">Swedish</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="translateBtn">
+                            <i data-feather="refresh-cw"></i> Translate
+                        </button>
+                        
+                        <div class="loading-indicator" id="translateLoading">
+                            <div class="spinner-border text-light" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Translating text...</p>
+                        </div>
+                        
+                        <div class="result-area" id="translateResult">
+                            <span class="result-placeholder">Translation will appear here...</span>
+                        </div>
+                        
+                        <div class="error-message" id="translateError"></div>
+                    </div>
+                </div>
+
+                <!-- Summarization Tool -->
+                <div class="col-lg-6">
+                    <div class="card feature-card summarize-card">
+                        <div class="feature-header">
+                            <div class="icon">
+                                <i data-feather="file-text"></i>
+                            </div>
+                            <h3>Text Summarization</h3>
+                        </div>
+                        <p>Create concise summaries of long text to reduce cognitive load</p>
+                        
+                        <div class="form-group">
+                            <label for="summarizeText">Text to summarize:</label>
+                            <textarea class="form-control" id="summarizeText" rows="4" placeholder="Enter text to summarize..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="summaryLength">Summary length:</label>
+                            <select class="form-control" id="summaryLength">
+                                <option value="short">Short (1-2 sentences)</option>
+                                <option value="medium" selected>Medium (1 paragraph)</option>
+                                <option value="long">Long (detailed summary)</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-success" id="summarizeBtn">
+                            <i data-feather="align-center"></i> Summarize
+                        </button>
+                        
+                        <div class="loading-indicator" id="summarizeLoading">
+                            <div class="spinner-border text-light" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Generating summary...</p>
+                        </div>
+                        
+                        <div class="result-area" id="summarizeResult">
+                            <span class="result-placeholder">Summary will appear here...</span>
+                        </div>
+                        
+                        <div class="error-message" id="summarizeError"></div>
+                    </div>
+                </div>
+
+                <!-- Language Simplification Tool -->
+                <div class="col-lg-6">
+                    <div class="card feature-card simplify-card">
+                        <div class="feature-header">
+                            <div class="icon">
+                                <i data-feather="edit-2"></i>
+                            </div>
+                            <h3>Language Simplification</h3>
+                        </div>
+                        <p>Make complex language more accessible and easier to understand</p>
+                        
+                        <div class="form-group">
+                            <label for="simplifyText">Text to simplify:</label>
+                            <textarea class="form-control" id="simplifyText" rows="4" placeholder="Enter complex text to simplify..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="simplifyLevel">Simplification level:</label>
+                            <select class="form-control" id="simplifyLevel">
+                                <option value="high">High (very simple language)</option>
+                                <option value="medium" selected>Medium (plain language)</option>
+                                <option value="low">Low (maintain most complexity)</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-info" id="simplifyBtn">
+                            <i data-feather="zap"></i> Simplify
+                        </button>
+                        
+                        <div class="loading-indicator" id="simplifyLoading">
+                            <div class="spinner-border text-light" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Simplifying text...</p>
+                        </div>
+                        
+                        <div class="result-area" id="simplifyResult">
+                            <span class="result-placeholder">Simplified text will appear here...</span>
+                        </div>
+                        
+                        <div class="error-message" id="simplifyError"></div>
+                    </div>
+                </div>
+
+                <!-- Communication Aids Tool -->
+                <div class="col-lg-6">
+                    <div class="card feature-card communication-card">
+                        <div class="feature-header">
+                            <div class="icon">
+                                <i data-feather="message-circle"></i>
+                            </div>
+                            <h3>Communication Aids</h3>
+                        </div>
+                        <p>Generate customized communication aids for specific situations</p>
+                        
+                        <div class="form-group">
+                            <label for="situationText">Describe the situation:</label>
+                            <textarea class="form-control" id="situationText" rows="4" placeholder="E.g., 'I need help ordering food at a restaurant' or 'I need to explain sensory overload to my coworkers'..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="preferences">Preferences or specific needs (optional):</label>
+                            <textarea class="form-control" id="preferences" rows="2" placeholder="E.g., 'I prefer written communication' or 'I need visual supports'..."></textarea>
+                        </div>
+                        
+                        <button class="btn btn-warning" id="communicationBtn">
+                            <i data-feather="help-circle"></i> Generate Aids
+                        </button>
+                        
+                        <div class="loading-indicator" id="communicationLoading">
+                            <div class="spinner-border text-light" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Creating communication aids...</p>
+                        </div>
+                        
+                        <div class="result-area" id="communicationResult">
+                            <span class="result-placeholder">Communication aids will appear here...</span>
+                        </div>
+                        
+                        <div class="error-message" id="communicationError"></div>
+                        
+                        <div class="citation-section" id="communicationCitations">
+                            <div class="citation-title">Sources:</div>
+                            <div class="citation-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        // Initialize Feather icons
+        document.addEventListener('DOMContentLoaded', () => {
+            feather.replace();
+
+            // Translation feature
+            const translateBtn = document.getElementById('translateBtn');
+            const translateText = document.getElementById('translateText');
+            const targetLanguage = document.getElementById('targetLanguage');
+            const translateResult = document.getElementById('translateResult');
+            const translateLoading = document.getElementById('translateLoading');
+            const translateError = document.getElementById('translateError');
+
+            translateBtn.addEventListener('click', async () => {
+                const text = translateText.value.trim();
+                if (!text) {
+                    translateError.textContent = "Please enter text to translate";
+                    translateError.style.display = "block";
+                    return;
+                }
+
+                translateError.style.display = "none";
+                translateResult.innerHTML = '<span class="result-placeholder">Translating...</span>';
+                translateLoading.style.display = "block";
+                translateBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/translate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            text: text,
+                            target_language: targetLanguage.value
+                        })
+                    });
+
+                    const data = await response.json();
+                    translateLoading.style.display = "none";
+                    translateBtn.disabled = false;
+
+                    if (data.error) {
+                        translateError.textContent = data.error;
+                        translateError.style.display = "block";
+                        return;
+                    }
+
+                    translateResult.textContent = data.content;
+                } catch (error) {
+                    translateLoading.style.display = "none";
+                    translateBtn.disabled = false;
+                    translateError.textContent = "An error occurred while translating: " + error.message;
+                    translateError.style.display = "block";
+                }
+            });
+
+            // Summarization feature
+            const summarizeBtn = document.getElementById('summarizeBtn');
+            const summarizeText = document.getElementById('summarizeText');
+            const summaryLength = document.getElementById('summaryLength');
+            const summarizeResult = document.getElementById('summarizeResult');
+            const summarizeLoading = document.getElementById('summarizeLoading');
+            const summarizeError = document.getElementById('summarizeError');
+
+            summarizeBtn.addEventListener('click', async () => {
+                const text = summarizeText.value.trim();
+                if (!text) {
+                    summarizeError.textContent = "Please enter text to summarize";
+                    summarizeError.style.display = "block";
+                    return;
+                }
+
+                summarizeError.style.display = "none";
+                summarizeResult.innerHTML = '<span class="result-placeholder">Summarizing...</span>';
+                summarizeLoading.style.display = "block";
+                summarizeBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/summarize', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            text: text,
+                            length: summaryLength.value
+                        })
+                    });
+
+                    const data = await response.json();
+                    summarizeLoading.style.display = "none";
+                    summarizeBtn.disabled = false;
+
+                    if (data.error) {
+                        summarizeError.textContent = data.error;
+                        summarizeError.style.display = "block";
+                        return;
+                    }
+
+                    summarizeResult.textContent = data.content;
+                } catch (error) {
+                    summarizeLoading.style.display = "none";
+                    summarizeBtn.disabled = false;
+                    summarizeError.textContent = "An error occurred while summarizing: " + error.message;
+                    summarizeError.style.display = "block";
+                }
+            });
+
+            // Simplification feature
+            const simplifyBtn = document.getElementById('simplifyBtn');
+            const simplifyText = document.getElementById('simplifyText');
+            const simplifyLevel = document.getElementById('simplifyLevel');
+            const simplifyResult = document.getElementById('simplifyResult');
+            const simplifyLoading = document.getElementById('simplifyLoading');
+            const simplifyError = document.getElementById('simplifyError');
+
+            simplifyBtn.addEventListener('click', async () => {
+                const text = simplifyText.value.trim();
+                if (!text) {
+                    simplifyError.textContent = "Please enter text to simplify";
+                    simplifyError.style.display = "block";
+                    return;
+                }
+
+                simplifyError.style.display = "none";
+                simplifyResult.innerHTML = '<span class="result-placeholder">Simplifying...</span>';
+                simplifyLoading.style.display = "block";
+                simplifyBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/simplify', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            text: text,
+                            level: simplifyLevel.value
+                        })
+                    });
+
+                    const data = await response.json();
+                    simplifyLoading.style.display = "none";
+                    simplifyBtn.disabled = false;
+
+                    if (data.error) {
+                        simplifyError.textContent = data.error;
+                        simplifyError.style.display = "block";
+                        return;
+                    }
+
+                    simplifyResult.textContent = data.content;
+                } catch (error) {
+                    simplifyLoading.style.display = "none";
+                    simplifyBtn.disabled = false;
+                    simplifyError.textContent = "An error occurred while simplifying: " + error.message;
+                    simplifyError.style.display = "block";
+                }
+            });
+
+            // Communication Aids feature
+            const communicationBtn = document.getElementById('communicationBtn');
+            const situationText = document.getElementById('situationText');
+            const preferences = document.getElementById('preferences');
+            const communicationResult = document.getElementById('communicationResult');
+            const communicationLoading = document.getElementById('communicationLoading');
+            const communicationError = document.getElementById('communicationError');
+            const communicationCitations = document.getElementById('communicationCitations');
+            const citationList = communicationCitations.querySelector('.citation-list');
+
+            communicationBtn.addEventListener('click', async () => {
+                const situation = situationText.value.trim();
+                if (!situation) {
+                    communicationError.textContent = "Please describe the situation";
+                    communicationError.style.display = "block";
+                    return;
+                }
+
+                communicationError.style.display = "none";
+                communicationCitations.style.display = "none";
+                communicationResult.innerHTML = '<span class="result-placeholder">Generating...</span>';
+                communicationLoading.style.display = "block";
+                communicationBtn.disabled = true;
+
+                try {
+                    const requestData = {
+                        situation: situation
+                    };
+
+                    // Add preferences if provided
+                    const preferencesText = preferences.value.trim();
+                    if (preferencesText) {
+                        requestData.preferences = { text: preferencesText };
+                    }
+
+                    const response = await fetch('/api/communication-aids', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    const data = await response.json();
+                    communicationLoading.style.display = "none";
+                    communicationBtn.disabled = false;
+
+                    if (data.error) {
+                        communicationError.textContent = data.error;
+                        communicationError.style.display = "block";
+                        return;
+                    }
+
+                    communicationResult.textContent = data.content;
+
+                    // Display citations if available
+                    if (data.citations && data.citations.length > 0) {
+                        citationList.innerHTML = '';
+                        data.citations.forEach(citation => {
+                            const citationItem = document.createElement('div');
+                            citationItem.className = 'citation-item';
+                            citationItem.textContent = citation;
+                            citationList.appendChild(citationItem);
+                        });
+                        communicationCitations.style.display = "block";
+                    }
+                } catch (error) {
+                    communicationLoading.style.display = "none";
+                    communicationBtn.disabled = false;
+                    communicationError.textContent = "An error occurred: " + error.message;
+                    communicationError.style.display = "block";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

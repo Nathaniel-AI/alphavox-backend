@@ -1,0 +1,719 @@
+{% extends 'layout.html' %}
+
+{% block title %}AlphaVox - Caregiver Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Caregiver Dashboard</h1>
+            <p class="lead">Access communication analytics and user data for continued support</p>
+        </div>
+    </div>
+
+    <!-- User Selection Panel -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">User Information</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#exportDataModal">
+                            <i class="fas fa-download me-2"></i>Export Data
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#shareDataModal">
+                            <i class="fas fa-share-alt me-2"></i>Share with Provider
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6>Client Name</h6>
+                                <h4 id="user-name">{{ user.name }}</h4>
+                            </div>
+                            <div class="mb-3">
+                                <h6>Using AlphaVox Since</h6>
+                                <p id="user-since">{{ user.created_at.strftime('%B %d, %Y') }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6>Communication Profile</h6>
+                                <p>
+                                    {% if communication_profile %}
+                                    <span class="badge bg-info">{{ communication_profile.primary_mode }}</span>
+                                    <span class="badge bg-secondary">{{ communication_profile.secondary_mode }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Not yet established</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <h6>Key Observations</h6>
+                                <p>{{ observations|default('No observations recorded yet.', true) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usage Analytics -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Communication Frequency</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height:300px;">
+                        <canvas id="communicationChart"></canvas>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary active" data-period="week">Week</button>
+                        <button type="button" class="btn btn-outline-secondary" data-period="month">Month</button>
+                        <button type="button" class="btn btn-outline-secondary" data-period="year">Year</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Communication Methods</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height:300px;">
+                        <canvas id="methodsChart"></canvas>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Distribution of communication methods used</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Communication History</h5>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" data-filter="all">All</button>
+                        <button class="btn btn-outline-secondary" data-filter="text">Text</button>
+                        <button class="btn btn-outline-secondary" data-filter="gesture">Gestures</button>
+                        <button class="btn btn-outline-secondary" data-filter="symbol">Symbols</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Type</th>
+                                    <th>Content</th>
+                                    <th>Intent</th>
+                                    <th>Emotion</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                {% for interaction in interactions %}
+                                <tr data-type="{{ interaction.type }}">
+                                    <td>{{ interaction.timestamp.strftime('%H:%M - %d %b') }}</td>
+                                    <td>
+                                        {% if interaction.type == 'text' %}
+                                        <span class="badge bg-primary">Text</span>
+                                        {% elif interaction.type == 'gesture' %}
+                                        <span class="badge bg-success">Gesture</span>
+                                        {% elif interaction.type == 'symbol' %}
+                                        <span class="badge bg-info">Symbol</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Other</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ interaction.text }}</td>
+                                    <td>{{ interaction.intent }}</td>
+                                    <td>
+                                        {% if interaction.expression == 'positive' %}
+                                        <i class="fas fa-smile text-success"></i>
+                                        {% elif interaction.expression == 'negative' %}
+                                        <i class="fas fa-frown text-warning"></i>
+                                        {% elif interaction.expression == 'urgent' %}
+                                        <i class="fas fa-exclamation-circle text-danger"></i>
+                                        {% else %}
+                                        <i class="fas fa-meh text-secondary"></i>
+                                        {% endif %}
+                                        {{ interaction.emotion_tier or '' }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% if not interactions %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No interaction data available</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button id="load-more-history" class="btn btn-sm btn-outline-secondary">
+                        Load More <i class="fas fa-chevron-down ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Frequently Used Expressions</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush bg-dark">
+                        {% for expression in frequent_expressions %}
+                        <li class="list-group-item bg-dark text-white border-secondary">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ expression.text }}</span>
+                                <span class="badge bg-info rounded-pill">{{ expression.count }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        {% if not frequent_expressions %}
+                        <li class="list-group-item bg-dark text-white border-secondary text-center">
+                            No frequent expressions detected yet
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5 class="mb-0">Progress Indicators</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Vocabulary Growth</span>
+                            <span>+{{ progress.vocabulary_growth }}%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress.vocabulary_percentage }}%"
+                                 aria-valuenow="{{ progress.vocabulary_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Expression Clarity</span>
+                            <span>+{{ progress.expression_growth }}%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ progress.expression_percentage }}%"
+                                 aria-valuenow="{{ progress.expression_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Multimodal Usage</span>
+                            <span>+{{ progress.multimodal_growth }}%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ progress.multimodal_percentage }}%"
+                                 aria-valuenow="{{ progress.multimodal_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes and Observations -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Caregiver Notes</h5>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                        <i class="fas fa-plus me-1"></i>Add Note
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="notes-container">
+                        {% for note in caregiver_notes %}
+                        <div class="card bg-dark border-secondary mb-3">
+                            <div class="card-header d-flex justify-content-between">
+                                <span><i class="fas fa-sticky-note me-2"></i>{{ note.author }}</span>
+                                <small>{{ note.timestamp.strftime('%d %b %Y, %H:%M') }}</small>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-0">{{ note.content }}</p>
+                            </div>
+                            {% if note.tags %}
+                            <div class="card-footer">
+                                {% for tag in note.tags %}
+                                <span class="badge bg-secondary me-1">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% if not caregiver_notes %}
+                        <p class="text-center text-muted">No notes have been added yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Suggestions -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5 class="mb-0">AI System Suggestions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for suggestion in system_suggestions %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-dark border-primary h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ suggestion.title }}</h6>
+                                    <p class="card-text">{{ suggestion.description }}</p>
+                                </div>
+                                <div class="card-footer d-flex justify-content-between">
+                                    <small class="text-muted">Confidence: {{ suggestion.confidence }}%</small>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-success me-1" title="Accept">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" title="Dismiss">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if not system_suggestions %}
+                        <div class="col-md-12">
+                            <p class="text-center text-muted">The system has no suggestions at this time</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Note Modal -->
+<div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNoteModalLabel">Add Caregiver Note</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="note-form">
+                    <div class="mb-3">
+                        <label for="note-content" class="form-label">Note Content</label>
+                        <textarea class="form-control" id="note-content" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="note-tags" class="form-label">Tags (comma separated)</label>
+                        <input type="text" class="form-control" id="note-tags" placeholder="behavior, progress, etc.">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-note-btn">Save Note</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Data Modal -->
+<div class="modal fade" id="exportDataModal" tabindex="-1" aria-labelledby="exportDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportDataModalLabel">Export User Data</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select the data you would like to export:</p>
+                <form id="export-form">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="export-interactions" checked>
+                        <label class="form-check-label" for="export-interactions">
+                            Communication Interactions
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="export-analytics" checked>
+                        <label class="form-check-label" for="export-analytics">
+                            Usage Analytics
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="export-notes" checked>
+                        <label class="form-check-label" for="export-notes">
+                            Caregiver Notes
+                        </label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="export-suggestions">
+                        <label class="form-check-label" for="export-suggestions">
+                            System Suggestions
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="export-format" class="form-label">Export Format</label>
+                        <select class="form-select" id="export-format">
+                            <option value="csv">CSV</option>
+                            <option value="json">JSON</option>
+                            <option value="pdf">PDF Report</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="export-date-range" class="form-label">Date Range</label>
+                        <select class="form-select" id="export-date-range">
+                            <option value="all">All Data</option>
+                            <option value="week">Last Week</option>
+                            <option value="month">Last Month</option>
+                            <option value="year">Last Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="export-data-btn">Export Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Data Modal -->
+<div class="modal fade" id="shareDataModal" tabindex="-1" aria-labelledby="shareDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareDataModalLabel">Share with Healthcare Provider</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Share user data securely with a healthcare provider:</p>
+                <form id="share-form">
+                    <div class="mb-3">
+                        <label for="provider-email" class="form-label">Provider Email</label>
+                        <input type="email" class="form-control" id="provider-email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="access-duration" class="form-label">Access Duration</label>
+                        <select class="form-select" id="access-duration">
+                            <option value="day">24 Hours</option>
+                            <option value="week">1 Week</option>
+                            <option value="month">1 Month</option>
+                            <option value="permanent">Permanent Access</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Data to Share</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="share-interactions" checked>
+                            <label class="form-check-label" for="share-interactions">
+                                Communication Interactions
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="share-analytics" checked>
+                            <label class="form-check-label" for="share-analytics">
+                                Usage Analytics
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="share-notes" checked>
+                            <label class="form-check-label" for="share-notes">
+                                Caregiver Notes
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="provider-message" class="form-label">Message (Optional)</label>
+                        <textarea class="form-control" id="provider-message" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="share-data-btn">Share Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up the Communication Frequency Chart
+    const communicationCtx = document.getElementById('communicationChart').getContext('2d');
+    const communicationChart = new Chart(communicationCtx, {
+        type: 'line',
+        data: {
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+            datasets: [{
+                label: 'Interactions',
+                data: [12, 19, 8, 15, 10, 13, 17],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.8)'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.8)'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.8)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Set up the Communication Methods Chart
+    const methodsCtx = document.getElementById('methodsChart').getContext('2d');
+    const methodsChart = new Chart(methodsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Text Input', 'Gestures', 'Symbols', 'Eye Tracking', 'Sound'],
+            datasets: [{
+                data: [35, 25, 20, 15, 5],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.8)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Time period selector for communication frequency chart
+    document.querySelectorAll('[data-period]').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('[data-period]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Update chart data based on period
+            const period = this.getAttribute('data-period');
+            let labels, data;
+            
+            if (period === 'week') {
+                labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                data = [12, 19, 8, 15, 10, 13, 17];
+            } else if (period === 'month') {
+                labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                data = [47, 58, 65, 43];
+            } else if (period === 'year') {
+                labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                data = [120, 145, 160, 175, 182, 190, 185, 178, 193, 205, 198, 210];
+            }
+            
+            // Update chart
+            communicationChart.data.labels = labels;
+            communicationChart.data.datasets[0].data = data;
+            communicationChart.update();
+        });
+    });
+    
+    // Interaction history filter
+    document.querySelectorAll('[data-filter]').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('[data-filter]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            const rows = document.querySelectorAll('#history-table-body tr[data-type]');
+            
+            rows.forEach(row => {
+                if (filter === 'all' || row.getAttribute('data-type') === filter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Note saving
+    document.getElementById('save-note-btn').addEventListener('click', function() {
+        const noteContent = document.getElementById('note-content').value;
+        const noteTags = document.getElementById('note-tags').value;
+        
+        if (noteContent) {
+            // In a real application, this would send data to the server
+            fetch('/caregiver/add-note', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: noteContent,
+                    tags: noteTags.split(',').map(tag => tag.trim()).filter(tag => tag)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Close modal and reload page
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addNoteModal'));
+                    modal.hide();
+                    location.reload();
+                } else {
+                    alert('Error saving note: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving note:', error);
+                alert('Error saving note: ' + error.message);
+            });
+        } else {
+            alert('Please enter note content');
+        }
+    });
+    
+    // Export data
+    document.getElementById('export-data-btn').addEventListener('click', function() {
+        const format = document.getElementById('export-format').value;
+        const dateRange = document.getElementById('export-date-range').value;
+        const includeInteractions = document.getElementById('export-interactions').checked;
+        const includeAnalytics = document.getElementById('export-analytics').checked;
+        const includeNotes = document.getElementById('export-notes').checked;
+        const includeSuggestions = document.getElementById('export-suggestions').checked;
+        
+        // In a real application, this would trigger a download
+        alert(`Data would be exported in ${format} format for ${dateRange} date range.
+Includes: ${includeInteractions ? 'Interactions, ' : ''}${includeAnalytics ? 'Analytics, ' : ''}${includeNotes ? 'Notes, ' : ''}${includeSuggestions ? 'Suggestions' : ''}`);
+        
+        const modal = bootstrap.Modal.getInstance(document.getElementById('exportDataModal'));
+        modal.hide();
+    });
+    
+    // Share data
+    document.getElementById('share-data-btn').addEventListener('click', function() {
+        const email = document.getElementById('provider-email').value;
+        const duration = document.getElementById('access-duration').value;
+        const message = document.getElementById('provider-message').value;
+        const includeInteractions = document.getElementById('share-interactions').checked;
+        const includeAnalytics = document.getElementById('share-analytics').checked;
+        const includeNotes = document.getElementById('share-notes').checked;
+        
+        if (email) {
+            // In a real application, this would send a sharing request to the server
+            fetch('/caregiver/share-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    provider_email: email,
+                    duration: duration,
+                    message: message,
+                    share_interactions: includeInteractions,
+                    share_analytics: includeAnalytics,
+                    share_notes: includeNotes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(`Data access link has been sent to ${email} with ${duration} access.`);
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('shareDataModal'));
+                    modal.hide();
+                } else {
+                    alert('Error sharing data: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error sharing data:', error);
+                alert('Error sharing data: ' + error.message);
+            });
+        } else {
+            alert('Please enter a provider email');
+        }
+    });
+    
+    // Load more history (would fetch from server in a real application)
+    document.getElementById('load-more-history').addEventListener('click', function() {
+        alert('In a real application, this would load more history data from the server.');
+    });
+});
+</script>
+{% endblock %}

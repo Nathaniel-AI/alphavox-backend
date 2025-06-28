@@ -1,0 +1,306 @@
+{% extends "layout.html" %}
+
+{% block title %}Knowledge Graph | AlphaVox{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  #graph-container {
+    width: 100%;
+    height: 600px;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .node {
+    cursor: pointer;
+  }
+  
+  .node-topic {
+    fill: #3498db;
+  }
+  
+  .node-fact {
+    fill: #f39c12;
+  }
+  
+  .node text {
+    font-size: 12px;
+    fill: #fff;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  
+  .link {
+    stroke-opacity: 0.6;
+    stroke-width: 2px;
+  }
+  
+  .link-prerequisite {
+    stroke: #3498db;
+    stroke-dasharray: 5, 5;
+  }
+  
+  .link-belongs_to {
+    stroke: #f39c12;
+  }
+  
+  .link-connected {
+    stroke: #2ecc71;
+  }
+  
+  .tooltip {
+    position: absolute;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 5px;
+    pointer-events: none;
+    max-width: 300px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-project-diagram me-2"></i>Knowledge Graph
+                    </h3>
+                    <div>
+                        <a href="/learning/topics" class="btn btn-outline-primary cyber-btn-sm me-2">
+                            <i class="fas fa-list me-1"></i>All Topics
+                        </a>
+                        <a href="/learning" class="btn btn-outline-primary cyber-btn-sm">
+                            <i class="fas fa-graduation-cap me-1"></i>Learning Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <p class="lead">
+                                Explore connections between topics and facts in the AlphaVox knowledge base. 
+                                Click and drag nodes to rearrange the visualization.
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary cyber-btn-sm active" id="show-all">
+                                    All
+                                </button>
+                                <button type="button" class="btn btn-outline-primary cyber-btn-sm" id="show-topics">
+                                    Topics Only
+                                </button>
+                                <button type="button" class="btn btn-outline-primary cyber-btn-sm" id="show-facts">
+                                    Facts Only
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- The Graph Legend -->
+                    <div class="card bg-dark border-secondary cyber-card-sm mb-4">
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap gap-4 justify-content-center">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 20px; height: 20px; background-color: #3498db; border-radius: 50%; margin-right: 10px;"></div>
+                                    <span>Topic</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 20px; height: 20px; background-color: #f39c12; border-radius: 50%; margin-right: 10px;"></div>
+                                    <span>Fact</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 30px; height: 2px; background-color: #3498db; margin-right: 10px; stroke-dasharray: 5, 5;"></div>
+                                    <span>Prerequisite</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 30px; height: 2px; background-color: #f39c12; margin-right: 10px;"></div>
+                                    <span>Belongs To</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 30px; height: 2px; background-color: #2ecc71; margin-right: 10px;"></div>
+                                    <span>Connected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- The Graph Container -->
+                    <div id="graph-container" class="position-relative">
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <div class="spinner-border text-primary" role="status" id="loading-spinner">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create a tooltip div
+    const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+    
+    // Fetch the knowledge graph data
+    fetch('/learning/api/graph')
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading spinner
+            document.getElementById('loading-spinner').style.display = 'none';
+            
+            // Create the graph visualization
+            createGraph(data);
+        })
+        .catch(error => {
+            console.error('Error fetching graph data:', error);
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('graph-container').innerHTML = `
+                <div class="alert alert-danger m-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Error loading knowledge graph data.
+                </div>
+            `;
+        });
+    
+    function createGraph(graphData) {
+        // Set up the SVG
+        const width = document.getElementById('graph-container').clientWidth;
+        const height = document.getElementById('graph-container').clientHeight;
+        
+        const svg = d3.select("#graph-container").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+            
+        // Add zoom capability
+        const g = svg.append("g");
+        
+        svg.call(d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            }));
+        
+        // Create the simulation
+        const simulation = d3.forceSimulation(graphData.nodes)
+            .force("link", d3.forceLink(graphData.edges).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(30));
+        
+        // Draw the links
+        const link = g.selectAll(".link")
+            .data(graphData.edges)
+            .enter().append("line")
+            .attr("class", d => `link link-${d.type}`)
+            .style("stroke-dasharray", d => d.type === "prerequisite" ? "5, 5" : "none");
+        
+        // Draw the nodes
+        const node = g.selectAll(".node")
+            .data(graphData.nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+        
+        // Add circles to represent nodes
+        node.append("circle")
+            .attr("r", 10)
+            .attr("class", d => `node-${d.type}`)
+            .on("mouseover", function(event, d) {
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                
+                let tooltipContent = `<strong>${d.label}</strong><br/>`;
+                tooltipContent += `Type: ${d.type}`;
+                
+                tooltip.html(tooltipContent)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function() {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            })
+            .on("click", function(event, d) {
+                // Navigate to the topic or fact page when clicked
+                if (d.type === "topic") {
+                    window.location.href = `/learning/topics/${d.id}`;
+                } else if (d.type === "fact") {
+                    window.location.href = `/learning/facts/${d.id}`;
+                }
+            });
+        
+        // Update the position during simulation
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+            
+            node
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+        
+        // Filter buttons
+        document.getElementById('show-all').addEventListener('click', () => {
+            node.style("display", "block");
+            link.style("display", "block");
+            setActiveFilter('show-all');
+        });
+        
+        document.getElementById('show-topics').addEventListener('click', () => {
+            node.style("display", d => d.type === "topic" ? "block" : "none");
+            link.style("display", d => d.type === "prerequisite" ? "block" : "none");
+            setActiveFilter('show-topics');
+        });
+        
+        document.getElementById('show-facts').addEventListener('click', () => {
+            node.style("display", d => d.type === "fact" ? "block" : "none");
+            link.style("display", d => d.type === "belongs_to" ? "block" : "none");
+            setActiveFilter('show-facts');
+        });
+        
+        function setActiveFilter(id) {
+            document.getElementById('show-all').classList.remove('active');
+            document.getElementById('show-topics').classList.remove('active');
+            document.getElementById('show-facts').classList.remove('active');
+            document.getElementById(id).classList.add('active');
+        }
+        
+        // Drag functions
+        function dragstarted(event) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+        }
+        
+        function dragged(event) {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+        
+        function dragended(event) {
+            if (!event.active) simulation.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+        }
+    }
+});
+</script>
+{% endblock %}

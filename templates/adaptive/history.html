@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}AlphaVox - Conversation History{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .history-container {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .interaction-card {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(0, 204, 255, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .interaction-card:hover {
+        border-color: rgba(0, 204, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+    }
+    
+    .interaction-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .interaction-timestamp {
+        font-size: 0.8em;
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .interaction-topic {
+        font-size: 0.8em;
+        color: #00ccff;
+        background: rgba(0, 204, 255, 0.1);
+        padding: 3px 8px;
+        border-radius: 12px;
+    }
+    
+    .interaction-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .interaction-input, .interaction-response {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        padding: 10px;
+    }
+    
+    .interaction-label {
+        display: block;
+        font-size: 0.8em;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 5px;
+    }
+    
+    .complexity-metrics {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.8em;
+    }
+    
+    .complexity-metric {
+        display: flex;
+        align-items: center;
+    }
+    
+    .complexity-value {
+        display: inline-block;
+        background: rgba(0, 204, 255, 0.2);
+        color: #00ccff;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 5px;
+    }
+    
+    .topics-container {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .topic-complexity {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .topic-name {
+        flex: 1;
+    }
+    
+    .complexity-bar {
+        flex: 2;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 0 15px;
+    }
+    
+    .complexity-fill {
+        height: 100%;
+        background: linear-gradient(to right, #0066ff, #00ccff);
+        border-radius: 5px;
+    }
+    
+    .complexity-number {
+        width: 30px;
+        text-align: right;
+        font-size: 0.9em;
+    }
+    
+    .no-interactions {
+        text-align: center;
+        padding: 40px 0;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .no-interactions i {
+        font-size: 3em;
+        color: rgba(0, 204, 255, 0.3);
+        display: block;
+        margin-bottom: 15px;
+    }
+    
+    /* Subtle animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .interaction-card {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+    
+    .interaction-card:nth-child(1) { animation-delay: 0.1s; }
+    .interaction-card:nth-child(2) { animation-delay: 0.2s; }
+    .interaction-card:nth-child(3) { animation-delay: 0.3s; }
+    .interaction-card:nth-child(4) { animation-delay: 0.4s; }
+    .interaction-card:nth-child(5) { animation-delay: 0.5s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">
+                <span class="text-primary">Conversation</span> 
+                <span class="text-info">History</span> 
+                <span class="text-light">& Complexity</span>
+            </h1>
+            <p class="text-center text-muted mb-5">
+                Review your conversation history and see how AlphaVox has adapted to your communication style.
+            </p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Interaction History -->
+            <div class="history-container">
+                <h3>Recent Interactions</h3>
+                
+                {% if interactions %}
+                    {% for interaction in interactions|reverse %}
+                    <div class="interaction-card">
+                        <div class="interaction-header">
+                            <div class="interaction-timestamp">
+                                {{ interaction.timestamp }}
+                            </div>
+                            {% if interaction.topic %}
+                            <div class="interaction-topic">
+                                {{ interaction.topic }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="interaction-content">
+                            <div class="interaction-input">
+                                <span class="interaction-label">Your Input:</span>
+                                {{ interaction.user_input }}
+                            </div>
+                            <div class="interaction-response">
+                                <span class="interaction-label">AlphaVox Response:</span>
+                                {{ interaction.response }}
+                            </div>
+                        </div>
+                        
+                        <div class="complexity-metrics">
+                            <div class="complexity-metric">
+                                <span>Input Complexity:</span>
+                                <span class="complexity-value">{{ interaction.input_complexity|round(1) }}</span>
+                            </div>
+                            <div class="complexity-metric">
+                                <span>Response Complexity:</span>
+                                <span class="complexity-value">{{ interaction.response_complexity|round(1) }}</span>
+                            </div>
+                            {% if interaction.comprehension_feedback is not none %}
+                            <div class="complexity-metric">
+                                <span>Comprehension:</span>
+                                <span class="complexity-value">{{ (interaction.comprehension_feedback * 100)|round }}%</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-interactions">
+                        <i class="fas fa-comments-alt"></i>
+                        <p>No conversation history yet. Start interacting with AlphaVox to see your history here.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Topic Complexity Sidebar -->
+            <div class="history-container">
+                <h3>Topic Complexity</h3>
+                <p class="text-muted small">
+                    AlphaVox adapts its complexity based on topics you discuss. Here's your current complexity profile.
+                </p>
+                
+                <div class="topics-container mt-4">
+                    {% if topic_complexities %}
+                        {% for topic, complexity in topic_complexities.items() %}
+                        <div class="topic-complexity">
+                            <div class="topic-name">{{ topic }}</div>
+                            <div class="complexity-bar">
+                                <div class="complexity-fill" style="width: {{ (complexity / 5) * 100 }}%;"></div>
+                            </div>
+                            <div class="complexity-number">{{ complexity|round(1) }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center text-muted">No topic data available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Links and Navigation -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('adaptive_conversation.adaptive_dashboard') }}" class="btn btn-outline-info mb-3">
+                    <i class="fas fa-sliders-h me-2"></i> Adjust Complexity Settings
+                </a>
+                <br>
+                <a href="{{ url_for('index') }}" class="text-info">
+                    <i class="fas fa-home me-2"></i> Return to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

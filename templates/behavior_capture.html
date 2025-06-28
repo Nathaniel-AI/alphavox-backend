@@ -1,0 +1,2473 @@
+{% extends 'layout.html' %}
+
+{% block title %}AlphaVox - Behavior Capture{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for enhanced visuals -->
+<style>
+    /* Base */
+    body {
+        background-color: #0a1525;
+        color: #c8d7f5;
+        font-family: 'Roboto', 'Segoe UI', sans-serif;
+    }
+    
+    /* Typography */
+    .futuristic-header, .cyber-title, .cyber-subtitle {
+        font-family: 'Orbitron', 'Arial', sans-serif;
+        letter-spacing: 1px;
+        color: #fff;
+        text-shadow: 0 0 5px rgba(100, 150, 255, 0.5);
+    }
+    
+    /* Card Styles */
+    .futuristic-card {
+        background: linear-gradient(135deg, rgba(20, 40, 80, 0.8) 0%, rgba(10, 20, 45, 0.8) 100%);
+        border: none;
+        border-radius: 0;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        clip-path: polygon(
+            0 10px, 
+            10px 0, 
+            calc(100% - 10px) 0, 
+            100% 10px, 
+            100% calc(100% - 10px), 
+            calc(100% - 10px) 100%, 
+            10px 100%, 
+            0 calc(100% - 10px)
+        );
+    }
+    
+    .futuristic-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 1px solid rgba(100, 150, 255, 0.3);
+        pointer-events: none;
+    }
+    
+    .futuristic-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(100, 150, 255, 0.1) 0%, rgba(0, 50, 150, 0.05) 100%);
+        pointer-events: none;
+    }
+    
+    /* Cyber Header */
+    .cyber-header {
+        position: relative;
+        padding: 1.5rem 0;
+        overflow: hidden;
+    }
+    
+    .cyber-lines {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, transparent, #00a8ff, transparent);
+        opacity: 0.7;
+    }
+    
+    .cyber-lines::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: calc(50% - 150px);
+        width: 300px;
+        height: 15px;
+        background-image: linear-gradient(90deg, transparent, #00a8ff 20%, #00a8ff 80%, transparent);
+    }
+    
+    .cyber-glitch {
+        position: relative;
+        display: inline-block;
+        margin: 0 auto;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .cyber-title {
+        font-size: 3rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin: 0;
+        color: #fff;
+        position: relative;
+        display: inline-block;
+        letter-spacing: 5px;
+        text-shadow: 
+            0 0 10px rgba(0, 168, 255, 0.8),
+            0 0 20px rgba(0, 168, 255, 0.4),
+            0 0 30px rgba(0, 168, 255, 0.2);
+    }
+    
+    .cyber-title span {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .cyber-title span::before,
+    .cyber-title span::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.8;
+    }
+    
+    .cyber-title span::before {
+        animation: glitch-effect 3s infinite;
+        color: #00fffc;
+        clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+        transform: translate(-0.04em, -0.04em);
+        opacity: 0.8;
+    }
+    
+    .cyber-title span::after {
+        animation: glitch-effect 2s infinite reverse;
+        color: #ff00c1;
+        clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+        transform: translate(0.04em, 0.04em);
+        opacity: 0.8;
+    }
+    
+    @keyframes glitch-effect {
+        0% {
+            transform: translate(0);
+        }
+        20% {
+            transform: translate(-3px, 3px);
+        }
+        40% {
+            transform: translate(-3px, -3px);
+        }
+        60% {
+            transform: translate(3px, 3px);
+        }
+        80% {
+            transform: translate(3px, -3px);
+        }
+        100% {
+            transform: translate(0);
+        }
+    }
+    
+    .cyber-subtitle {
+        font-size: 1.2rem;
+        letter-spacing: 4px;
+        color: #8cddff;
+        text-transform: uppercase;
+        margin-top: 0.5rem;
+        opacity: 0.9;
+    }
+    
+    .cyber-dots {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background-image: 
+            radial-gradient(circle, #00a8ff 1px, transparent 1px),
+            radial-gradient(circle, #00a8ff 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+        opacity: 0.5;
+    }
+    
+    /* Status Bar */
+    .system-status-bar {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background: rgba(10, 20, 40, 0.8);
+        border: 1px solid rgba(100, 150, 255, 0.2);
+        box-shadow: 0 2px 10px rgba(0, 50, 200, 0.2);
+        border-radius: 4px;
+    }
+    
+    .status-segment {
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        border-right: 1px solid rgba(100, 150, 255, 0.2);
+    }
+    
+    .status-segment:last-child {
+        border-right: none;
+    }
+    
+    .status-segment i {
+        color: #00a8ff;
+        margin-right: 8px;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .status-label {
+        font-size: 0.75rem;
+        color: #8cddff;
+        margin-right: 8px;
+        letter-spacing: 1px;
+    }
+    
+    .status-value {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.85rem;
+        color: #fff;
+    }
+    
+    .status-value.online {
+        color: #0f0;
+    }
+    
+    .status-value.offline {
+        color: #f00;
+    }
+    
+    /* Card Header Bar */
+    .cyber-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, rgba(25, 40, 70, 0.9) 0%, rgba(10, 20, 40, 0.9) 100%);
+        padding: 0.75rem 1rem;
+        border: none;
+        border-bottom: 1px solid rgba(100, 150, 255, 0.2);
+    }
+    
+    .cyber-bar-left, .cyber-bar-right {
+        display: flex;
+        align-items: center;
+    }
+    
+    .cyber-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #00f7ff;
+        box-shadow: 0 0 10px rgba(0, 247, 255, 0.8);
+        margin-right: 12px;
+    }
+    
+    .cyber-indicator.blink {
+        animation: blink 2s infinite;
+    }
+    
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+    
+    .cyber-tag {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8rem;
+        background: rgba(0, 50, 100, 0.5);
+        color: #8cddff;
+        padding: 3px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(100, 150, 255, 0.3);
+        margin-right: 12px;
+    }
+    
+    .cyber-badge {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.75rem;
+        background: linear-gradient(90deg, #00a8ff, #00f7ff);
+        color: #001b30;
+        padding: 2px 10px;
+        border-radius: 4px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    
+    /* Cyber Buttons */
+    .cyber-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .cyber-btn {
+        position: relative;
+        padding: 0.6rem 1.2rem;
+        color: #fff;
+        font-family: 'Share Tech Mono', monospace;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        background: transparent;
+        border: none;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 0 0 1px rgba(100, 150, 255, 0.5);
+        clip-path: polygon(
+            0 10px, 
+            10px 0, 
+            100% 0, 
+            100% calc(100% - 10px), 
+            calc(100% - 10px) 100%, 
+            0 100%
+        );
+    }
+    
+    .cyber-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+    }
+    
+    .cyber-btn-glitch {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    
+    .cyber-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .cyber-btn:active {
+        transform: translateY(1px);
+    }
+    
+    .cyber-btn.cyber-btn-success {
+        color: #0f0;
+        box-shadow: inset 0 0 0 1px rgba(0, 255, 60, 0.5);
+    }
+    
+    .cyber-btn.cyber-btn-success:hover {
+        background: rgba(0, 255, 60, 0.1);
+        box-shadow: 
+            inset 0 0 0 1px rgba(0, 255, 60, 0.5),
+            0 0 10px rgba(0, 255, 60, 0.3);
+    }
+    
+    .cyber-btn.cyber-btn-success::before {
+        background: linear-gradient(45deg, rgba(0, 255, 60, 0.2), transparent);
+    }
+    
+    .cyber-btn.cyber-btn-success .cyber-btn-glitch::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 255, 60, 0.5);
+        clip-path: polygon(0 0, 100% 0, 100% 2px, 0 2px);
+    }
+    
+    .cyber-btn.cyber-btn-success .cyber-btn-glitch::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 255, 60, 0.5);
+        clip-path: polygon(0 calc(100% - 2px), 100% calc(100% - 2px), 100% 100%, 0 100%);
+    }
+    
+    .cyber-btn.cyber-btn-danger {
+        color: #f00;
+        box-shadow: inset 0 0 0 1px rgba(255, 0, 60, 0.5);
+    }
+    
+    .cyber-btn.cyber-btn-danger:hover {
+        background: rgba(255, 0, 60, 0.1);
+        box-shadow: 
+            inset 0 0 0 1px rgba(255, 0, 60, 0.5),
+            0 0 10px rgba(255, 0, 60, 0.3);
+    }
+    
+    .cyber-btn.cyber-btn-danger::before {
+        background: linear-gradient(45deg, rgba(255, 0, 60, 0.2), transparent);
+    }
+    
+    .cyber-btn.cyber-btn-danger .cyber-btn-glitch::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 0, 60, 0.5);
+        clip-path: polygon(0 0, 100% 0, 100% 2px, 0 2px);
+    }
+    
+    .cyber-btn.cyber-btn-danger .cyber-btn-glitch::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 0, 60, 0.5);
+        clip-path: polygon(0 calc(100% - 2px), 100% calc(100% - 2px), 100% 100%, 0 100%);
+    }
+    
+    /* Hexagon Decorations */
+    .hexagon-decoration {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        z-index: 0;
+        opacity: 0.15;
+        pointer-events: none;
+    }
+    
+    .hexagon-decoration.small {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .hexagon-decoration::before,
+    .hexagon-decoration::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: conic-gradient(
+            from 0deg, 
+            #00f7ff, 
+            #0088ff, 
+            #0022ff, 
+            #0088ff, 
+            #00f7ff
+        );
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        animation: rotateHex 20s linear infinite;
+    }
+    
+    .hexagon-decoration::after {
+        transform: scale(0.9);
+        animation-duration: 15s;
+        animation-direction: reverse;
+    }
+    
+    .hexagon-decoration.top-right {
+        top: -30px;
+        right: -30px;
+    }
+    
+    .hexagon-decoration.bottom-left {
+        bottom: -30px;
+        left: -30px;
+    }
+    
+    @keyframes rotateHex {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Grid Overlay */
+    .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(100, 150, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(100, 150, 255, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+        z-index: 0;
+        pointer-events: none;
+    }
+    
+    /* Neural Interface */
+    .neural-interface {
+        position: relative;
+        border: 1px solid rgba(100, 150, 255, 0.3);
+        background: rgba(10, 30, 50, 0.5);
+        border-radius: 4px;
+        overflow: hidden;
+        padding: 3px;
+    }
+    
+    .interface-header, .interface-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 10px;
+        background: rgba(10, 20, 40, 0.8);
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8rem;
+    }
+    
+    .interface-header {
+        border-bottom: 1px solid rgba(100, 150, 255, 0.2);
+        margin-bottom: 3px;
+    }
+    
+    .interface-footer {
+        border-top: 1px solid rgba(100, 150, 255, 0.2);
+        margin-top: 3px;
+    }
+    
+    .segment {
+        display: flex;
+        align-items: center;
+    }
+    
+    .label {
+        color: #8cddff;
+        margin-right: 5px;
+        font-size: 0.7rem;
+    }
+    
+    .value {
+        color: #fff;
+    }
+    
+    .corner-decoration {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        border: 2px solid #00a8ff;
+        z-index: 1;
+    }
+    
+    .corner-decoration.top-left {
+        top: 5px;
+        left: 5px;
+        border-right: none;
+        border-bottom: none;
+    }
+    
+    .corner-decoration.top-right {
+        top: 5px;
+        right: 5px;
+        border-left: none;
+        border-bottom: none;
+    }
+    
+    .corner-decoration.bottom-left {
+        bottom: 5px;
+        left: 5px;
+        border-right: none;
+        border-top: none;
+    }
+    
+    .corner-decoration.bottom-right {
+        bottom: 5px;
+        right: 5px;
+        border-left: none;
+        border-top: none;
+    }
+    
+    /* Video Container Elements */
+    .video-container {
+        position: relative;
+        border-radius: 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        background: #000;
+    }
+    
+    .corner-brackets {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #00f7ff;
+        opacity: 0.8;
+        z-index: 2;
+        pointer-events: none;
+    }
+    
+    .corner-brackets.top-left {
+        top: 5px;
+        left: 5px;
+        border-right: none;
+        border-bottom: none;
+    }
+    
+    .corner-brackets.top-right {
+        top: 5px;
+        right: 5px;
+        border-left: none;
+        border-bottom: none;
+    }
+    
+    .corner-brackets.bottom-left {
+        bottom: 5px;
+        left: 5px;
+        border-right: none;
+        border-top: none;
+    }
+    
+    .corner-brackets.bottom-right {
+        bottom: 5px;
+        right: 5px;
+        border-left: none;
+        border-top: none;
+    }
+    
+    .tech-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            repeating-linear-gradient(
+                0deg, 
+                rgba(0, 247, 255, 0.03) 0px, 
+                rgba(0, 247, 255, 0.03) 1px, 
+                transparent 1px, 
+                transparent 2px
+            );
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .neural-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(0, 247, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 247, 255, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid rgba(0, 247, 255, 0.3);
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .scanning-line {
+        position: absolute;
+        background: linear-gradient(to right, transparent, #00f7ff, transparent);
+        box-shadow: 0 0 10px rgba(0, 247, 255, 0.8);
+        z-index: 2;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+    }
+    
+    .scanning-line.horizontal {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        animation: scanHorizontal 3s linear infinite;
+    }
+    
+    .scanning-line.vertical {
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        animation: scanVertical 4s linear infinite;
+    }
+    
+    .tracking-active .scanning-line {
+        opacity: 1;
+    }
+    
+    @keyframes scanHorizontal {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+    
+    @keyframes scanVertical {
+        0% { left: 0; }
+        100% { left: 100%; }
+    }
+    
+    /* Data Overlay on Video */
+    .data-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+        pointer-events: none;
+    }
+    
+    .data-point {
+        position: absolute;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.7rem;
+        color: rgba(0, 247, 255, 0.9);
+        text-shadow: 0 0 5px rgba(0, 247, 255, 0.5);
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        padding: 3px 6px;
+        border-radius: 2px;
+        max-width: 150px;
+    }
+    
+    .data-point.top-left {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .data-point.top-right {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .data-point.bottom-left {
+        bottom: 10px;
+        left: 10px;
+    }
+    
+    .data-point.bottom-right {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .data-label {
+        font-size: 0.65rem;
+        opacity: 0.8;
+    }
+    
+    .data-value {
+        font-size: 0.7rem;
+        font-weight: bold;
+    }
+    
+    /* Recording Indicator */
+    .segment.recording {
+        color: #f00;
+    }
+    
+    .rec-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: #f00;
+        border-radius: 50%;
+        margin-right: 5px;
+        animation: blink 1s infinite;
+    }
+    
+    .rec-label {
+        font-weight: bold;
+    }
+    
+    .timer {
+        font-family: 'Share Tech Mono', monospace;
+        color: #fff;
+        letter-spacing: 1px;
+    }
+    
+    /* Cyber Alert */
+    .cyber-alert {
+        display: flex;
+        background: rgba(20, 30, 50, 0.7);
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 4px;
+        padding: 12px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 0;
+    }
+    
+    .cyber-alert::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: #00a8ff;
+    }
+    
+    .cyber-alert-icon {
+        margin-right: 12px;
+        font-size: 1.3rem;
+        color: #00a8ff;
+    }
+    
+    .cyber-alert-content {
+        flex: 1;
+    }
+    
+    .cyber-alert-title {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.9rem;
+        color: #00f7ff;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+    }
+    
+    .cyber-alert-message {
+        color: #fff;
+        font-size: 0.9rem;
+    }
+    
+    .cyber-alert-lines {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #00a8ff, transparent);
+    }
+    
+    /* Control Panel */
+    .advanced-controls {
+        background: rgba(10, 25, 40, 0.7);
+        border: 1px solid rgba(0, 247, 255, 0.2);
+        border-radius: 4px;
+        padding: 15px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .control-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+    }
+    
+    .control-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .control-group {
+        position: relative;
+    }
+    
+    .cyber-label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.85rem;
+        color: #8cddff;
+    }
+    
+    .cyber-select {
+        width: 100%;
+        background-color: rgba(10, 25, 40, 0.9);
+        color: #fff;
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 4px;
+        padding: 8px 30px 8px 12px;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8rem;
+        appearance: none;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .cyber-select:focus {
+        outline: none;
+        border-color: #00f7ff;
+        box-shadow: 0 0 0 1px #00f7ff;
+    }
+    
+    .cyber-select-decoration {
+        position: absolute;
+        top: calc(50% + 10px);
+        right: 10px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #00f7ff;
+        pointer-events: none;
+        z-index: 2;
+    }
+    
+    /* System Gauges */
+    .system-gauges {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    
+    .gauge-container {
+        flex: 1;
+        text-align: center;
+        padding: 0 10px;
+    }
+    
+    .gauge-label {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.75rem;
+        color: #8cddff;
+        margin-bottom: 5px;
+    }
+    
+    .gauge {
+        height: 6px;
+        background: rgba(10, 25, 40, 0.5);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+    
+    .gauge-value {
+        height: 100%;
+        background: linear-gradient(90deg, #00a8ff, #00f7ff);
+        border-radius: 3px;
+        transition: width 0.5s ease;
+    }
+    
+    .gauge-reading {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.75rem;
+        color: #fff;
+    }
+    
+    /* Cyber Tabs */
+    .cyber-tabs {
+        display: flex;
+        gap: 2px;
+        background: rgba(10, 25, 40, 0.5);
+        padding: 2px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+    
+    .cyber-tab {
+        flex: 1;
+        padding: 8px 12px;
+        background: rgba(10, 25, 40, 0.8);
+        color: #8cddff;
+        border: none;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .cyber-tab:hover {
+        background: rgba(0, 50, 100, 0.5);
+    }
+    
+    .cyber-tab.active {
+        background: rgba(0, 100, 200, 0.3);
+        color: #fff;
+    }
+    
+    .cyber-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #00f7ff;
+    }
+    
+    .cyber-tab-content {
+        position: relative;
+        min-height: 200px;
+    }
+    
+    .cyber-tab-pane {
+        display: none;
+        animation: fadeIn 0.3s forwards;
+    }
+    
+    .cyber-tab-pane.active {
+        display: block;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    /* Empty States */
+    .cyber-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .cyber-hexagon {
+        position: relative;
+        width: 70px;
+        height: 70px;
+        background: rgba(0, 50, 100, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        color: #00f7ff;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+    
+    .cyber-hexagon::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: 2px;
+        bottom: 2px;
+        background: rgba(10, 25, 40, 0.8);
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        z-index: -1;
+    }
+    
+    .cyber-text {
+        font-family: 'Share Tech Mono', monospace;
+        color: #8cddff;
+        margin-bottom: 10px;
+    }
+    
+    /* Typing Animation */
+    .typing-indicator {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .typing-indicator span {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        background-color: #00f7ff;
+        border-radius: 50%;
+        margin: 0 2px;
+        animation: typing 1.5s infinite;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-5px); }
+    }
+    
+    /* Scanning Dots */
+    .scanning-dots {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .scanning-dots span {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        background-color: #00f7ff;
+        border-radius: 50%;
+        margin: 0 2px;
+        animation: scanning 2s infinite linear;
+    }
+    
+    .scanning-dots span:nth-child(1) {
+        animation-delay: 0s;
+    }
+    
+    .scanning-dots span:nth-child(2) {
+        animation-delay: 0.66s;
+    }
+    
+    .scanning-dots span:nth-child(3) {
+        animation-delay: 1.33s;
+    }
+    
+    @keyframes scanning {
+        0% { transform: scale(0.5); opacity: 0.3; }
+        50% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0.5); opacity: 0.3; }
+    }
+    
+    /* Timeline */
+    .cyber-timeline {
+        padding: 10px 0;
+    }
+    
+    .timeline-event {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    
+    .event-time {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.75rem;
+        color: #00f7ff;
+        width: 70px;
+        text-align: right;
+        padding-right: 10px;
+    }
+    
+    .event-line {
+        position: relative;
+        width: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .event-line::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 1px;
+        background: rgba(0, 247, 255, 0.3);
+    }
+    
+    .event-line::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #00f7ff;
+        border-radius: 50%;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .event-content {
+        flex: 1;
+        padding-left: 10px;
+    }
+    
+    .event-title {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.85rem;
+        color: #fff;
+        margin-bottom: 2px;
+    }
+    
+    .event-description {
+        font-size: 0.8rem;
+        color: #8cddff;
+    }
+    
+    /* Card Footer */
+    .cyber-footer {
+        background: rgba(10, 20, 40, 0.7);
+        border-top: 1px solid rgba(0, 247, 255, 0.2);
+        padding: 10px 15px;
+    }
+    
+    .cyber-stats {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .stat-item {
+        font-family: 'Share Tech Mono', monospace;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+        color: #8cddff;
+        margin-bottom: 2px;
+    }
+    
+    .stat-value {
+        font-size: 0.8rem;
+        color: #fff;
+    }
+    
+    /* Cyber Loader */
+    .cyber-loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .cyber-loader-brain {
+        position: relative;
+        width: 70px;
+        height: 70px;
+        background: rgba(0, 247, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        color: #00f7ff;
+        animation: pulse 2s infinite;
+        z-index: 2;
+    }
+    
+    .cyber-loader-ring {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .cyber-loader-ring.outer {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .cyber-loader-ring.inner {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .cyber-loader-ring div {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 3px solid transparent;
+        border-radius: 50%;
+        animation: loaderRing 2s linear infinite;
+    }
+    
+    .cyber-loader-ring.outer div {
+        border-top-color: rgba(0, 168, 255, 0.7);
+    }
+    
+    .cyber-loader-ring.inner div {
+        border-bottom-color: rgba(0, 247, 255, 0.7);
+        animation-direction: reverse;
+    }
+    
+    .cyber-loader-ring div:nth-child(1) {
+        animation-delay: 0s;
+    }
+    
+    .cyber-loader-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+    }
+    
+    .cyber-loader-ring div:nth-child(3) {
+        animation-delay: -0.6s;
+    }
+    
+    .cyber-loader-ring div:nth-child(4) {
+        animation-delay: -0.9s;
+    }
+    
+    @keyframes loaderRing {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .cyber-loader-text {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.9rem;
+        color: #00f7ff;
+        margin-top: 10px;
+        letter-spacing: 1px;
+    }
+    
+    /* Pattern Card */
+    .data-card {
+        background: rgba(10, 25, 40, 0.7);
+        border: 1px solid rgba(0, 247, 255, 0.2);
+        border-radius: 4px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideIn 0.5s forwards;
+    }
+    
+    @keyframes slideIn {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .data-card:nth-child(1) { animation-delay: 0.1s; }
+    .data-card:nth-child(2) { animation-delay: 0.2s; }
+    .data-card:nth-child(3) { animation-delay: 0.3s; }
+    .data-card:nth-child(4) { animation-delay: 0.4s; }
+    
+    /* Metrics Container */
+    .metrics-container {
+        padding: 10px;
+    }
+    
+    .cyber-graph {
+        background: rgba(10, 25, 40, 0.5);
+        border: 1px solid rgba(0, 247, 255, 0.2);
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .graph-header {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8rem;
+        color: #8cddff;
+        margin-bottom: 10px;
+    }
+    
+    .graph-placeholder {
+        height: 100px;
+        background: linear-gradient(180deg, rgba(0, 168, 255, 0.3) 0%, rgba(0, 247, 255, 0.1) 100%);
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .graph-placeholder::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(90deg, transparent, transparent),
+            linear-gradient(90deg, rgba(0, 247, 255, 0.3) 1px, transparent 1px),
+            linear-gradient(rgba(0, 247, 255, 0.3) 1px, transparent 1px);
+        background-size: 100% 100%, 20px 20px, 20px 20px;
+        background-position: 0 0, 0 0, 0 0;
+    }
+    
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .metric-box {
+        background: rgba(10, 25, 40, 0.5);
+        border: 1px solid rgba(0, 247, 255, 0.2);
+        border-radius: 4px;
+        padding: 10px;
+        text-align: center;
+    }
+    
+    .metric-value {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 1.2rem;
+        color: #00f7ff;
+        margin-bottom: 5px;
+    }
+    
+    .metric-label {
+        font-size: 0.75rem;
+        color: #8cddff;
+    }
+    
+    /* Z-index management */
+    .z-index-1 { z-index: 1; }
+    .z-index-2 { z-index: 2; }
+    .z-index-3 { z-index: 3; }
+    
+    /* Hologram effect */
+    .hologram-effect {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hologram-effect::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 247, 255, 0.05),
+            rgba(0, 247, 255, 0.05) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    /* Media queries for responsive design */
+    @media (max-width: 992px) {
+        .control-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .system-status-bar {
+            flex-wrap: wrap;
+        }
+        
+        .status-segment {
+            width: 50%;
+            margin-bottom: 10px;
+            border-right: none;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.2);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .cyber-title {
+            font-size: 2rem;
+        }
+        
+        .cyber-subtitle {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="container-fluid px-4 py-5">
+    <!-- Futuristic Header -->
+    <div class="cyber-header mb-4">
+        <div class="cyber-lines"></div>
+        <div class="cyber-glitch">
+            <h1 class="cyber-title text-center mb-0">
+                <span data-text="ALPHAVOX">ALPHAVOX</span> 
+                <small class="cyber-subtitle d-block">Neural Behavior Analysis System</small>
+            </h1>
+        </div>
+        <div class="cyber-dots"></div>
+    </div>
+    
+    <!-- Status Bar -->
+    <div class="system-status-bar mb-4">
+        <div class="status-segment">
+            <i class="fas fa-satellite-dish pulse-icon"></i>
+            <span class="status-label">NEURO-LINK</span>
+            <span class="status-value online">ACTIVE</span>
+        </div>
+        <div class="status-segment">
+            <i class="fas fa-microchip"></i>
+            <span class="status-label">NEURAL ENGINE</span>
+            <span class="status-value online">ONLINE</span>
+        </div>
+        <div class="status-segment">
+            <i class="fas fa-database"></i>
+            <span class="status-label">PATTERN DB</span>
+            <span class="status-value" id="patternCountStatus">0 ENTRIES</span>
+        </div>
+        <div class="status-segment">
+            <i class="fas fa-brain"></i>
+            <span class="status-label">AI STATUS</span>
+            <span class="status-value online">READY</span>
+        </div>
+        <div class="status-segment">
+            <i class="fas fa-clock"></i>
+            <span class="status-label">SYS TIME</span>
+            <span class="status-value" id="systemTime"></span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Video Feed & Controls Area -->
+        <div class="col-lg-8">
+            <!-- Main Control Panel -->
+            <div class="card futuristic-card mb-4">
+                <div class="hexagon-decoration top-right"></div>
+                <div class="hexagon-decoration bottom-left"></div>
+                
+                <div class="card-header cyber-bar">
+                    <div class="cyber-bar-left">
+                        <div class="cyber-indicator blink"></div>
+                        <h2 class="futuristic-header mb-0">
+                            <i class="fas fa-video me-2 pulse-icon"></i> Neural Observation Module
+                        </h2>
+                    </div>
+                    <div class="cyber-bar-right">
+                        <div class="cyber-tag">v2.5.3</div>
+                        <div class="cyber-buttons">
+                            <button id="startTracking" class="cyber-btn cyber-btn-success">
+                                <span class="cyber-btn-glitch"></span>
+                                <i class="fas fa-power-off me-1"></i> INITIALIZE
+                            </button>
+                            <button id="stopTracking" class="cyber-btn cyber-btn-danger" disabled>
+                                <span class="cyber-btn-glitch"></span>
+                                <i class="fas fa-stop me-1"></i> TERMINATE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body position-relative">
+                    <!-- Grid overlay pattern for futuristic effect -->
+                    <div class="grid-overlay"></div>
+                    
+                    <!-- Main video feed interface -->
+                    <div class="neural-interface mb-4">
+                        <div class="corner-decoration top-left"></div>
+                        <div class="corner-decoration top-right"></div>
+                        <div class="corner-decoration bottom-left"></div>
+                        <div class="corner-decoration bottom-right"></div>
+                        
+                        <div class="interface-header">
+                            <div class="segment">
+                                <span class="label">FEED</span>
+                                <span class="value">PRIMARY</span>
+                            </div>
+                            <div class="segment">
+                                <span class="label">MODE</span>
+                                <span class="value">NEURAL SCAN</span>
+                            </div>
+                            <div class="segment">
+                                <span class="label">STATUS</span>
+                                <span class="value" id="feedStatus">STANDBY</span>
+                            </div>
+                            <div class="segment">
+                                <span class="label">ENCRYPTION</span>
+                                <span class="value">ENABLED</span>
+                            </div>
+                        </div>
+                        
+                        <div class="video-container hologram-effect">
+                            <div class="position-relative">
+                                <!-- Scanner elements -->
+                                <div class="corner-brackets top-left"></div>
+                                <div class="corner-brackets top-right"></div>
+                                <div class="corner-brackets bottom-left"></div>
+                                <div class="corner-brackets bottom-right"></div>
+                                
+                                <!-- Technical overlay elements -->
+                                <div class="tech-overlay"></div>
+                                <div class="video-overlay"></div>
+                                <div class="scanning-line horizontal"></div>
+                                <div class="scanning-line vertical"></div>
+                                <div class="neural-grid"></div>
+                                
+                                <!-- Loading indicator -->
+                                <div id="loading-indicator" class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75 z-index-1">
+                                    <div class="cyber-loader">
+                                        <div class="cyber-loader-brain">
+                                            <i class="fas fa-brain fa-3x"></i>
+                                        </div>
+                                        <div class="cyber-loader-ring outer">
+                                            <div></div><div></div><div></div><div></div>
+                                        </div>
+                                        <div class="cyber-loader-ring inner">
+                                            <div></div><div></div><div></div><div></div>
+                                        </div>
+                                        <div class="cyber-loader-text">INITIALIZING NEURAL SCAN</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Video elements -->
+                                <video id="videoElement" autoplay class="w-100 d-none"></video>
+                                <canvas id="videoCanvas" class="w-100 rounded"></canvas>
+                                
+                                <!-- Live data display overlay -->
+                                <div class="data-overlay">
+                                    <div class="data-point top-left">
+                                        <div class="data-label">RESOLUTION</div>
+                                        <div class="data-value" id="resolution-value">1280x720</div>
+                                    </div>
+                                    <div class="data-point top-right">
+                                        <div class="data-label">CONFIDENCE</div>
+                                        <div class="data-value" id="confidence-value">89.7%</div>
+                                    </div>
+                                    <div class="data-point bottom-left">
+                                        <div class="data-label">FRAMERATE</div>
+                                        <div class="data-value" id="framerate-value">30 FPS</div>
+                                    </div>
+                                    <div class="data-point bottom-right">
+                                        <div class="data-label">PATTERNS</div>
+                                        <div class="data-value" id="patterns-value">SCANNING</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="interface-footer">
+                            <div class="segment recording">
+                                <span class="rec-indicator"></span>
+                                <span class="rec-label">NEURAL SCAN</span>
+                            </div>
+                            <div class="segment">
+                                <span class="timer" id="scan-timer">00:00:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status and Control Section -->
+                    <div class="status-section mb-4">
+                        <div class="alert cyber-alert" id="trackingStatus">
+                            <div class="cyber-alert-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="cyber-alert-content">
+                                <div class="cyber-alert-title">SYSTEM READY</div>
+                                <div class="cyber-alert-message">Initialize neural behavior tracking to begin capturing patterns.</div>
+                            </div>
+                            <div class="cyber-alert-lines"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Controls Panel -->
+                    <div class="advanced-controls">
+                        <div class="control-panel-header">
+                            <h4 class="cyber-subtitle mb-0">
+                                <i class="fas fa-sliders-h me-2"></i> Neural Engine Parameters
+                            </h4>
+                            <div class="cyber-badge">ADVANCED</div>
+                        </div>
+                        
+                        <div class="control-grid">
+                            <div class="control-group">
+                                <label class="cyber-label">
+                                    <i class="fas fa-filter me-1"></i> Detection Matrix
+                                </label>
+                                <select id="detectionType" class="cyber-select">
+                                    <option value="all">ALL DETECTION VECTORS</option>
+                                    <option value="micro-expressions">MICRO-EXPRESSIONS</option>
+                                    <option value="eye-movements">EYE MOVEMENT PATTERNS</option>
+                                    <option value="repetitive-movements">REPETITIVE MOVEMENT SEQUENCES</option>
+                                    <option value="posture">BODY POSTURE ANALYSIS</option>
+                                </select>
+                                <div class="cyber-select-decoration"></div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="cyber-label">
+                                    <i class="fas fa-tachometer-alt me-1"></i> Sensitivity Threshold
+                                </label>
+                                <select id="sensitivityLevel" class="cyber-select">
+                                    <option value="0.3">LOW SENSITIVITY (30%)</option>
+                                    <option value="0.5">STANDARD SENSITIVITY (50%)</option>
+                                    <option value="0.7" selected>HIGH SENSITIVITY (70%)</option>
+                                    <option value="0.9">MAXIMUM SENSITIVITY (90%)</option>
+                                </select>
+                                <div class="cyber-select-decoration"></div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="cyber-label">
+                                    <i class="fas fa-brain me-1"></i> Neural Model
+                                </label>
+                                <select id="modelType" class="cyber-select">
+                                    <option value="standard" selected>STANDARD NEURAL NET</option>
+                                    <option value="advanced">ADVANCED CONVOLUTIONAL</option>
+                                    <option value="experimental">EXPERIMENTAL TRANSFORMER</option>
+                                </select>
+                                <div class="cyber-select-decoration"></div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="cyber-label">
+                                    <i class="fas fa-clock me-1"></i> Analysis Frequency
+                                </label>
+                                <select id="analysisFrequency" class="cyber-select">
+                                    <option value="1">REAL-TIME (30 FPS)</option>
+                                    <option value="2" selected>STANDARD (15 FPS)</option>
+                                    <option value="3">POWER-SAVING (5 FPS)</option>
+                                </select>
+                                <div class="cyber-select-decoration"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="system-gauges">
+                            <div class="gauge-container">
+                                <div class="gauge-label">CPU LOAD</div>
+                                <div class="gauge">
+                                    <div class="gauge-value" style="width: 45%"></div>
+                                </div>
+                                <div class="gauge-reading">45%</div>
+                            </div>
+                            
+                            <div class="gauge-container">
+                                <div class="gauge-label">MEMORY</div>
+                                <div class="gauge">
+                                    <div class="gauge-value" style="width: 37%"></div>
+                                </div>
+                                <div class="gauge-reading">37%</div>
+                            </div>
+                            
+                            <div class="gauge-container">
+                                <div class="gauge-label">NEURAL LOAD</div>
+                                <div class="gauge">
+                                    <div class="gauge-value" style="width: 68%"></div>
+                                </div>
+                                <div class="gauge-reading">68%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analysis Results and Data Visualization -->
+        <div class="col-lg-4">
+            <!-- System Analysis Results -->
+            <div class="card futuristic-card mb-4">
+                <div class="hexagon-decoration top-right small"></div>
+                
+                <div class="card-header cyber-bar">
+                    <div class="cyber-bar-left">
+                        <div class="cyber-indicator"></div>
+                        <h3 class="futuristic-header mb-0">
+                            <i class="fas fa-chart-bar me-2"></i> Neural Analysis
+                        </h3>
+                    </div>
+                    <div class="cyber-bar-right">
+                        <div class="cyber-tag">REALTIME</div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Tabs for different analysis views -->
+                    <div class="cyber-tabs mb-3">
+                        <button class="cyber-tab active" data-tab="live-analysis">
+                            <i class="fas fa-stream me-2"></i> LIVE
+                        </button>
+                        <button class="cyber-tab" data-tab="metrics">
+                            <i class="fas fa-chart-line me-2"></i> METRICS
+                        </button>
+                        <button class="cyber-tab" data-tab="timeline">
+                            <i class="fas fa-clock me-2"></i> TIMELINE
+                        </button>
+                    </div>
+                    
+                    <!-- Tab content containers -->
+                    <div class="cyber-tab-content">
+                        <!-- Live Analysis Tab -->
+                        <div class="cyber-tab-pane active" id="live-analysis">
+                            <div id="analysisResults">
+                                <div class="cyber-empty-state">
+                                    <div class="cyber-hexagon">
+                                        <i class="fas fa-brain fa-2x"></i>
+                                    </div>
+                                    <p class="cyber-text">Waiting for neural analysis data</p>
+                                    <div class="typing-indicator">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Metrics Tab -->
+                        <div class="cyber-tab-pane" id="metrics">
+                            <div class="cyber-empty-state">
+                                <div class="cyber-hexagon">
+                                    <i class="fas fa-chart-pie fa-2x"></i>
+                                </div>
+                                <p class="cyber-text">Metrics require active neural tracking</p>
+                            </div>
+                            <div class="metrics-container d-none">
+                                <div class="cyber-graph">
+                                    <div class="graph-header">Neural Activity</div>
+                                    <div class="graph-placeholder"></div>
+                                </div>
+                                <div class="metrics-grid">
+                                    <div class="metric-box">
+                                        <div class="metric-value">86%</div>
+                                        <div class="metric-label">Confidence</div>
+                                    </div>
+                                    <div class="metric-box">
+                                        <div class="metric-value">14</div>
+                                        <div class="metric-label">Patterns</div>
+                                    </div>
+                                    <div class="metric-box">
+                                        <div class="metric-value">93%</div>
+                                        <div class="metric-label">Accuracy</div>
+                                    </div>
+                                    <div class="metric-box">
+                                        <div class="metric-value">7.3s</div>
+                                        <div class="metric-label">Response</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline Tab -->
+                        <div class="cyber-tab-pane" id="timeline">
+                            <div class="cyber-empty-state">
+                                <div class="cyber-hexagon">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                                <p class="cyber-text">Timeline requires active neural tracking</p>
+                            </div>
+                            <div class="timeline-container d-none">
+                                <div class="cyber-timeline">
+                                    <div class="timeline-event">
+                                        <div class="event-time">14:32:45</div>
+                                        <div class="event-line"></div>
+                                        <div class="event-content">
+                                            <div class="event-title">Pattern Detected</div>
+                                            <div class="event-description">Micro-expression: Surprise</div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-event">
+                                        <div class="event-time">14:30:12</div>
+                                        <div class="event-line"></div>
+                                        <div class="event-content">
+                                            <div class="event-title">System Alert</div>
+                                            <div class="event-description">New behavior pattern identified</div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-event">
+                                        <div class="event-time">14:28:59</div>
+                                        <div class="event-line"></div>
+                                        <div class="event-content">
+                                            <div class="event-title">Tracking Started</div>
+                                            <div class="event-description">Neural analysis initialized</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Observed Patterns Card -->
+            <div class="card futuristic-card">
+                <div class="hexagon-decoration bottom-left small"></div>
+                
+                <div class="card-header cyber-bar">
+                    <div class="cyber-bar-left">
+                        <div class="cyber-indicator"></div>
+                        <h3 class="futuristic-header mb-0">
+                            <i class="fas fa-dna me-2"></i> Neural Patterns
+                        </h3>
+                    </div>
+                    <div class="cyber-bar-right">
+                        <div class="cyber-badge" id="pattern-count">0</div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div id="patternsList">
+                        <div class="cyber-empty-state" id="empty-patterns">
+                            <div class="cyber-hexagon">
+                                <i class="fas fa-search fa-2x"></i>
+                            </div>
+                            <p class="cyber-text">No neural patterns observed</p>
+                            <div class="scanning-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div id="patterns-container"></div>
+                    </div>
+                </div>
+                
+                <div class="card-footer cyber-footer">
+                    <div class="cyber-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">SESSION ID</div>
+                            <div class="stat-value" id="session-id">NRL-8472</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">UPTIME</div>
+                            <div class="stat-value" id="system-uptime">00:42:18</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const videoElement = document.getElementById('videoElement');
+        const videoCanvas = document.getElementById('videoCanvas');
+        const ctx = videoCanvas.getContext('2d');
+        const startButton = document.getElementById('startTracking');
+        const stopButton = document.getElementById('stopTracking');
+        const trackingStatus = document.getElementById('trackingStatus');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const analysisResults = document.getElementById('analysisResults');
+        const patternsContainer = document.getElementById('patterns-container');
+        const emptyPatterns = document.getElementById('empty-patterns');
+        const videoContainer = document.querySelector('.video-container');
+        
+        let isTracking = false;
+        let stream = null;
+        let animationFrame = null;
+        let processingFrame = false;
+        
+        // Add sound effects
+        const startSound = new Audio('/static/sounds/start.mp3');
+        const stopSound = new Audio('/static/sounds/stop.mp3');
+        const scanSound = new Audio('/static/sounds/scan.mp3');
+        const detectionSound = new Audio('/static/sounds/detection.mp3');
+        
+        // Attempt to preload sounds silently
+        try {
+            startSound.volume = 0.01;
+            stopSound.volume = 0.01;
+            scanSound.volume = 0.01;
+            detectionSound.volume = 0.01;
+            
+            startSound.play().then(() => {
+                startSound.pause();
+                startSound.currentTime = 0;
+                startSound.volume = 0.3;
+            }).catch(() => {});
+            
+            stopSound.play().then(() => {
+                stopSound.pause();
+                stopSound.currentTime = 0;
+                stopSound.volume = 0.3;
+            }).catch(() => {});
+            
+            scanSound.play().then(() => {
+                scanSound.pause();
+                scanSound.currentTime = 0;
+                scanSound.volume = 0.2;
+            }).catch(() => {});
+            
+            detectionSound.play().then(() => {
+                detectionSound.pause();
+                detectionSound.currentTime = 0;
+                detectionSound.volume = 0.3;
+            }).catch(() => {});
+        } catch (e) {
+            console.log('Sound preloading not supported');
+        }
+        
+        // Check if webcam is supported
+        function checkWebcamSupport() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                trackingStatus.classList.remove('alert-futuristic-info');
+                trackingStatus.classList.add('alert-futuristic-danger');
+                trackingStatus.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Webcam access is not supported in your browser. Try using Chrome or Firefox.';
+                startButton.disabled = true;
+                return false;
+            }
+            return true;
+        }
+        
+        // Start webcam capture
+        async function startWebcam() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
+                
+                videoElement.srcObject = stream;
+                
+                // Set canvas size based on video dimensions
+                videoElement.onloadedmetadata = function() {
+                    videoCanvas.width = videoElement.videoWidth;
+                    videoCanvas.height = videoElement.videoHeight;
+                    videoElement.classList.remove('d-none');
+                    loadingIndicator.classList.add('d-none');
+                    
+                    // Add active tracking effects
+                    videoContainer.classList.add('tracking-active');
+                    
+                    // Start processing frames
+                    startProcessingFrames();
+                    
+                    // Play scan sound (looped)
+                    try {
+                        scanSound.loop = true;
+                        scanSound.play().catch(() => {});
+                    } catch (e) {}
+                };
+                
+                return true;
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+                
+                trackingStatus.classList.remove('alert-futuristic-info');
+                trackingStatus.classList.add('alert-futuristic-warning');
+                trackingStatus.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Could not access webcam. Please check permissions and try again.';
+                
+                loadingIndicator.classList.add('d-none');
+                stopButton.disabled = true;
+                startButton.disabled = false;
+                
+                return false;
+            }
+        }
+        
+        // Stop webcam capture
+        function stopWebcam() {
+            // Stop scan sound
+            try {
+                scanSound.pause();
+                scanSound.currentTime = 0;
+            } catch (e) {}
+            
+            // Remove active tracking effects
+            videoContainer.classList.remove('tracking-active');
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            
+            videoElement.classList.add('d-none');
+            ctx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
+            
+            return true;
+        }
+        
+        // Play animation when detection happens
+        function playDetectionAnimation() {
+            // Add a flash effect to the video container
+            const flash = document.createElement('div');
+            flash.style.position = 'absolute';
+            flash.style.top = '0';
+            flash.style.left = '0';
+            flash.style.right = '0';
+            flash.style.bottom = '0';
+            flash.style.backgroundColor = 'rgba(100, 240, 255, 0.2)';
+            flash.style.pointerEvents = 'none';
+            flash.style.zIndex = '10';
+            flash.style.borderRadius = '10px';
+            flash.style.animation = 'flash 0.5s forwards';
+            
+            // Add keyframes for the flash animation
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes flash {
+                    0% { opacity: 0; }
+                    50% { opacity: 1; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Add the flash element to the video container
+            videoContainer.appendChild(flash);
+            
+            // Remove the flash element after animation
+            setTimeout(() => {
+                flash.remove();
+            }, 500);
+            
+            // Play detection sound
+            try {
+                detectionSound.currentTime = 0;
+                detectionSound.play().catch(() => {});
+            } catch (e) {}
+        }
+        
+        // Start behavior tracking
+        async function startTracking() {
+            // Play start sound
+            try {
+                startSound.play().catch(() => {});
+            } catch (e) {}
+            
+            loadingIndicator.classList.remove('d-none');
+            startButton.disabled = true;
+            
+            if (!checkWebcamSupport()) {
+                return;
+            }
+            
+            try {
+                // Call API to start tracking
+                const response = await fetch('/api/behavior/start', {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    trackingStatus.classList.remove('alert-futuristic-info', 'alert-futuristic-danger', 'alert-futuristic-warning');
+                    trackingStatus.classList.add('alert-futuristic-success');
+                    trackingStatus.innerHTML = '<i class="fas fa-check-circle me-2"></i> Behavior tracking active. Observing patterns...';
+                    
+                    isTracking = true;
+                    stopButton.disabled = false;
+                    
+                    // Typed animation effect
+                    const typedElement = document.createElement('div');
+                    typedElement.className = 'neon-text mt-2';
+                    typedElement.innerHTML = 'Initializing pattern recognition algorithms...';
+                    trackingStatus.appendChild(typedElement);
+                    
+                    // Start webcam with slight delay for effect
+                    setTimeout(async () => {
+                        if (!await startWebcam()) {
+                            // If webcam failed, call stop API
+                            await fetch('/api/behavior/stop', { method: 'POST' });
+                            return;
+                        }
+                        
+                        // Start loading observations
+                        loadObservations();
+                    }, 500);
+                } else {
+                    trackingStatus.classList.remove('alert-futuristic-info');
+                    trackingStatus.classList.add('alert-futuristic-danger');
+                    trackingStatus.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> Error: ${data.message}`;
+                    loadingIndicator.classList.add('d-none');
+                    startButton.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error starting tracking:', error);
+                trackingStatus.classList.remove('alert-futuristic-info');
+                trackingStatus.classList.add('alert-futuristic-danger');
+                trackingStatus.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Error connecting to server. Please try again.';
+                loadingIndicator.classList.add('d-none');
+                startButton.disabled = false;
+            }
+        }
+        
+        // Stop behavior tracking
+        async function stopTracking() {
+            // Play stop sound
+            try {
+                stopSound.play().catch(() => {});
+            } catch (e) {}
+            
+            stopButton.disabled = true;
+            
+            try {
+                // Call API to stop tracking
+                const response = await fetch('/api/behavior/stop', {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    trackingStatus.classList.remove('alert-futuristic-success', 'alert-futuristic-danger', 'alert-futuristic-warning');
+                    trackingStatus.classList.add('alert-futuristic-info');
+                    trackingStatus.innerHTML = '<i class="fas fa-info-circle me-2"></i> Behavior tracking deactivated.';
+                    
+                    isTracking = false;
+                    startButton.disabled = false;
+                    
+                    // Stop webcam
+                    stopWebcam();
+                    
+                    // Clear analysis results with fade out effect
+                    analysisResults.style.opacity = '0';
+                    setTimeout(() => {
+                        analysisResults.innerHTML = `
+                            <div class="text-center py-4">
+                                <i class="fas fa-brain fa-3x mb-3 text-muted pulse-icon"></i>
+                                <p class="text-muted">Start tracking to see behavior analysis results</p>
+                            </div>
+                        `;
+                        analysisResults.style.opacity = '1';
+                    }, 500);
+                } else {
+                    trackingStatus.classList.remove('alert-futuristic-success');
+                    trackingStatus.classList.add('alert-futuristic-warning');
+                    trackingStatus.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> Error: ${data.message}`;
+                    stopButton.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error stopping tracking:', error);
+                trackingStatus.classList.remove('alert-futuristic-success');
+                trackingStatus.classList.add('alert-futuristic-warning');
+                trackingStatus.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Error connecting to server. Please try again.';
+                stopButton.disabled = false;
+            }
+        }
+        
+        // Load observed patterns
+        async function loadObservations() {
+            try {
+                const response = await fetch('/api/behavior/observations');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    if (data.observations && data.observations.length > 0) {
+                        emptyPatterns.classList.add('d-none');
+                        patternsContainer.innerHTML = '';
+                        
+                        // Add patterns with staggered animation
+                        data.observations.forEach((observation, index) => {
+                            const card = document.createElement('div');
+                            card.className = 'data-card mb-3';
+                            card.style.animationDelay = `${0.1 * index}s`;
+                            
+                            let confidenceClass = 'text-warning';
+                            if (observation.confidence >= 0.8) confidenceClass = 'text-success';
+                            else if (observation.confidence < 0.4) confidenceClass = 'text-danger';
+                            
+                            card.innerHTML = `
+                                <div class="card-body">
+                                    <h5 class="card-title">${observation.pattern_name}</h5>
+                                    <p class="card-text">${observation.description}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge badge-futuristic">${observation.category}</span>
+                                        <span class="${confidenceClass}">Confidence: ${Math.round(observation.confidence * 100)}%</span>
+                                    </div>
+                                    <small class="text-muted">Observed: ${new Date(observation.timestamp).toLocaleString()}</small>
+                                </div>
+                            `;
+                            
+                            patternsContainer.appendChild(card);
+                        });
+                    } else {
+                        emptyPatterns.classList.remove('d-none');
+                        patternsContainer.innerHTML = '';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading observations:', error);
+            }
+        }
+        
+        // Process video frames
+        function startProcessingFrames() {
+            if (!isTracking || !stream) return;
+            
+            const processFrame = async () => {
+                if (!isTracking || processingFrame) {
+                    animationFrame = requestAnimationFrame(processFrame);
+                    return;
+                }
+                
+                processingFrame = true;
+                
+                try {
+                    // Draw video frame to canvas
+                    ctx.drawImage(videoElement, 0, 0, videoCanvas.width, videoCanvas.height);
+                    
+                    // Get raw image data for processing
+                    const imageData = videoCanvas.toDataURL('image/jpeg', 0.8);
+                    const base64Data = imageData.split(',')[1];
+                    
+                    // Send frame for processing
+                    const response = await fetch('/api/behavior/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            frame: base64Data
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        // Display annotated frame
+                        if (data.annotated_frame) {
+                            const img = new Image();
+                            img.onload = function() {
+                                ctx.drawImage(img, 0, 0, videoCanvas.width, videoCanvas.height);
+                            };
+                            img.src = 'data:image/jpeg;base64,' + data.annotated_frame;
+                        }
+                        
+                        // Update analysis results
+                        if (data.results) {
+                            // Check if we've detected new patterns
+                            const hasNewPatterns = data.results.patterns_detected && 
+                                data.results.patterns_detected.length > 0;
+                            
+                            // Play detection animation if new patterns found
+                            if (hasNewPatterns) {
+                                playDetectionAnimation();
+                            }
+                            
+                            updateAnalysisResults(data.results);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error processing frame:', error);
+                } finally {
+                    processingFrame = false;
+                    
+                    // Request next frame
+                    if (isTracking) {
+                        animationFrame = requestAnimationFrame(processFrame);
+                    }
+                }
+            };
+            
+            // Start frame processing loop
+            animationFrame = requestAnimationFrame(processFrame);
+        }
+        
+        // Update analysis results display
+        function updateAnalysisResults(results) {
+            let html = '';
+            
+            if (results.eye_tracking) {
+                html += `
+                    <div class="data-card mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-2"><i class="fas fa-eye me-2"></i> Eye Tracking</h5>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" role="progressbar" 
+                                    style="width: ${Math.round(results.eye_tracking.confidence * 100)}%" 
+                                    aria-valuenow="${Math.round(results.eye_tracking.confidence * 100)}" 
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    ${Math.round(results.eye_tracking.confidence * 100)}%
+                                </div>
+                            </div>
+                            <p class="small text-light">${results.eye_tracking.description || 'Tracking eye movements'}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (results.facial_expressions) {
+                html += `
+                    <div class="data-card mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-2"><i class="fas fa-smile me-2"></i> Facial Expressions</h5>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" role="progressbar" 
+                                    style="width: ${Math.round(results.facial_expressions.confidence * 100)}%" 
+                                    aria-valuenow="${Math.round(results.facial_expressions.confidence * 100)}" 
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    ${Math.round(results.facial_expressions.confidence * 100)}%
+                                </div>
+                            </div>
+                            <p class="small text-light">${results.facial_expressions.description || 'Analyzing facial expressions'}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (results.repetitive_movements) {
+                html += `
+                    <div class="data-card mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-2"><i class="fas fa-sync me-2"></i> Repetitive Movements</h5>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" role="progressbar" 
+                                    style="width: ${Math.round(results.repetitive_movements.confidence * 100)}%" 
+                                    aria-valuenow="${Math.round(results.repetitive_movements.confidence * 100)}" 
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    ${Math.round(results.repetitive_movements.confidence * 100)}%
+                                </div>
+                            </div>
+                            <p class="small text-light">${results.repetitive_movements.description || 'Detecting repetitive movements'}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (results.body_posture) {
+                html += `
+                    <div class="data-card mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-2"><i class="fas fa-male me-2"></i> Body Posture</h5>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" role="progressbar" 
+                                    style="width: ${Math.round(results.body_posture.confidence * 100)}%" 
+                                    aria-valuenow="${Math.round(results.body_posture.confidence * 100)}" 
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    ${Math.round(results.body_posture.confidence * 100)}%
+                                </div>
+                            </div>
+                            <p class="small text-light">${results.body_posture.description || 'Analyzing body posture'}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (results.patterns_detected && results.patterns_detected.length > 0) {
+                html += `
+                    <div class="data-card mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-2"><i class="fas fa-lightbulb me-2"></i> Detected Patterns</h5>
+                            <div class="list-group bg-transparent">
+                `;
+                
+                results.patterns_detected.forEach(pattern => {
+                    html += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center bg-futuristic-dark text-light border-0 mb-2 rounded">
+                            <span>${pattern.name}</span>
+                            <span class="badge badge-futuristic">${Math.round(pattern.confidence * 100)}%</span>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Refresh observations list if new patterns detected
+                loadObservations();
+            }
+            
+            if (html === '') {
+                html = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-search fa-3x mb-3 text-muted pulse-icon"></i>
+                        <p class="text-muted">No behavior patterns detected yet</p>
+                    </div>
+                `;
+            }
+            
+            // Smoothly update the content
+            analysisResults.style.opacity = '0';
+            setTimeout(() => {
+                analysisResults.innerHTML = html;
+                analysisResults.style.opacity = '1';
+            }, 300);
+        }
+        
+        // Create directory for sound files
+        function createSoundDirectory() {
+            const soundsDir = '/static/sounds';
+            
+            // Check if directory exists
+            fetch(soundsDir)
+                .then(response => {
+                    if (!response.ok) {
+                        // Directory doesn't exist, create it and add sound files
+                        console.log('Creating sounds directory...');
+                    }
+                })
+                .catch(() => {
+                    console.log('Error checking sounds directory');
+                });
+        }
+        
+        // Event listeners
+        startButton.addEventListener('click', startTracking);
+        stopButton.addEventListener('click', stopTracking);
+        
+        // Initialize
+        createSoundDirectory();
+        loadObservations();
+    });
+</script>
+
+<!-- Add self-learning voice interface -->
+<script src="{{ url_for('static', filename='behavior-voice.js') }}"></script>
+{% endblock %}

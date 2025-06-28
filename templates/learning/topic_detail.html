@@ -1,0 +1,199 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ topic.name }} | AlphaVox Learning Hub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-book me-2"></i>{{ topic.name }}
+                    </h3>
+                    <div>
+                        <a href="/learning/topics" class="btn btn-outline-primary cyber-btn-sm me-2">
+                            <i class="fas fa-list me-1"></i>All Topics
+                        </a>
+                        <a href="/learning" class="btn btn-outline-primary cyber-btn-sm">
+                            <i class="fas fa-graduation-cap me-1"></i>Learning Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-lg-8">
+                            <div class="card bg-dark border-secondary cyber-card-sm mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h5 class="mb-0">Overview</h5>
+                                        <span class="badge ms-auto bg-{{ 'primary' if topic.difficulty == 'beginner' else 'warning' if topic.difficulty == 'intermediate' else 'danger' }}">
+                                            {{ topic.difficulty|capitalize }}
+                                        </span>
+                                    </div>
+                                    <p class="mb-3">{{ topic.description }}</p>
+                                    
+                                    {% if topic.prerequisites %}
+                                        <div class="mb-3">
+                                            <h6 class="text-muted mb-2">Prerequisites:</h6>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% for prereq in topic.prerequisites %}
+                                                    <a href="/learning/topics/{{ prereq }}" class="badge bg-secondary text-decoration-none">
+                                                        {{ prereq }}
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Related Facts -->
+                            <div class="card bg-dark border-secondary cyber-card-sm">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Key Facts</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if facts %}
+                                        <div class="list-group">
+                                            {% for fact in facts %}
+                                                <div class="list-group-item bg-dark border-secondary text-white">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">
+                                                            <i class="fas fa-lightbulb text-warning me-2"></i>Fact #{{ loop.index }}
+                                                        </h6>
+                                                        <small class="text-muted">Source: {{ fact.source }}</small>
+                                                    </div>
+                                                    <p class="mb-2">{{ fact.content }}</p>
+                                                    <a href="/learning/facts/{{ fact.id }}" class="btn btn-sm btn-outline-info cyber-btn-sm">
+                                                        <i class="fas fa-info-circle me-1"></i>Learn More
+                                                    </a>
+                                                </div>
+                                                {% if not loop.last %}
+                                                    <div class="border-bottom border-secondary my-3"></div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>No facts available for this topic yet.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <!-- Learning Progress -->
+                            <div class="card bg-dark border-primary cyber-card-sm mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Your Progress</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <div class="progress-circle mx-auto" style="width: 150px; height: 150px; position: relative;">
+                                            <!-- SVG Progress Circle -->
+                                            <svg width="150" height="150" viewBox="0 0 100 100">
+                                                <circle cx="50" cy="50" r="45" fill="none" stroke="#2a2a2a" stroke-width="8"/>
+                                                <circle id="progress-circle" cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="8" 
+                                                        stroke-dasharray="283" stroke-dashoffset="{{ 283 - (283 * progress / 100) }}" transform="rotate(-90 50 50)"/>
+                                            </svg>
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                                <h3 class="mb-0 cyber-text">{{ progress }}%</h3>
+                                                <small class="text-muted">Mastery</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="progress mb-3" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: {{ facts_learned_percent }}%"></div>
+                                    </div>
+                                    <p class="text-center mb-3 small">
+                                        <strong>{{ facts_learned }}</strong> of <strong>{{ facts|length }}</strong> facts learned
+                                    </p>
+                                    
+                                    <button id="mark-explored" class="btn btn-primary cyber-btn w-100">
+                                        <i class="fas fa-flag me-1"></i>Mark Topic as Explored
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Related Topics -->
+                            <div class="card bg-dark border-secondary cyber-card-sm">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Related Topics</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group">
+                                        {% for related in related_topics %}
+                                            <a href="/learning/topics/{{ related.name }}" class="list-group-item list-group-item-action bg-dark border-secondary text-white">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-1">{{ related.name }}</h6>
+                                                        <small class="text-muted">{{ related.difficulty|capitalize }}</small>
+                                                    </div>
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+                                        
+                                        {% if not related_topics %}
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>No related topics found.
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const markExploredBtn = document.getElementById('mark-explored');
+    
+    if (markExploredBtn) {
+        markExploredBtn.addEventListener('click', function() {
+            // Send AJAX request to mark topic as explored
+            fetch('/learning/api/explore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    topic: '{{ topic.name }}'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI or show success message
+                    markExploredBtn.innerHTML = '<i class="fas fa-check me-1"></i>Topic Explored';
+                    markExploredBtn.classList.remove('btn-primary');
+                    markExploredBtn.classList.add('btn-success');
+                    markExploredBtn.disabled = true;
+                    
+                    // Optional: update progress without page reload
+                    const progressCircle = document.getElementById('progress-circle');
+                    if (progressCircle) {
+                        const newProgress = Math.min(100, {{ progress }} + 20);
+                        progressCircle.setAttribute('stroke-dashoffset', 283 - (283 * newProgress / 100));
+                    }
+                } else {
+                    alert('Error marking topic as explored');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error marking topic as explored');
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

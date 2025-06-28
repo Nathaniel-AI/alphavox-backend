@@ -1,0 +1,59 @@
+<div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-content">
+        <h1 class="welcome-title">Welcome to AlphaVox</h1>
+        <p class="welcome-description">
+            Your inclusive communication platform designed for everyone. Experience seamless gesture recognition and voice interaction in a comfortable, adaptive environment.
+        </p>
+        <div class="progress-dots">
+            <div class="dot" data-step="1"></div>
+            <div class="dot" data-step="2"></div>
+            <div class="dot" data-step="3"></div>
+        </div>
+        <button class="welcome-button" id="startExperience">Begin Your Journey</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const startButton = document.getElementById('startExperience');
+    const dots = document.querySelectorAll('.dot');
+    let currentStep = 1;
+
+    // Show welcome screen with gentle animation
+    setTimeout(() => {
+        welcomeScreen.classList.add('visible');
+    }, 100);
+
+    // Update progress dots
+    function updateProgress(step) {
+        dots.forEach((dot, index) => {
+            if (index < step) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    // Animate dots sequentially
+    setTimeout(() => updateProgress(1), 800);
+    setTimeout(() => updateProgress(2), 1200);
+    setTimeout(() => updateProgress(3), 1600);
+
+    // Handle start button click
+    startButton.addEventListener('click', () => {
+        welcomeScreen.style.opacity = '0';
+        setTimeout(() => {
+            welcomeScreen.style.display = 'none';
+            // Store in session that welcome screen was shown
+            sessionStorage.setItem('welcomeScreenShown', 'true');
+        }, 800);
+    });
+
+    // Check if welcome screen was already shown in this session
+    if (sessionStorage.getItem('welcomeScreenShown')) {
+        welcomeScreen.style.display = 'none';
+    }
+});
+</script>

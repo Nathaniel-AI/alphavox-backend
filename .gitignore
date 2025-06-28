@@ -1,0 +1,74 @@
+# ---- Python basics ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# ---- Virtual environments ----
+venv/
+.venv/
+ENV/
+env/
+*.env
+*.venv
+
+# ---- Dependency tools ----
+pip-log.txt
+pip-delete-this-directory.txt
+poetry.lock
+poetry.toml
+Pipfile
+Pipfile.lock
+
+# ---- VS Code ----
+.vscode/
+
+# ---- OS-specific ----
+.DS_Store
+Thumbs.db
+
+# ---- pre-commit hooks ----
+.pre-commit-config.yaml
+.pre-commit-config.yml
+.cache/
+.mypy_cache/
+.pytest_cache/
+coverage.*
+htmlcov/
+
+# ---- Jupyter notebooks ----
+.ipynb_checkpoints/
+
+# ---- dotenv/env files ----
+.env
+.env.*
+
+# ---- Test coverage ----
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.coverage
+.cache
+
+# ---- PyInstaller ----
+*.manifest
+*.spec
+
+# ---- Local history & backups ----
+*.bak
+*.swp
+*.tmp
+*~
+
+# ---- GitHub workflows (optional to exclude secrets) ----
+*.pem
+*.key
+
+

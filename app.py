@@ -15,6 +15,17 @@ import pygame
 import cv2
 import numpy as np
 from gtts import gTTS
+from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # this reads the .env file
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+app = Flask(__name__)
+CORS(app, origins=["http://localhost:5173"])  # Or whatever Vite dev port you use
 
 # Import app_init (centralized app and db setup)
 from app_init import app, db
@@ -2138,5 +2149,5 @@ try:
 except ImportError:
     # Fallback to local dev server
     if __name__ == '__main__':
-        app.run(host='0.0.0.0', port=5000, debug=True)
+        app.run(host='0.0.0.0', port=8000, debug=True)
 

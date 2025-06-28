@@ -1,0 +1,1391 @@
+[2025-05-09 02:42:39] [ERROR] [routes.health_routes] - Database health check failed: The current Flask app is not registered with this 'SQLAlchemy' instance. Did you forget to call 'init_app', or did you create multiple 'SQLAlchemy' instances?
+[2025-05-09 02:43:10] [ERROR] [app_init] - Exception on /learning/ [GET]
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/routes/learning_routes.py", line 19, in learning_hub
+    return render_template('learning/hub.html', title="Learning Hub")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/runner/workspace/templates/learning/hub.html", line 1, in top-level template code
+    {% extends "layout.html" %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/templates/layout.html", line 133, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/templates/learning/hub.html", line 94, in block 'content'
+    {% for topic in topics[:3] %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'topics' is undefined
+[2025-05-09 02:44:04] [ERROR] [app_init] - Exception on /color-scheme/ [GET]
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/routes/color_scheme_routes.py", line 120, in color_scheme_home
+    return render_template('color_scheme/home.html', title="Color Scheme")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: color_scheme/home.html
+[2025-05-09 02:45:57] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InvalidTextRepresentation) invalid input syntax for type integer: "default_user"
+LINE 3: WHERE user_preference.user_id = 'default_user' AND user_pref...
+                                        ^
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/9h9h)
+[2025-05-09 02:45:57] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:57] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-09 02:45:58] [ERROR] [routes.color_scheme_routes] - Error getting user color scheme preference: (psycopg2.errors.InFailedSqlTransaction) current transaction is aborted, commands ignored until end of transaction block
+
+[SQL: SELECT user_preference.id AS user_preference_id, user_preference.user_id AS user_preference_user_id, user_preference.type AS user_preference_type, user_preference.value AS user_preference_value, user_preference.is_active AS user_preference_is_active, user_preference.created_at AS user_preference_created_at, user_preference.updated_at AS user_preference_updated_at, user_preference.source AS user_preference_source, user_preference.confidence AS user_preference_confidence 
+FROM user_preference 
+WHERE user_preference.user_id = %(user_id_1)s AND user_preference.type = %(type_1)s AND user_preference.is_active = true 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 'default_user', 'type_1': 'color_scheme', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/2j85)
+[2025-05-13 22:28:49] [ERROR] [attached_assets.conversation_integration] - Failed to load required components: cannot import name 'alphavox' from 'alphavox' (unknown location)
+[2025-05-13 22:28:49] [ERROR] [root] - Error initializing integration modules: The setup method 'route' can no longer be called on the application. It has already handled its first request, any changes will not be applied consistently.
+Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+[2025-05-13 22:28:49] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 200, in init_services
+    register_caregiver_routes(app)
+  File "/home/runner/workspace/modules/caregiver_dashboard.py", line 180, in register_caregiver_routes
+    @app.route('/caregiver')
+     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/sansio/scaffold.py", line 46, in wrapper_func
+    self._check_setup_finished(f_name)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/sansio/app.py", line 415, in _check_setup_finished
+    raise AssertionError(
+AssertionError: The setup method 'route' can no longer be called on the application. It has already handled its first request, any changes will not be applied consistently.
+Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+
+[2025-05-13 22:28:50] [ERROR] [app_init] - Exception on /home [GET]
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/app.py", line 713, in home
+    return render_template('home.html', name=session.get('name', 'User'))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/runner/workspace/templates/home.html", line 1, in top-level template code
+    {% extends 'layout.html' %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/templates/layout.html", line 69, in top-level template code
+    <a class="nav-link text-light" href="{{ url_for('color_scheme.color_preferences') }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/routing/map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'color_scheme.color_preferences'. Did you mean 'color_scheme.color_scheme_home' instead?
+[2025-05-13 22:32:01] [ERROR] [attached_assets.conversation_integration] - Failed to load required components: cannot import name 'alphavox' from 'alphavox' (unknown location)
+[2025-05-13 22:32:01] [ERROR] [root] - Error initializing integration modules: The setup method 'route' can no longer be called on the application. It has already handled its first request, any changes will not be applied consistently.
+Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+[2025-05-13 22:32:01] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 200, in init_services
+    register_caregiver_routes(app)
+  File "/home/runner/workspace/modules/caregiver_dashboard.py", line 180, in register_caregiver_routes
+    @app.route('/caregiver')
+     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/sansio/scaffold.py", line 46, in wrapper_func
+    self._check_setup_finished(f_name)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/sansio/app.py", line 415, in _check_setup_finished
+    raise AssertionError(
+AssertionError: The setup method 'route' can no longer be called on the application. It has already handled its first request, any changes will not be applied consistently.
+Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+
+[2025-05-13 22:33:21] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:21] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:21] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:21] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:26] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:26] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:26] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:26] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:30] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:30] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:30] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:30] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:34] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:34] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:34] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:34] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:37] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:37] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:37] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:37] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:39] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:39] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:39] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:39] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:41] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:41] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:41] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:41] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:44] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:44] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:33:44] [ERROR] [root] - Error using AlphaVox NLU for gesture: No module named 'sklearn'
+[2025-05-13 22:33:44] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 903, in speak
+    from alphavox_input_nlu import get_input_processor
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 10, in <module>
+    from neural_learning_core import NeuralLearningCore
+  File "/home/runner/workspace/neural_learning_core.py", line 9, in <module>
+    from sklearn.ensemble import RandomForestClassifier
+ModuleNotFoundError: No module named 'sklearn'
+
+[2025-05-13 22:35:54] [ERROR] [attached_assets.conversation_integration] - Failed to load required components: cannot import name 'alphavox' from 'alphavox' (unknown location)
+[2025-05-13 22:35:54] [ERROR] [root] - Error initializing integration modules: The setup method 'route' can no longer be called on the application. It has already handled its first request, any changes will not be applied consistently.
+Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+[2025-05-13 22:35:54] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 200, in init_services
+    register_caregiver_routes(app)
+  File "/home/runner/workspace/modules/caregiver_dashboard.py", line 180, in register_caregiver_routes
+    @app.route('/caregiver')
+     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/sansio/scaffold.py", line 46, in wrapper_func
+    self._check_setup_finished(f_name)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/sansio/app.py", line 415, in _check_setup_finished
+    raise AssertionError(
+AssertionError: The setup method 'route' can no longer be called on the application. It has already handled its first request, any changes will not be applied consistently.
+Make sure all imports, decorators, functions, etc. needed to set up the application are done before running it.
+
+[2025-05-13 23:05:11] [ERROR] [root] - Error initializing integration modules: PortAudio library not found
+[2025-05-13 23:05:11] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 153, in init_services
+    speech_integration = get_speech_integration()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/modules/speech_integration.py", line 177, in get_speech_integration
+    _speech_integration = SpeechIntegration()
+                          ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/modules/speech_integration.py", line 45, in __init__
+    self._initialize_components()
+  File "/home/runner/workspace/modules/speech_integration.py", line 53, in _initialize_components
+    from real_speech_recognition import get_speech_recognition_engine
+  File "/home/runner/workspace/real_speech_recognition.py", line 13, in <module>
+    import sounddevice as sd
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sounddevice.py", line 71, in <module>
+    raise OSError('PortAudio library not found')
+OSError: PortAudio library not found
+
+[2025-05-13 23:06:22] [ERROR] [neural_learning_core] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:06:22] [ERROR] [research_module] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:06:22] [ERROR] [alphavox_input_nlu] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:06:24] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:06:38] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:08:19] [ERROR] [neural_learning_core] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:08:20] [ERROR] [research_module] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:08:20] [ERROR] [alphavox_input_nlu] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:08:20] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:08:20] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:08:20] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:08:25] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:08:25] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:08:25] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:08:39] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:08:39] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:08:39] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:42:20] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:42:20] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:42:20] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:42:25] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:42:25] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:42:25] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:43:04] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:43:04] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:43:04] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:44:34] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:44:34] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:44:34] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:46:33] [ERROR] [neural_learning_core] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:46:33] [ERROR] [research_module] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:46:33] [ERROR] [alphavox_input_nlu] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:46:33] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:46:33] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:46:33] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:46:57] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:46:57] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:46:57] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:47:04] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:47:05] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:47:05] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:47:41] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:47:41] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:47:41] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:48:41] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:48:41] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:48:41] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:48:46] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:48:46] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:48:46] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:52:12] [ERROR] [root] - Error initializing integration modules: PortAudio library not found
+[2025-05-13 23:52:12] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 153, in init_services
+    speech_integration = get_speech_integration()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/modules/speech_integration.py", line 177, in get_speech_integration
+    _speech_integration = SpeechIntegration()
+                          ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/modules/speech_integration.py", line 45, in __init__
+    self._initialize_components()
+  File "/home/runner/workspace/modules/speech_integration.py", line 53, in _initialize_components
+    from real_speech_recognition import get_speech_recognition_engine
+  File "/home/runner/workspace/real_speech_recognition.py", line 13, in <module>
+    import sounddevice as sd
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sounddevice.py", line 71, in <module>
+    raise OSError('PortAudio library not found')
+OSError: PortAudio library not found
+
+[2025-05-13 23:53:21] [ERROR] [neural_learning_core] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:53:21] [ERROR] [research_module] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:53:21] [ERROR] [alphavox_input_nlu] - Failed to load spaCy model: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+[2025-05-13 23:53:21] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:53:21] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:53:21] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-13 23:55:24] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-13 23:55:24] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-13 23:55:24] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-14 00:05:26] [ERROR] [root] - Error using AlphaVox NLU for gesture: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+[2025-05-14 00:05:26] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 908, in speak
+    data = request.json
+           ^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/wrappers.py", line 219, in on_json_loading_failed
+    raise BadRequest() from ebr
+werkzeug.exceptions.BadRequest: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+
+[2025-05-14 00:05:27] [ERROR] [alphavox_input_nlu] - Error processing interaction for user 1: sequence index must be integer, not 'slice'
+Traceback (most recent call last):
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 105, in process_interaction
+    interaction['context'] = self._add_context(interaction, user_id)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/alphavox_input_nlu.py", line 293, in _add_context
+    rc['root_cause'] for rc in self.context_window[user_id].get('root_causes', [])[-5:]
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+TypeError: sequence index must be integer, not 'slice'
+[2025-05-20 18:16:07] [ERROR] [root] - Error initializing integration modules: PortAudio library not found
+[2025-05-20 18:16:07] [ERROR] [root] - Traceback (most recent call last):
+  File "/home/runner/workspace/app.py", line 204, in init_services
+    speech_integration = get_speech_integration()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/modules/speech_integration.py", line 177, in get_speech_integration
+    _speech_integration = SpeechIntegration()
+                          ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/modules/speech_integration.py", line 45, in __init__
+    self._initialize_components()
+  File "/home/runner/workspace/modules/speech_integration.py", line 53, in _initialize_components
+    from real_speech_recognition import get_speech_recognition_engine
+  File "/home/runner/workspace/real_speech_recognition.py", line 13, in <module>
+    import sounddevice as sd
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sounddevice.py", line 71, in <module>
+    raise OSError('PortAudio library not found')
+OSError: PortAudio library not found
+
+[2025-05-20 18:16:07] [ERROR] [root] - Error getting color scheme: Entity namespace for "user_preference" has no property "preference_type"
+[2025-05-20 18:16:48] [ERROR] [root] - Error getting color scheme: Entity namespace for "user_preference" has no property "preference_type"
+[2025-05-20 18:17:02] [ERROR] [root] - Error getting color scheme: Entity namespace for "user_preference" has no property "preference_type"

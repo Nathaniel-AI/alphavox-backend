@@ -152,6 +152,14 @@ class SoundRecognitionService:
         if self.using_real_recognition and self.speech_engine:
             # Define a callback for speech recognition
             def speech_callback(text, confidence, metadata):
+                """
+                Callback function for processing speech recognition results.
+                
+                Args:
+                    text (str): The recognized speech text
+                    confidence (float): Confidence score of the recognition
+                    metadata (dict): Additional metadata from the speech engine
+                """
                 self.logger.info(f"Speech recognized: '{text}' (confidence: {confidence:.2f})")
                 # Process the speech as a sound pattern
                 self.last_detected_sound = 'speech'

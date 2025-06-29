@@ -107,7 +107,7 @@ class CodeModifier:
         
         # Safety thresholds
         self.min_confidence = 0.8  # Minimum confidence required for autonomous changes
-        self.max_lines_changed = 20  # Maximum lines that can be changed at once
+        self.max_lines_changed = 100  # Maximum lines that can be changed at once
         self.safe_files = set()  # Files that can be modified
         
         # Initialize safe files list
@@ -280,7 +280,7 @@ class AICodeGenerator:
     def __init__(self):
         self.api_key = ANTHROPIC_API_KEY
         self.api_endpoint = "https://api.anthropic.com/v1/messages"
-        self.model = "claude-3-5-sonnet-20241022"  # the newest Anthropic model is "claude-3-5-sonnet-20241022" which was released October 22, 2024
+        self.model = "claude-sonnet-4-20250514"  # the newest Anthropic model is "claude-sonnet-4-20250514" which was released October 22, 2024
     
     def generate_code_improvement(self, file_path: str, code: str, issue_description: str) -> Tuple[str, str, float]:
         """

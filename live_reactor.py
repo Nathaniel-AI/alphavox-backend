@@ -9,7 +9,7 @@ import logging
 import time
 from typing import Dict, Any, List, Optional, Tuple, Union
 
-from temporal_nonverbal_engine import TemporalNonverbalEngine
+from nonverbal_engine import NonverbalEngine
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
@@ -34,8 +34,8 @@ class LiveReactor:
         Args:
             use_lstm: Whether to use advanced LSTM models if available
         """
-        # Initialize the temporal nonverbal engine
-        self.engine = TemporalNonverbalEngine()
+        # Initialize the  nonverbal engine
+        self.engine = engine temporal()
         
         # Track last processed time for throttling
         self.last_processed_time = 0

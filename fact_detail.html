@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Fact | AlphaVox{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-lightbulb me-2 text-warning"></i>Learning Fact
+                    </h3>
+                    <div>
+                        <a href="/learning/topics/{{ fact.topic }}" class="btn btn-outline-primary cyber-btn-sm me-2">
+                            <i class="fas fa-book me-1"></i>Back to Topic
+                        </a>
+                        <a href="/learning" class="btn btn-outline-primary cyber-btn-sm">
+                            <i class="fas fa-graduation-cap me-1"></i>Learning Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card bg-dark border-warning cyber-card-sm mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h4 class="text-warning mb-0">Did you know?</h4>
+                                <span class="badge bg-secondary">{{ fact.topic }}</span>
+                            </div>
+                            <p class="lead mb-3">{{ fact.content }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Source: {{ fact.source }}</small>
+                                <small class="text-muted">Added on {{ fact.created_at.split('T')[0] }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-4">
+                        <button id="mark-learned" class="btn btn-primary cyber-btn">
+                            <i class="fas fa-check-circle me-1"></i>Mark as Learned
+                        </button>
+                    </div>
+                    
+                    <!-- Related Facts -->
+                    <div class="card bg-dark border-secondary cyber-card-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Related Facts</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if related_facts %}
+                                <div class="row g-3">
+                                    {% for related in related_facts %}
+                                        <div class="col-md-6">
+                                            <div class="card h-100 bg-dark border-secondary">
+                                                <div class="card-body">
+                                                    <h6 class="card-title mb-2">
+                                                        <i class="fas fa-lightbulb text-warning me-2"></i>{{ related.topic }}
+                                                    </h6>
+                                                    <p class="card-text small">{{ related.content|truncate(120) }}</p>
+                                                </div>
+                                                <div class="card-footer bg-transparent border-0">
+                                                    <a href="/learning/facts/{{ related.id }}" class="btn btn-sm btn-outline-warning cyber-btn-sm w-100">
+                                                        <i class="fas fa-info-circle me-1"></i>View Fact
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>No related facts available.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const markLearnedBtn = document.getElementById('mark-learned');
+    
+    if (markLearnedBtn) {
+        markLearnedBtn.addEventListener('click', function() {
+            // Send AJAX request to mark fact as learned
+            fetch('/learning/api/learn', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fact_id: '{{ fact.id }}'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI or show success message
+                    markLearnedBtn.innerHTML = '<i class="fas fa-check me-1"></i>Fact Learned';
+                    markLearnedBtn.classList.remove('btn-primary');
+                    markLearnedBtn.classList.add('btn-success');
+                    markLearnedBtn.disabled = true;
+                } else {
+                    alert('Error marking fact as learned');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error marking fact as learned');
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

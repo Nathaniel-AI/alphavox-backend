@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Education Hub</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --theme-primary: #6c757d;
+            --theme-secondary: #495057;
+            --theme-accent: #adb5bd;
+            --theme-background: #212529;
+            --theme-text: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--theme-background);
+            color: var(--theme-text);
+            transition: all 1s ease;
+        }
+
+        .card {
+            background-color: var(--theme-secondary);
+            border-color: var(--theme-accent);
+            transition: all 0.5s ease;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--theme-primary);
+            border-color: var(--theme-primary);
+            transition: all 0.3s ease;
+        }
+
+        /* High Contrast Mode */
+        [data-high-contrast="true"] {
+            --theme-text: #ffffff;
+            --theme-background: #000000;
+        }
+
+        /* Support for reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Focus indicators */
+        :focus {
+            outline: 3px solid var(--theme-primary);
+            outline-offset: 2px;
+        }
+
+        /* Skip link styling */
+        .visually-hidden-focusable:not(:focus):not(:focus-within) {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        .visually-hidden-focusable:focus {
+            position: fixed !important;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            width: auto !important;
+            height: auto !important;
+            padding: 1rem !important;
+            margin: 0 !important;
+            background-color: var(--theme-primary);
+            color: var(--theme-text);
+            text-decoration: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+
+        /* Topic card styles */
+        .topic-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--theme-accent);
+        }
+
+        .topic-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .topic-description {
+            font-size: 0.9rem;
+            color: var(--theme-text);
+            opacity: 0.8;
+        }
+
+        /* Education hub specific styles */
+        .education-intro {
+            background-color: rgba(var(--theme-primary-rgb), 0.1);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .education-intro h2 {
+            margin-bottom: 1rem;
+            color: var(--theme-accent);
+        }
+
+        .resource-section {
+            margin-top: 3rem;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: rgba(var(--theme-secondary-rgb), 0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .resource-item:hover {
+            background-color: rgba(var(--theme-secondary-rgb), 0.2);
+        }
+
+        .resource-item i {
+            color: var(--theme-accent);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add accessibility controls to the header section -->
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+    <div class="container py-4">
+        <header class="text-center mb-5">
+            <h1 class="display-4">AlphaVox</h1>
+            <p class="lead">Education Hub</p>
+            <div class="mb-3">
+                <a href="/" class="btn btn-outline-secondary me-2">
+                    <i data-feather="home"></i> Home
+                </a>
+                <!-- Add Learning Journey link -->
+                <a href="/learning-journey" class="btn btn-outline-warning me-2">
+                    <i data-feather="map"></i> Learning Journey
+                </a>
+                <button id="highContrastToggle" class="btn btn-outline-secondary me-2" aria-pressed="false">
+                    <i data-feather="eye"></i> High Contrast
+                </button>
+                <button id="increaseFontSize" class="btn btn-outline-secondary me-2" aria-label="Increase font size">
+                    <i data-feather="plus-circle"></i> A+
+                </button>
+                <button id="decreaseFontSize" class="btn btn-outline-secondary" aria-label="Decrease font size">
+                    <i data-feather="minus-circle"></i> A-
+                </button>
+            </div>
+        </header>
+        <main id="main-content">
+            <div class="education-intro">
+                <h2>Neurodivergent Communication Resources</h2>
+                <p>Welcome to the AlphaVox Education Hub, your resource center for the latest research and information about neurodivergent communication strategies, non-verbal communication breakthroughs, and assistive technology innovations.</p>
+                <p>Our content is regularly updated with the latest research findings and best practices to support effective communication across diverse neurological profiles.</p>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for topic in topics %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="topic-icon">
+                            {% if topic.id == 'nonverbal-communication' %}
+                                <i data-feather="users"></i>
+                            {% elif topic.id == 'autism-support' %}
+                                <i data-feather="heart"></i>
+                            {% elif topic.id == 'sensory-processing' %}
+                                <i data-feather="activity"></i>
+                            {% elif topic.id == 'gesture-recognition' %}
+                                <i data-feather="hand"></i>
+                            {% else %}
+                                <i data-feather="book-open"></i>
+                            {% endif %}
+                        </div>
+                        <div class="topic-title">{{ topic.title }}</div>
+                        <div class="topic-description mb-3">{{ topic.description }}</div>
+                        <a href="{{ url_for('education_topic', topic=topic.id) }}" class="btn btn-primary mt-auto">
+                            <i data-feather="chevron-right"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="resource-section">
+                <h3 class="mb-4">Additional Resources</h3>
+                <div class="resource-item">
+                    <i data-feather="globe"></i>
+                    <div>
+                        <h4 class="h6 mb-1">Autism Self-Advocacy Network</h4>
+                        <p class="mb-0">Resources by and for the autism community</p>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <i data-feather="book"></i>
+                    <div>
+                        <h4 class="h6 mb-1">Research Publications</h4>
+                        <p class="mb-0">Latest academic research on neurodivergent communication</p>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <i data-feather="video"></i>
+                    <div>
+                        <h4 class="h6 mb-1">Video Tutorials</h4>
+                        <p class="mb-0">Visual guides for non-verbal communication techniques</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        // Initialize Feather icons
+        document.addEventListener('DOMContentLoaded', () => {
+            feather.replace();
+
+            // High contrast toggle
+            const highContrastToggle = document.getElementById('highContrastToggle');
+            if (highContrastToggle) {
+                highContrastToggle.addEventListener('click', () => {
+                    const isActive = document.body.getAttribute('data-high-contrast') === 'true';
+                    document.body.setAttribute('data-high-contrast', isActive ? 'false' : 'true');
+                    highContrastToggle.setAttribute('aria-pressed', isActive ? 'false' : 'true');
+                });
+            }
+
+            // Font size controls
+            let currentFontSize = 100;
+            const fontSizeStep = 10;
+            const fontSizeMin = 80;
+            const fontSizeMax = 150;
+
+            const increaseFontSize = document.getElementById('increaseFontSize');
+            const decreaseFontSize = document.getElementById('decreaseFontSize');
+
+            if (increaseFontSize && decreaseFontSize) {
+                increaseFontSize.addEventListener('click', () => {
+                    if (currentFontSize < fontSizeMax) {
+                        currentFontSize += fontSizeStep;
+                        document.body.style.fontSize = `${currentFontSize}%`;
+                    }
+                });
+
+                decreaseFontSize.addEventListener('click', () => {
+                    if (currentFontSize > fontSizeMin) {
+                        currentFontSize -= fontSizeStep;
+                        document.body.style.fontSize = `${currentFontSize}%`;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

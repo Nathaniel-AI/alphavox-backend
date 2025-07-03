@@ -1,0 +1,309 @@
+{% extends 'layout.html' %}
+
+{% block title %}AlphaVox - User Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">User Profile</h1>
+            <p class="lead">Customize your communication preferences</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Preferences</h5>
+                </div>
+                <div class="card-body">
+                    <form id="preferences-form">
+                        <h6 class="mb-3">Input Sensitivity</h6>
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="gesture-sensitivity" class="form-label">Gesture Sensitivity</label>
+                                <div class="input-group">
+                                    <input type="range" class="form-range" id="gesture-sensitivity" name="gesture_sensitivity" min="0.1" max="1.0" step="0.1" value="0.8">
+                                    <span id="gesture-sensitivity-value" class="ms-2">0.8</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="eye-sensitivity" class="form-label">Eye Tracking Sensitivity</label>
+                                <div class="input-group">
+                                    <input type="range" class="form-range" id="eye-sensitivity" name="eye_tracking_sensitivity" min="0.1" max="1.0" step="0.1" value="0.8">
+                                    <span id="eye-sensitivity-value" class="ms-2">0.8</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="sound-sensitivity" class="form-label">Sound Sensitivity</label>
+                                <div class="input-group">
+                                    <input type="range" class="form-range" id="sound-sensitivity" name="sound_sensitivity" min="0.1" max="1.0" step="0.1" value="0.7">
+                                    <span id="sound-sensitivity-value" class="ms-2">0.7</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mb-3">Output Settings</h6>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="voice-type" class="form-label">Voice Type</label>
+                                <select class="form-select" id="voice-type" name="voice_type">
+                                    <option value="default">Default</option>
+                                    <option value="child">Child</option>
+                                    <option value="male">Adult Male</option>
+                                    <option value="female">Adult Female</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="response-speed" class="form-label">Speech Rate</label>
+                                <div class="input-group">
+                                    <input type="range" class="form-range" id="response-speed" name="response_speed" min="0.5" max="1.5" step="0.1" value="1.0">
+                                    <span id="response-speed-value" class="ms-2">1.0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mb-3">System Preferences</h6>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="symbol-system" class="form-label">Symbol System</label>
+                                <select class="form-select" id="symbol-system" name="symbol_system">
+                                    <option value="default">Default</option>
+                                    <option value="pcs">PCS (Picture Communication Symbols)</option>
+                                    <option value="arasaac">ARASAAC</option>
+                                    <option value="bliss">Blissymbols</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mt-4">
+                                    <input class="form-check-input" type="checkbox" id="emotion-display" name="preferred_emotion_display" checked>
+                                    <label class="form-check-label" for="emotion-display">Show Emotion Indicators</label>
+                                </div>
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input" type="checkbox" id="multimodal-processing" name="multimodal_processing" checked>
+                                    <label class="form-check-label" for="multimodal-processing">Enable Multimodal Processing</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Preferences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">User Information</h5>
+                </div>
+                <div class="card-body">
+                    <h4 id="user-name" class="mb-3">Loading...</h4>
+                    <p class="text-muted">User ID: <span id="user-id">...</span></p>
+                    <p class="text-muted">Member since: <span id="user-created">...</span></p>
+                    
+                    <hr>
+                    
+                    <h6>About Your Profile</h6>
+                    <p class="small">
+                        Your profile contains preferences that help AlphaVox adapt to your communication style. 
+                        These preferences are saved and will be automatically loaded each time you use the system.
+                    </p>
+                    <p class="small">
+                        <i class="fas fa-sync text-info me-2"></i>
+                        <strong>Adaptive Learning:</strong> As you use AlphaVox, the system will learn from your interactions
+                        and may suggest preference updates to better meet your needs.
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div id="recent-activity">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-12"></span>
+                            <span class="placeholder col-12"></span>
+                            <span class="placeholder col-12"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get form elements for range inputs
+    const gestureRange = document.getElementById('gesture-sensitivity');
+    const gestureValue = document.getElementById('gesture-sensitivity-value');
+    const eyeRange = document.getElementById('eye-sensitivity');
+    const eyeValue = document.getElementById('eye-sensitivity-value');
+    const soundRange = document.getElementById('sound-sensitivity');
+    const soundValue = document.getElementById('sound-sensitivity-value');
+    const responseRange = document.getElementById('response-speed');
+    const responseValue = document.getElementById('response-speed-value');
+    
+    // Update display value when ranges change
+    gestureRange.addEventListener('input', () => {
+        gestureValue.textContent = gestureRange.value;
+    });
+    
+    eyeRange.addEventListener('input', () => {
+        eyeValue.textContent = eyeRange.value;
+    });
+    
+    soundRange.addEventListener('input', () => {
+        soundValue.textContent = soundRange.value;
+    });
+    
+    responseRange.addEventListener('input', () => {
+        responseValue.textContent = responseRange.value;
+    });
+    
+    // Load user profile data
+    function loadUserProfile() {
+        fetch('/profile')
+            .then(response => response.json())
+            .then(data => {
+                // Update user information
+                document.getElementById('user-name').textContent = data.user.name;
+                document.getElementById('user-id').textContent = data.user.id;
+                
+                // Format date
+                const created = new Date(data.user.created_at);
+                document.getElementById('user-created').textContent = created.toLocaleDateString();
+                
+                // Update preference form values
+                const prefs = data.preferences;
+                
+                // Update range values
+                gestureRange.value = prefs.gesture_sensitivity;
+                gestureValue.textContent = prefs.gesture_sensitivity;
+                
+                eyeRange.value = prefs.eye_tracking_sensitivity;
+                eyeValue.textContent = prefs.eye_tracking_sensitivity;
+                
+                soundRange.value = prefs.sound_sensitivity;
+                soundValue.textContent = prefs.sound_sensitivity;
+                
+                responseRange.value = prefs.response_speed;
+                responseValue.textContent = prefs.response_speed;
+                
+                // Update selects
+                document.getElementById('voice-type').value = prefs.voice_type;
+                document.getElementById('symbol-system').value = prefs.symbol_system;
+                
+                // Update checkboxes
+                document.getElementById('emotion-display').checked = prefs.preferred_emotion_display;
+                document.getElementById('multimodal-processing').checked = prefs.multimodal_processing;
+                
+                // Load recent activity (in a real implementation)
+                loadRecentActivity();
+            })
+            .catch(error => {
+                console.error('Error loading profile:', error);
+                // Show error message
+                document.getElementById('user-name').textContent = 'Error loading profile';
+            });
+    }
+    
+    // Load recent activity (placeholder in this demo)
+    function loadRecentActivity() {
+        const activityContainer = document.getElementById('recent-activity');
+        
+        // In a full implementation, would fetch from server
+        // This is a placeholder
+        activityContainer.innerHTML = `
+            <div class="list-group list-group-flush bg-dark">
+                <div class="list-group-item bg-dark text-white border-secondary">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Used gesture: thumbs_up</h6>
+                        <small>5 min ago</small>
+                    </div>
+                    <small>Intent: like (Confidence: 92.3%)</small>
+                </div>
+                <div class="list-group-item bg-dark text-white border-secondary">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Used symbol: food</h6>
+                        <small>12 min ago</small>
+                    </div>
+                    <small>Intent: hungry (Confidence: 89.7%)</small>
+                </div>
+                <div class="list-group-item bg-dark text-white border-secondary">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Text input</h6>
+                        <small>25 min ago</small>
+                    </div>
+                    <small>"I need help with this"</small>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Submit form handler
+    document.getElementById('preferences-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Gather form data
+        const formData = new FormData(this);
+        const preferences = {};
+        
+        // Convert to appropriate types
+        for (const [key, value] of formData.entries()) {
+            if (key === 'preferred_emotion_display' || key === 'multimodal_processing') {
+                // Checkboxes
+                preferences[key] = value === 'on';
+            } else if (!isNaN(parseFloat(value))) {
+                // Numbers
+                preferences[key] = parseFloat(value);
+            } else {
+                // Strings
+                preferences[key] = value;
+            }
+        }
+        
+        // Make special conversion for checkboxes that might be unchecked
+        if (!formData.has('preferred_emotion_display')) {
+            preferences.preferred_emotion_display = false;
+        }
+        if (!formData.has('multimodal_processing')) {
+            preferences.multimodal_processing = false;
+        }
+        
+        // Send to server
+        fetch('/profile/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(preferences)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Preferences saved successfully!');
+        })
+        .catch(error => {
+            console.error('Error saving preferences:', error);
+            alert('Error saving preferences. Please try again.');
+        });
+    });
+    
+    // Load user profile on page load
+    loadUserProfile();
+});
+</script>
+{% endblock %}

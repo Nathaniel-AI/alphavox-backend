@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Topics | AlphaVox{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-book me-2"></i>Learning Topics
+                    </h3>
+                    <div>
+                        <a href="/learning/journey" class="btn btn-outline-success cyber-btn-sm me-2">
+                            <i class="fas fa-route me-1"></i>Learning Journey
+                        </a>
+                        <a href="/learning" class="btn btn-outline-primary cyber-btn-sm">
+                            <i class="fas fa-graduation-cap me-1"></i>Learning Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <p class="lead">
+                                Explore a wide range of topics related to communication, from nonverbal cues to assistive technology.
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary cyber-btn-sm active" data-filter="all">
+                                    All
+                                </button>
+                                <button type="button" class="btn btn-outline-primary cyber-btn-sm" data-filter="beginner">
+                                    Beginner
+                                </button>
+                                <button type="button" class="btn btn-outline-primary cyber-btn-sm" data-filter="intermediate">
+                                    Intermediate
+                                </button>
+                                <button type="button" class="btn btn-outline-primary cyber-btn-sm" data-filter="advanced">
+                                    Advanced
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4" id="topics-container">
+                        {% for topic in topics %}
+                            <div class="col-lg-4 col-md-6 topic-item" data-difficulty="{{ topic.difficulty }}">
+                                <div class="card h-100 bg-dark border-secondary cyber-card-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="mb-0">{{ topic.name }}</h4>
+                                            <span class="badge ms-auto bg-{{ 'primary' if topic.difficulty == 'beginner' else 'warning' if topic.difficulty == 'intermediate' else 'danger' }}">
+                                                {{ topic.difficulty|capitalize }}
+                                            </span>
+                                        </div>
+                                        
+                                        <p>{{ topic.description }}</p>
+                                        
+                                        {% if topic.prerequisites %}
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-2">Prerequisites:</h6>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    {% for prereq in topic.prerequisites %}
+                                                        <a href="/learning/topics/{{ prereq }}" class="badge bg-secondary text-decoration-none">
+                                                            {{ prereq }}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0">
+                                        <a href="/learning/topics/{{ topic.name }}" class="btn btn-primary cyber-btn w-100">
+                                            <i class="fas fa-book-open me-1"></i>Explore Topic
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Topic filtering functionality
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const topicItems = document.querySelectorAll('.topic-item');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            
+            // Show/hide topics based on filter
+            topicItems.forEach(item => {
+                if (filter === 'all' || item.getAttribute('data-difficulty') === filter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

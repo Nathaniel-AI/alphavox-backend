@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Voice Testing</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cyber-theme.css') }}">
+    <style>
+        .voice-box {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--cyber-accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+        
+        .voice-test-btn {
+            background: linear-gradient(45deg, #333, #444);
+            border: 1px solid var(--cyber-accent);
+            color: var(--cyber-text);
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        .voice-test-btn:hover {
+            box-shadow: 0 0 10px var(--cyber-glow);
+            transform: translateY(-2px);
+            border: 1px solid var(--cyber-highlight);
+        }
+        
+        #waveform {
+            height: 60px;
+            margin: 20px 0;
+            background: #111;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .voice-card {
+            border: 1px solid #333;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(30, 30, 30, 0.7);
+            transition: all 0.3s;
+        }
+        
+        .voice-card:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .voice-active {
+            border: 1px solid var(--cyber-highlight);
+            box-shadow: 0 0 10px var(--cyber-glow);
+        }
+        
+        .parameter-slider {
+            width: 100%;
+            margin: 5px 0;
+        }
+        
+        .emotion-btn {
+            margin: 3px;
+            background: #333;
+            color: #eee;
+            border: 1px solid #555;
+        }
+        
+        .emotion-btn.active {
+            background: var(--cyber-accent);
+            color: #111;
+            font-weight: bold;
+            box-shadow: 0 0 5px var(--cyber-glow);
+        }
+        
+        .play-animation {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="cyber-theme">
+    <div class="container mt-5">
+        <h1 class="text-center cyber-header">AlphaVox Voice Testing <span class="cyber-accent">System</span></h1>
+        
+        <div class="row mt-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="voice-box">
+                    <h3 class="cyber-subheader">Test Different Voices</h3>
+                    <p class="text-muted">Click on a voice to select it, then use the text input to test it</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="voice-card voice-active" data-voice-id="us_male">
+                                <h5>US Male</h5>
+                                <p class="small">Standard US English male voice</p>
+                                <button class="btn btn-sm voice-test-btn preview-btn" data-voice-id="us_male">Preview</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="voice-card" data-voice-id="uk_male">
+                                <h5>UK Male</h5>
+                                <p class="small">British English male voice</p>
+                                <button class="btn btn-sm voice-test-btn preview-btn" data-voice-id="uk_male">Preview</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="voice-card" data-voice-id="friendly_male">
+                                <h5>Friendly Male</h5>
+                                <p class="small">Warm, approachable male voice</p>
+                                <button class="btn btn-sm voice-test-btn preview-btn" data-voice-id="friendly_male">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="cyber-subheader">Voice Parameters</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Emotion:</label>
+                                <div class="emotion-buttons">
+                                    <button class="btn btn-sm emotion-btn active" data-emotion="neutral">Neutral</button>
+                                    <button class="btn btn-sm emotion-btn" data-emotion="positive">Positive</button>
+                                    <button class="btn btn-sm emotion-btn" data-emotion="negative">Negative</button>
+                                    <button class="btn btn-sm emotion-btn" data-emotion="urgent">Urgent</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Intensity:</label>
+                                <div class="emotion-tier-buttons">
+                                    <button class="btn btn-sm emotion-btn" data-tier="mild">Mild</button>
+                                    <button class="btn btn-sm emotion-btn active" data-tier="moderate">Moderate</button>
+                                    <button class="btn btn-sm emotion-btn" data-tier="strong">Strong</button>
+                                    <button class="btn btn-sm emotion-btn" data-tier="urgent">Urgent</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="input-group">
+                            <input type="text" id="test-text" class="form-control" 
+                                   placeholder="Enter text to speak" 
+                                   value="Hello, this is a test of the male voice for AlphaVox.">
+                            <button class="btn btn-primary generate-btn">Generate Speech</button>
+                        </div>
+                    </div>
+                    
+                    <div id="waveform" class="mt-3">
+                        <!-- Audio visualization will go here -->
+                        <div class="wave-bars d-flex align-items-center justify-content-center h-100">
+                            <div class="text-muted">Click "Generate Speech" to test the voice</div>
+                        </div>
+                    </div>
+                    
+                    <div class="audio-controls mt-3 text-center" style="display: none;">
+                        <button class="btn btn-secondary play-btn">
+                            <i class="fas fa-play"></i> Play Again
+                        </button>
+                        <div class="text-muted mt-2" id="audio-file-info"></div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let audioPlayer = new Audio();
+            let currentVoiceId = 'us_male';
+            let currentEmotion = 'neutral';
+            let currentEmotionTier = 'moderate';
+            
+            // Voice card selection
+            document.querySelectorAll('.voice-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    // Update selected voice
+                    document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('voice-active'));
+                    this.classList.add('voice-active');
+                    currentVoiceId = this.getAttribute('data-voice-id');
+                });
+            });
+            
+            // Emotion buttons
+            document.querySelectorAll('.emotion-buttons .emotion-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.emotion-buttons .emotion-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentEmotion = this.getAttribute('data-emotion');
+                });
+            });
+            
+            // Emotion tier buttons
+            document.querySelectorAll('.emotion-tier-buttons .emotion-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.emotion-tier-buttons .emotion-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentEmotionTier = this.getAttribute('data-tier');
+                });
+            });
+            
+            // Preview voice buttons
+            document.querySelectorAll('.preview-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Don't trigger the card click
+                    const voiceId = this.getAttribute('data-voice-id');
+                    generateSpeech("This is a sample of my voice. How do I sound?", voiceId, 'neutral', 'moderate');
+                });
+            });
+            
+            // Generate speech button
+            document.querySelector('.generate-btn').addEventListener('click', function() {
+                const text = document.getElementById('test-text').value;
+                if (!text) return;
+                
+                generateSpeech(text, currentVoiceId, currentEmotion, currentEmotionTier);
+            });
+            
+            // Play again button
+            document.querySelector('.play-btn').addEventListener('click', function() {
+                if (audioPlayer.src) {
+                    audioPlayer.play();
+                    visualizeAudio();
+                }
+            });
+            
+            // Function to generate speech
+            function generateSpeech(text, voiceId, emotion, emotionTier) {
+                // Show loading animation
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '<div class="d-flex justify-content-center align-items-center h-100"><div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+                
+                // Make API request to generate speech
+                fetch('/api/generate_speech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        voice_id: voiceId,
+                        emotion: emotion,
+                        emotion_tier: emotionTier
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.speech_url) {
+                        // Set and play audio
+                        audioPlayer.src = data.speech_url;
+                        audioPlayer.oncanplaythrough = function() {
+                            audioPlayer.play();
+                            visualizeAudio();
+                            
+                            // Show audio controls
+                            document.querySelector('.audio-controls').style.display = 'block';
+                            document.getElementById('audio-file-info').textContent = `Voice: ${voiceId}, Emotion: ${emotion} (${emotionTier})`;
+                        };
+                    } else {
+                        waveform.innerHTML = '<div class="d-flex justify-content-center align-items-center h-100 text-danger">Error generating speech</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    waveform.innerHTML = '<div class="d-flex justify-content-center align-items-center h-100 text-danger">Error connecting to speech service</div>';
+                });
+            }
+            
+            // Function to visualize audio playback
+            function visualizeAudio() {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                
+                // Create a simple audio visualization
+                const barCount = 30;
+                for (let i = 0; i < barCount; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'wave-bar';
+                    bar.style.width = `${100/barCount}%`;
+                    bar.style.height = `${Math.random() * 80 + 20}%`;
+                    bar.style.backgroundColor = 'var(--cyber-accent)';
+                    bar.style.display = 'inline-block';
+                    bar.style.animation = `pulse ${(Math.random() * 0.5 + 0.5).toFixed(2)}s infinite alternate`;
+                    bar.style.opacity = '0.7';
+                    waveform.appendChild(bar);
+                }
+                
+                // Add play animation to the waveform
+                waveform.classList.add('playing');
+                
+                // Remove animation when audio ends
+                audioPlayer.onended = function() {
+                    waveform.querySelectorAll('.wave-bar').forEach(bar => {
+                        bar.style.animation = 'none';
+                        bar.style.height = '20%';
+                        bar.style.opacity = '0.3';
+                    });
+                    waveform.classList.remove('playing');
+                };
+            }
+        });
+    </script>
+</body>
+</html>

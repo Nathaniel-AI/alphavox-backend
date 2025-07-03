@@ -1,0 +1,1400 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Hub | AlphaVox{% endblock %}
+
+{% block styles %}
+<style>
+    .progress-container {
+        margin-bottom: 20px;
+    }
+    
+    .progress-container h4 {
+        margin-bottom: 5px;
+    }
+    
+    .progress-bar {
+        border-radius: 5px;
+        width: 0; /* Default width */
+    }
+    
+    .card-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    .metric-card {
+        width: 48%;
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .metric-card h5 {
+        margin-top: 0;
+        color: #495057;
+    }
+    
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+    
+    .trend-up {
+        color: #28a745;
+    }
+    
+    .trend-down {
+        color: #dc3545;
+    }
+    
+    .flat {
+        color: #6c757d;
+    }
+    
+    .trend-indicator {
+        font-size: 1.5rem;
+        vertical-align: middle;
+    }
+    
+    .trend-value {
+        font-size: 0.9rem;
+        font-weight: normal;
+        color: #6c757d;
+    }
+    
+    .milestone-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+    
+    .milestone-reached {
+        border-left: 5px solid #28a745;
+    }
+    
+    .milestone-progress {
+        border-left: 5px solid #0d6efd;
+    }
+    
+    .milestone-item h5 {
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+    
+    .milestone-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+    
+    .milestone-progress-bar {
+        height: 8px;
+        width: 0; /* Default width */
+    }
+    
+    .session-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+    
+    .session-item .badge {
+        margin-left: 5px;
+    }
+    
+    .recognition-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+    
+    .recognition-content {
+        flex-grow: 1;
+    }
+    
+    .recognition-actions button {
+        margin-left: 5px;
+    }
+    
+    .skill-item {
+        margin-bottom: 15px;
+    }
+    
+    .skill-name {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+    
+    .skill-name .level {
+        font-weight: bold;
+    }
+    
+    .tab-content {
+        padding-top: 20px;
+    }
+    
+    .chart-container {
+        height: 300px;
+        margin-bottom: 30px;
+    }
+    
+    .frequent-expressions {
+        margin-top: 20px;
+    }
+    
+    .expression-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+    
+    .expression-item .count {
+        font-weight: bold;
+        color: #0d6efd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Learning Hub</h1>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a href="#progress" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                    <i class="fas fa-chart-line me-2"></i> Progress Dashboard
+                </a>
+                <a href="#feedback" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-comment-alt me-2"></i> Recognition Feedback
+                </a>
+                <a href="#milestones" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-trophy me-2"></i> Learning Milestones
+                </a>
+                <a href="#sessions" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-history me-2"></i> Learning Sessions
+                </a>
+                <a href="#skills" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-graduation-cap me-2"></i> Skill Levels
+                </a>
+                <a href="#templates" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-sliders-h me-2"></i> Learning Templates
+                </a>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">AI Learning Status</h5>
+                </div>
+                <div class="card-body">
+                    <p id="learning-status" class="card-text mb-2">
+                        {% if learning_active %}
+                            <span class="badge bg-success">Learning Active</span>
+                        {% else %}
+                            <span class="badge bg-warning">Learning Inactive</span>
+                        {% endif %}
+                    </p>
+                    <div class="d-grid gap-2">
+                        {% if learning_active %}
+                            <button id="stop-learning" class="btn btn-danger">
+                                <i class="fas fa-stop-circle me-2"></i> Stop Learning
+                            </button>
+                        {% else %}
+                            <button id="start-learning" class="btn btn-success">
+                                <i class="fas fa-play-circle me-2"></i> Start Learning
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Quick Info</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>User:</strong> {{ selected_user.name if selected_user else 'No user selected' }}</p>
+                    <p class="card-text"><strong>Interactions:</strong> {{ interactions_count if interactions_count else 0 }}</p>
+                    <p class="card-text"><strong>Recent sessions:</strong> {{ sessions_count if sessions_count else 0 }}</p>
+                    <p class="card-text"><strong>Reached milestones:</strong> {{ milestones_reached if milestones_reached else 0 }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="tab-content">
+                <!-- Progress Dashboard -->
+                <div class="tab-pane fade show active" id="progress">
+                    <h2 class="mb-4">Learning Progress</h2>
+                    
+                    <!-- Progress metrics -->
+                    <div class="card-metrics mb-4">
+                        <div class="metric-card">
+                            <h5>Vocabulary Growth</h5>
+                            <div class="metric-value">
+                                {{ learning_progress.vocabulary_percentage if learning_progress.vocabulary_percentage is defined else 0 }}%
+                                {% if learning_progress.vocabulary_growth is defined and learning_progress.vocabulary_growth > 0 %}
+                                    <span class="trend-indicator trend-up">↑</span>
+                                    <span class="trend-value">+{{ learning_progress.vocabulary_growth }}%</span>
+                                {% elif learning_progress.vocabulary_growth is defined and learning_progress.vocabulary_growth < 0 %}
+                                    <span class="trend-indicator trend-down">↓</span>
+                                    <span class="trend-value">{{ learning_progress.vocabulary_growth }}%</span>
+                                {% else %}
+                                    <span class="trend-indicator flat">→</span>
+                                    <span class="trend-value">0%</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <h5>Expression Clarity</h5>
+                            <div class="metric-value">
+                                {{ learning_progress.expression_percentage if learning_progress.expression_percentage is defined else 0 }}%
+                                {% if learning_progress.expression_growth is defined and learning_progress.expression_growth > 0 %}
+                                    <span class="trend-indicator trend-up">↑</span>
+                                    <span class="trend-value">+{{ learning_progress.expression_growth }}%</span>
+                                {% elif learning_progress.expression_growth is defined and learning_progress.expression_growth < 0 %}
+                                    <span class="trend-indicator trend-down">↓</span>
+                                    <span class="trend-value">{{ learning_progress.expression_growth }}%</span>
+                                {% else %}
+                                    <span class="trend-indicator flat">→</span>
+                                    <span class="trend-value">0%</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <h5>Multimodal Usage</h5>
+                            <div class="metric-value">
+                                {{ learning_progress.multimodal_percentage if learning_progress.multimodal_percentage is defined else 0 }}%
+                                {% if learning_progress.multimodal_growth is defined and learning_progress.multimodal_growth > 0 %}
+                                    <span class="trend-indicator trend-up">↑</span>
+                                    <span class="trend-value">+{{ learning_progress.multimodal_growth }}%</span>
+                                {% elif learning_progress.multimodal_growth is defined and learning_progress.multimodal_growth < 0 %}
+                                    <span class="trend-indicator trend-down">↓</span>
+                                    <span class="trend-value">{{ learning_progress.multimodal_growth }}%</span>
+                                {% else %}
+                                    <span class="trend-indicator flat">→</span>
+                                    <span class="trend-value">0%</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <h5>Overall Progress</h5>
+                            <div class="metric-value">
+                                {{ overall_progress if overall_progress is defined else 0 }}%
+                                {% if overall_growth is defined and overall_growth > 0 %}
+                                    <span class="trend-indicator trend-up">↑</span>
+                                    <span class="trend-value">+{{ overall_growth }}%</span>
+                                {% elif overall_growth is defined and overall_growth < 0 %}
+                                    <span class="trend-indicator trend-down">↓</span>
+                                    <span class="trend-value">{{ overall_growth }}%</span>
+                                {% else %}
+                                    <span class="trend-indicator flat">→</span>
+                                    <span class="trend-value">0%</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Interaction Frequency</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="btn-group btn-group-sm mb-3" role="group">
+                                        <button type="button" class="btn btn-outline-primary active" data-period="week">
+                                            Week
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary" data-period="month">
+                                            Month
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary" data-period="year">
+                                            Year
+                                        </button>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="frequencyChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Interaction Methods</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="methodsChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Frequent expressions -->
+                    <div class="card frequent-expressions">
+                        <div class="card-header">
+                            <h5 class="mb-0">Most Frequent Expressions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="frequent-expressions-container">
+                                {% for expression in frequent_expressions %}
+                                    <div class="expression-item">
+                                        <span class="text">{{ expression.text }}</span>
+                                        <span class="count">{{ expression.count }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feedback tab -->
+                <div class="tab-pane fade" id="feedback">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Recognition Feedback</h2>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary" id="refresh-feedback">
+                                <i class="fas fa-sync-alt me-2"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">About Recognition Feedback</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Providing feedback on how well AlphaVox recognizes input helps improve the system's accuracy over time.</p>
+                            <p>When you mark an interpretation as correct or incorrect, the AI learns from this feedback and adjusts its future recognition patterns.</p>
+                        </div>
+                    </div>
+                    
+                    <div id="recent-interactions-container">
+                        {% if recent_interactions %}
+                            {% for interaction in recent_interactions %}
+                                <div class="recognition-item" data-interaction-id="{{ interaction.id }}">
+                                    <div class="recognition-content">
+                                        <div><strong>Input:</strong> {{ interaction.text }}</div>
+                                        <div><strong>Interpreted as:</strong> {{ interaction.intent }} ({{ interaction.confidence|round(2) }})</div>
+                                        <div><small class="text-muted">{{ interaction.timestamp.strftime('%Y-%m-%d %H:%M') }}</small></div>
+                                        
+                                        {% if interaction.feedback %}
+                                            <div class="mt-2">
+                                                <span class="badge 
+                                                    {% if interaction.feedback.feedback_type == 'correct' %}
+                                                        bg-success
+                                                    {% elif interaction.feedback.feedback_type == 'partially' %}
+                                                        bg-warning
+                                                    {% else %}
+                                                        bg-danger
+                                                    {% endif %}
+                                                ">
+                                                    {{ interaction.feedback.feedback_type|capitalize }}
+                                                </span>
+                                                
+                                                {% if interaction.feedback.correct_intent %}
+                                                    <small class="ms-2">Should be: {{ interaction.feedback.correct_intent }}</small>
+                                                {% endif %}
+                                                
+                                                {% if interaction.feedback.notes %}
+                                                    <div class="small text-muted mt-1">Note: {{ interaction.feedback.notes }}</div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if not interaction.feedback %}
+                                        <div class="recognition-actions">
+                                            <button type="button" class="btn btn-sm btn-success feedback-btn" data-type="correct" title="Mark as correct feedback">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-warning feedback-btn" data-type="partially" title="Mark as partially correct feedback">
+                                                <i class="fas fa-adjust"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger feedback-btn" data-type="incorrect" title="Mark as incorrect feedback"
+                                                    data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-info">
+                                No recent interactions found. Use the system more to generate interaction data.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Milestones tab -->
+                <div class="tab-pane fade" id="milestones">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Learning Milestones</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMilestoneModal">
+                            <i class="fas fa-plus me-2"></i> Add Milestone
+                        </button>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Active Milestones</h4>
+                            <div id="active-milestones-container">
+                                {% for milestone in active_milestones %}
+                                    <div class="milestone-item {% if milestone.is_reached %}milestone-reached{% else %}milestone-progress{% endif %}">
+                                        <h5>{{ milestone.title }}</h5>
+                                        <div class="milestone-description">{{ milestone.description }}</div>
+                                        
+                                        <div class="progress">
+                                            <div class="progress-bar {% if milestone.is_reached %}bg-success{% endif %}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ milestone.progress }}%;" 
+                                                 title="Progress: {{ milestone.progress }}%" 
+                                                 aria-valuenow="{{ milestone.progress|default(0) }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small>{{ milestone.current_value }} / {{ milestone.target_value }}</small>
+                                            <small>{{ milestone.progress }}%</small>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                
+                                {% if not active_milestones %}
+                                    <div class="alert alert-info">
+                                        No active milestones. Add some to track learning progress!
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4>Completed Milestones</h4>
+                            <div id="completed-milestones-container">
+                                {% for milestone in completed_milestones %}
+                                    <div class="milestone-item milestone-reached">
+                                        <h5>{{ milestone.title }}</h5>
+                                        <div class="milestone-description">{{ milestone.description }}</div>
+                                        <div class="small text-muted">
+                                            Completed on {{ milestone.reached_date.strftime('%Y-%m-%d') }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                
+                                {% if not completed_milestones %}
+                                    <div class="alert alert-info">
+                                        No completed milestones yet. Keep learning!
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sessions tab -->
+                <div class="tab-pane fade" id="sessions">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Learning Sessions</h2>
+                        <button class="btn btn-primary" id="start-session-btn">
+                            <i class="fas fa-play-circle me-2"></i> Start New Session
+                        </button>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Active Session</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if active_session %}
+                                <div id="active-session-container">
+                                    <p><strong>Started:</strong> {{ active_session.start_time.strftime('%Y-%m-%d %H:%M') }}</p>
+                                    <p><strong>Duration:</strong> <span id="session-duration">Calculating...</span></p>
+                                    <p><strong>Interactions:</strong> <span id="session-interactions">{{ active_session.interactions_count }}</span></p>
+                                    
+                                    {% if active_session.template %}
+                                        <p><strong>Template:</strong> {{ active_session.template.name }}</p>
+                                    {% endif %}
+                                    
+                                    <div class="d-grid gap-2 mt-3">
+                                        <button class="btn btn-danger" id="end-session-btn" data-session-id="{{ active_session.id }}">
+                                            <i class="fas fa-stop-circle me-2"></i> End Session
+                                        </button>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No active session. Start a new session to track learning activity!
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <h4>Recent Sessions</h4>
+                    <div id="recent-sessions-container">
+                        {% for session in recent_sessions %}
+                            <div class="session-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Session #{{ session.id }}</h5>
+                                    <span class="badge bg-secondary">
+                                        {{ ((session.end_time or now) - session.start_time).total_seconds() // 60 }} minutes
+                                    </span>
+                                </div>
+                                <div class="small text-muted mb-2">
+                                    {{ session.start_time.strftime('%Y-%m-%d %H:%M') }} to 
+                                    {{ (session.end_time or now).strftime('%Y-%m-%d %H:%M') }}
+                                </div>
+                                <div>
+                                    <strong>Interactions:</strong> {{ session.interactions_count }}
+                                    {% if session.success_rate %}
+                                        <strong class="ms-3">Success Rate:</strong> {{ session.success_rate }}%
+                                    {% endif %}
+                                </div>
+                                
+                                {% if session.template %}
+                                    <div><strong>Template:</strong> {{ session.template.name }}</div>
+                                {% endif %}
+                                
+                                {% if session.notes %}
+                                    <div class="mt-2 small">
+                                        <strong>Notes:</strong> {{ session.notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        
+                        {% if not recent_sessions %}
+                            <div class="alert alert-info">
+                                No recent sessions found.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Skills tab -->
+                <div class="tab-pane fade" id="skills">
+                    <h2 class="mb-4">Skill Levels</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Communication Skills</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="skills-container">
+                                        {% for skill_type, level in skill_levels.items() %}
+                                            <div class="skill-item">
+                                                <div class="skill-name">
+                                                    <span>{{ skill_type|capitalize }}</span>
+                                                    <span class="level">Level {{ level }}</span>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-primary" role="progressbar" 
+                                                         style="width: {{ level }}%;" 
+                                                         aria-valuenow="{{ level }}" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Skill Descriptions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <h6>Symbol</h6>
+                                            <p class="mb-0 small">Ability to recognize and respond to symbol-based communication.</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>Gesture</h6>
+                                            <p class="mb-0 small">Proficiency in interpreting gestures and movement patterns.</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>Intent</h6>
+                                            <p class="mb-0 small">Understanding the underlying intent behind different forms of expression.</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>Emotion</h6>
+                                            <p class="mb-0 small">Ability to detect and respond to emotional signals.</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>Context</h6>
+                                            <p class="mb-0 small">Understanding the situational context of communications.</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Templates tab -->
+                <div class="tab-pane fade" id="templates">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Learning Templates</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
+                            <i class="fas fa-plus me-2"></i> Create Template
+                        </button>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">About Learning Templates</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Learning templates allow you to customize how AlphaVox learns and adapts to different communication needs.</p>
+                            <p>Each template focuses on a specific area of learning, such as symbol recognition, gesture interpretation, or intent understanding.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row" id="templates-container">
+                        {% for template in learning_templates %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header {% if template.is_active %}bg-success text-white{% endif %}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">{{ template.name }}</h5>
+                                            {% if template.is_active %}
+                                                <span class="badge bg-light text-success">Active</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ template.description }}</p>
+                                        <p><strong>Focus Area:</strong> {{ template.focus_area|capitalize }}</p>
+                                        
+                                        <h6 class="mt-3">Parameters</h6>
+                                        <ul class="list-group mb-3">
+                                            {% for key, value in template.params.items() %}
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {{ key }}
+                                                    <span class="badge bg-primary rounded-pill">{{ value }}</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                        
+                                        <div class="d-grid gap-2">
+                                            {% if not template.is_active %}
+                                                <button class="btn btn-primary activate-template-btn" data-template-id="{{ template.id }}">
+                                                    <i class="fas fa-check-circle me-2"></i> Activate
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-secondary deactivate-template-btn" data-template-id="{{ template.id }}">
+                                                    <i class="fas fa-times-circle me-2"></i> Deactivate
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-muted small">
+                                        Created: {{ template.created_at.strftime('%Y-%m-%d') }}
+                                        {% if template.created_at != template.updated_at %}
+                                            | Updated: {{ template.updated_at.strftime('%Y-%m-%d') }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        {% if not learning_templates %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    No learning templates found. Create a template to customize the learning process!
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">Provide Detailed Feedback</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="feedback-form">
+                    <input type="hidden" id="feedback-interaction-id" name="interaction_id" value="">
+                    <input type="hidden" id="feedback-type" name="feedback_type" value="">
+                    
+                    <div class="mb-3">
+                        <label for="correct-intent" class="form-label">Correct Intent</label>
+                        <input type="text" class="form-control" id="correct-intent" name="correct_intent">
+                        <div class="form-text">What should this input have been recognized as?</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="feedback-notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="feedback-notes" name="notes" rows="3"></textarea>
+                        <div class="form-text">Any additional information that might help improve recognition.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submit-feedback">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Milestone Modal -->
+<div class="modal fade" id="addMilestoneModal" tabindex="-1" aria-labelledby="addMilestoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMilestoneModalLabel">Add Learning Milestone</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="milestone-form">
+                    <div class="mb-3">
+                        <label for="milestone-title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="milestone-title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="milestone-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="milestone-description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="milestone-criteria" class="form-label">Criteria Type</label>
+                        <select class="form-select" id="milestone-criteria" name="criteria_type" required>
+                            <option value="interaction_count">Interaction Count</option>
+                            <option value="vocabulary_size">Vocabulary Size</option>
+                            <option value="confidence_level">Confidence Level</option>
+                            <option value="multimodal_usage">Multimodal Usage</option>
+                            <option value="session_count">Session Count</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="milestone-target" class="form-label">Target Value</label>
+                        <input type="number" class="form-control" id="milestone-target" name="target_value" min="1" required>
+                        <div class="form-text">The goal to reach for this milestone.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submit-milestone">Add Milestone</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Template Modal -->
+<div class="modal fade" id="addTemplateModal" tabindex="-1" aria-labelledby="addTemplateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTemplateModalLabel">Create Learning Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="template-form">
+                    <div class="mb-3">
+                        <label for="template-name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="template-name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="template-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="template-description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="template-focus" class="form-label">Focus Area</label>
+                        <select class="form-select" id="template-focus" name="focus_area" required>
+                            <option value="symbols">Symbol Recognition</option>
+                            <option value="gestures">Gesture Recognition</option>
+                            <option value="intent">Intent Understanding</option>
+                            <option value="emotion">Emotion Detection</option>
+                            <option value="context">Contextual Learning</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Parameters</label>
+                        <div id="template-parameters" class="mb-2">
+                            <div class="parameter-row d-flex mb-2">
+                                <input type="text" class="form-control me-2" name="param_key[]" placeholder="Key">
+                                <input type="text" class="form-control" name="param_value[]" placeholder="Value">
+                                <button type="button" class="btn btn-outline-danger ms-2 remove-param">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="add-parameter">
+                            <i class="fas fa-plus me-1"></i> Add Parameter
+                        </button>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="activate-template" name="activate">
+                        <label class="form-check-label" for="activate-template">
+                            Activate this template immediately
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submit-template">Create Template</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize charts
+        initFrequencyChart();
+        initMethodsChart();
+        
+        // Set up event listeners
+        setupLearningControls();
+        setupFeedbackHandlers();
+        setupSessionHandlers();
+        setupTemplateHandlers();
+        setupMilestoneHandlers();
+        
+        // Initialize session timer if active
+        const activeSessionContainer = document.getElementById('active-session-container');
+        if (activeSessionContainer) {
+            updateSessionDuration();
+            setInterval(updateSessionDuration, 60000); // Update every minute
+        }
+    });
+    
+    function initFrequencyChart() {
+        const ctx = document.getElementById('frequencyChart').getContext('2d');
+        
+        // Initial data for 'week' period
+        const frequencyData = {
+            labels: {{ frequency_data.labels|tojson }},
+            datasets: [{
+                label: 'Interactions',
+                data: {{ frequency_data.data|tojson }},
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+            }]
+        };
+        
+        const frequencyChart = new Chart(ctx, {
+            type: 'bar',
+            data: frequencyData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Period selector buttons
+        document.querySelectorAll('[data-period]').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('[data-period]').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Fetch data for selected period
+                const period = this.getAttribute('data-period');
+                
+                fetch(`/api/interaction-frequency?period=${period}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update chart data
+                        frequencyChart.data.labels = data.labels;
+                        frequencyChart.data.datasets[0].data = data.data;
+                        frequencyChart.update();
+                    })
+                    .catch(error => console.error('Error fetching frequency data:', error));
+            });
+        });
+    }
+    
+    function initMethodsChart() {
+        const ctx = document.getElementById('methodsChart').getContext('2d');
+        
+        const methodsData = {
+            labels: {{ interaction_methods.labels|tojson }},
+            datasets: [{
+                data: {{ interaction_methods.data|tojson }},
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        
+        const methodsChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: methodsData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    }
+    
+    function setupLearningControls() {
+        // Start learning button
+        const startLearningBtn = document.getElementById('start-learning');
+        if (startLearningBtn) {
+            startLearningBtn.addEventListener('click', function() {
+                fetch('/ai/start-learning', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI
+                        document.getElementById('learning-status').innerHTML = 
+                            '<span class="badge bg-success">Learning Active</span>';
+                        
+                        // Switch buttons
+                        this.outerHTML = `
+                            <button id="stop-learning" class="btn btn-danger">
+                                <i class="fas fa-stop-circle me-2"></i> Stop Learning
+                            </button>
+                        `;
+                        
+                        // Re-attach event listener
+                        setupLearningControls();
+                    }
+                })
+                .catch(error => console.error('Error starting learning:', error));
+            });
+        }
+        
+        // Stop learning button
+        const stopLearningBtn = document.getElementById('stop-learning');
+        if (stopLearningBtn) {
+            stopLearningBtn.addEventListener('click', function() {
+                fetch('/ai/stop-learning', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI
+                        document.getElementById('learning-status').innerHTML = 
+                            '<span class="badge bg-warning">Learning Inactive</span>';
+                        
+                        // Switch buttons
+                        this.outerHTML = `
+                            <button id="start-learning" class="btn btn-success">
+                                <i class="fas fa-play-circle me-2"></i> Start Learning
+                            </button>
+                        `;
+                        
+                        // Re-attach event listener
+                        setupLearningControls();
+                    }
+                })
+                .catch(error => console.error('Error stopping learning:', error));
+            });
+        }
+    }
+    
+    function setupFeedbackHandlers() {
+        // Refresh feedback button
+        const refreshFeedbackBtn = document.getElementById('refresh-feedback');
+        if (refreshFeedbackBtn) {
+            refreshFeedbackBtn.addEventListener('click', function() {
+                fetch('/api/recent-interactions')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update the interactions container
+                        document.getElementById('recent-interactions-container').innerHTML = data.html;
+                        
+                        // Re-attach event handlers
+                        setupFeedbackHandlers();
+                    })
+                    .catch(error => console.error('Error refreshing feedback:', error));
+            });
+        }
+        
+        // Simple feedback buttons (correct/partially)
+        document.querySelectorAll('.feedback-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const feedbackType = this.getAttribute('data-type');
+                const interactionItem = this.closest('.recognition-item');
+                const interactionId = interactionItem.getAttribute('data-interaction-id');
+                
+                if (feedbackType === 'incorrect') {
+                    // For incorrect, we open the modal for more details
+                    document.getElementById('feedback-interaction-id').value = interactionId;
+                    document.getElementById('feedback-type').value = feedbackType;
+                } else {
+                    // For correct/partially, submit directly
+                    submitFeedback(interactionId, feedbackType);
+                }
+            });
+        });
+        
+        // Submit detailed feedback from modal
+        const submitFeedbackBtn = document.getElementById('submit-feedback');
+        if (submitFeedbackBtn) {
+            submitFeedbackBtn.addEventListener('click', function() {
+                const interactionId = document.getElementById('feedback-interaction-id').value;
+                const feedbackType = document.getElementById('feedback-type').value;
+                const correctIntent = document.getElementById('correct-intent').value;
+                const notes = document.getElementById('feedback-notes').value;
+                
+                submitFeedback(interactionId, feedbackType, correctIntent, notes);
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+                modal.hide();
+                
+                // Reset form
+                document.getElementById('feedback-form').reset();
+            });
+        }
+    }
+    
+    function submitFeedback(interactionId, feedbackType, correctIntent = '', notes = '') {
+        fetch('/api/submit-feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                interaction_id: interactionId,
+                feedback_type: feedbackType,
+                correct_intent: correctIntent,
+                notes: notes
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Replace the interaction item with updated HTML that shows feedback
+                document.querySelector(`.recognition-item[data-interaction-id="${interactionId}"]`)
+                    .outerHTML = data.html;
+            }
+        })
+        .catch(error => console.error('Error submitting feedback:', error));
+    }
+    
+    function setupSessionHandlers() {
+        // Start session button
+        const startSessionBtn = document.getElementById('start-session-btn');
+        if (startSessionBtn) {
+            startSessionBtn.addEventListener('click', function() {
+                // Optionally, we could show a modal to select a template
+                fetch('/api/start-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh the page to show the new session
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error starting session:', error));
+            });
+        }
+        
+        // End session button
+        const endSessionBtn = document.getElementById('end-session-btn');
+        if (endSessionBtn) {
+            endSessionBtn.addEventListener('click', function() {
+                const sessionId = this.getAttribute('data-session-id');
+                
+                fetch('/api/end-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_id: sessionId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh the page to update session displays
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error ending session:', error));
+            });
+        }
+    }
+    
+    function setupTemplateHandlers() {
+        // Add parameter button
+        const addParameterBtn = document.getElementById('add-parameter');
+        if (addParameterBtn) {
+            addParameterBtn.addEventListener('click', function() {
+                const paramRow = document.createElement('div');
+                paramRow.className = 'parameter-row d-flex mb-2';
+                paramRow.innerHTML = `
+                    <input type="text" class="form-control me-2" name="param_key[]" placeholder="Key">
+                    <input type="text" class="form-control" name="param_value[]" placeholder="Value">
+                    <button type="button" class="btn btn-outline-danger ms-2 remove-param">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                `;
+                
+                document.getElementById('template-parameters').appendChild(paramRow);
+                
+                // Add event listener to the new remove button
+                paramRow.querySelector('.remove-param').addEventListener('click', function() {
+                    this.parentElement.remove();
+                });
+            });
+        }
+        
+        // Remove parameter buttons
+        document.querySelectorAll('.remove-param').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+        
+        // Submit template form
+        const submitTemplateBtn = document.getElementById('submit-template');
+        if (submitTemplateBtn) {
+            submitTemplateBtn.addEventListener('click', function() {
+                const form = document.getElementById('template-form');
+                const formData = new FormData(form);
+                
+                // Extract parameters
+                const paramKeys = formData.getAll('param_key[]');
+                const paramValues = formData.getAll('param_value[]');
+                
+                const parameters = {};
+                for (let i = 0; i < paramKeys.length; i++) {
+                    if (paramKeys[i] && paramValues[i]) { // Only add if both key and value are provided
+                        parameters[paramKeys[i]] = paramValues[i];
+                    }
+                }
+                
+                // Build request payload
+                const payload = {
+                    name: formData.get('name'),
+                    description: formData.get('description'),
+                    focus_area: formData.get('focus_area'),
+                    parameters: parameters,
+                    activate: formData.get('activate') === 'on'
+                };
+                
+                fetch('/api/create-template', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addTemplateModal'));
+                        modal.hide();
+                        
+                        // Reset form
+                        form.reset();
+                        
+                        // Refresh the page to show the new template
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error creating template:', error));
+            });
+        }
+        
+        // Activate template buttons
+        document.querySelectorAll('.activate-template-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const templateId = this.getAttribute('data-template-id');
+                
+                fetch('/api/activate-template', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        template_id: templateId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh the page to show activated template
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error activating template:', error));
+            });
+        });
+        
+        // Deactivate template buttons
+        document.querySelectorAll('.deactivate-template-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const templateId = this.getAttribute('data-template-id');
+                
+                fetch('/api/deactivate-template', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        template_id: templateId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh the page to show deactivated template
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error deactivating template:', error));
+            });
+        });
+    }
+    
+    function setupMilestoneHandlers() {
+        // Submit milestone form
+        const submitMilestoneBtn = document.getElementById('submit-milestone');
+        if (submitMilestoneBtn) {
+            submitMilestoneBtn.addEventListener('click', function() {
+                const form = document.getElementById('milestone-form');
+                const formData = new FormData(form);
+                
+                // Build request payload
+                const payload = {
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    criteria_type: formData.get('criteria_type'),
+                    target_value: parseInt(formData.get('target_value'))
+                };
+                
+                fetch('/api/add-milestone', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then data => {
+                    if (data.success) {
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addMilestoneModal'));
+                        modal.hide();
+                        
+                        // Reset form
+                        form.reset();
+                        
+                        // Refresh the page to show the new milestone
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error adding milestone:', error));
+            });
+        }
+    }
+    
+    function updateSessionDuration() {
+        const durationElement = document.getElementById('session-duration');
+        if (!durationElement) return;
+        
+        // Get session start time from server-side data
+        const sessionStartTime = new Date('{{ active_session.start_time.isoformat() if active_session else "" }}Z');
+        const now = new Date();
+        
+        // Calculate duration in minutes
+        const durationMinutes = Math.floor((now - sessionStartTime) / (1000 * 60));
+        
+        // Format duration
+        let durationText = '';
+        if (durationMinutes < 60) {
+            durationText = `${durationMinutes} minutes`;
+        } else {
+            const hours = Math.floor(durationMinutes / 60);
+            const mins = durationMinutes % 60;
+            durationText = `${hours} hour${hours !== 1 ? 's' : ''} ${mins} minute${mins !== 1 ? 's' : ''}`;
+        }
+        
+        durationElement.textContent = durationText;
+    }
+</script>
+{% endblock %}

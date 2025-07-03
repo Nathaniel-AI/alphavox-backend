@@ -1,0 +1,781 @@
+{% extends 'layout.html' %}
+
+{% block title %}AlphaVox - Symbol Communication{% endblock %}
+
+{% block head %}
+{{ super() }}
+<!-- Add an empty div for self-learning panel -->
+<script>
+    // Use the global processSymbol function from cyber-ui.js
+    window.useGlobalSymbolProcessor = true;
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5 cyber-title">Symbol Communication</h1>
+            <p class="lead">Select symbols to communicate your needs and thoughts</p>
+            <div class="add-self-learning"></div>  <!-- Placeholder for self-learning panel -->
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Symbol Board</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-4 g-4 symbol-grid mb-4">
+                        <!-- Basic Needs -->
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="food">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-utensils fa-3x mb-3 text-warning"></i>
+                                    <h5 class="card-title">Food</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="drink">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-glass-water fa-3x mb-3 text-info"></i>
+                                    <h5 class="card-title">Drink</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="bathroom">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-toilet fa-3x mb-3 text-primary"></i>
+                                    <h5 class="card-title">Bathroom</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="medicine">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-pills fa-3x mb-3 text-danger"></i>
+                                    <h5 class="card-title">Medicine</h5>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Feelings -->
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="happy">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-smile-beam fa-3x mb-3 text-warning"></i>
+                                    <h5 class="card-title">Happy</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="sad">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-sad-tear fa-3x mb-3 text-info"></i>
+                                    <h5 class="card-title">Sad</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="pain">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-head-side-virus fa-3x mb-3 text-danger"></i>
+                                    <h5 class="card-title">Pain</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="tired">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-bed fa-3x mb-3 text-secondary"></i>
+                                    <h5 class="card-title">Tired</h5>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Communication -->
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="yes">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                                    <h5 class="card-title">Yes</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="no">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-times-circle fa-3x mb-3 text-danger"></i>
+                                    <h5 class="card-title">No</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="help">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-hands-helping fa-3x mb-3 text-warning"></i>
+                                    <h5 class="card-title">Help</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="question">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-question-circle fa-3x mb-3 text-info"></i>
+                                    <h5 class="card-title">Question</h5>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activities -->
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="play">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-gamepad fa-3x mb-3 text-success"></i>
+                                    <h5 class="card-title">Play</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="music">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-music fa-3x mb-3 text-primary"></i>
+                                    <h5 class="card-title">Music</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="book">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-book fa-3x mb-3 text-secondary"></i>
+                                    <h5 class="card-title">Book</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-dark border-secondary symbol-card" data-symbol="outside">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-tree fa-3x mb-3 text-success"></i>
+                                    <h5 class="card-title">Outside</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5 class="mb-0">Custom Symbols</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Create custom symbols for your specific needs.</p>
+                    <button class="btn btn-outline-info" id="add-custom-symbol-btn">
+                        <i class="fas fa-plus-circle me-2"></i>Add Custom Symbol
+                    </button>
+                    
+                    <!-- Custom Symbol Form (initially hidden) -->
+                    <div id="custom-symbol-form" class="mt-3" style="display: none;">
+                        <div class="card bg-dark-light border-info mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">Create Custom Symbol</h6>
+                                <div class="mb-3">
+                                    <label for="custom-symbol-name" class="form-label">Symbol Name</label>
+                                    <input type="text" class="form-control" id="custom-symbol-name" placeholder="Enter symbol name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="custom-symbol-message" class="form-label">Message</label>
+                                    <textarea class="form-control" id="custom-symbol-message" rows="2" placeholder="Enter message to speak"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="custom-symbol-icon" class="form-label">Icon</label>
+                                    <select class="form-select" id="custom-symbol-icon">
+                                        <option value="star">⭐ Star</option>
+                                        <option value="heart">❤️ Heart</option>
+                                        <option value="bell">🔔 Bell</option>
+                                        <option value="gift">🎁 Gift</option>
+                                        <option value="home">🏠 Home</option>
+                                        <option value="car">🚗 Car</option>
+                                        <option value="phone">📱 Phone</option>
+                                        <option value="clock">⏰ Clock</option>
+                                        <option value="tv">📺 TV</option>
+                                        <option value="computer">💻 Computer</option>
+                                        <option value="pizza">🍕 Pizza</option>
+                                        <option value="hamburger">🍔 Hamburger</option>
+                                        <option value="ice-cream">🍦 Ice Cream</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="cancel-custom-symbol">Cancel</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="save-custom-symbol">Save Symbol</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Custom Symbols Display Area -->
+                    <div id="custom-symbols-container" class="mt-3">
+                        <h6 class="mb-2">Your Custom Symbols</h6>
+                        <div id="custom-symbols-grid" class="row row-cols-2 g-2">
+                            <!-- Custom symbols will be added here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Communication</h5>
+                </div>
+                <div class="card-body">
+                    <div id="symbol-response-container" class="response-container mb-4">
+                        <div class="alert alert-info">
+                            Select a symbol to communicate
+                        </div>
+                    </div>
+                    
+                    <h6 class="mt-4">Recent Symbols</h6>
+                    <div id="recent-symbols" class="recent-symbols mt-2">
+                        <div class="d-flex flex-wrap gap-2">
+                            <!-- Recent symbols will be added here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5 class="mb-0">Symbol Sets</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="symbol-set" class="form-label">Choose Symbol Set</label>
+                        <select class="form-select" id="symbol-set">
+                            <option value="default" selected>Default</option>
+                            <option value="pcs">PCS (Picture Communication Symbols)</option>
+                            <option value="arasaac">ARASAAC</option>
+                            <option value="blissymbols">Blissymbols</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="grid-size" class="form-label">Grid Size</label>
+                        <select class="form-select" id="grid-size">
+                            <option value="4" selected>4x4 (16 symbols)</option>
+                            <option value="5">5x5 (25 symbols)</option>
+                            <option value="6">6x6 (36 symbols)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" id="auto-speak" checked>
+                        <label class="form-check-label" for="auto-speak">Auto-speak selected symbols</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Styles moved to cyber-theme.css for unified styling */
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const symbolCards = document.querySelectorAll('.symbol-card');
+    const responseContainer = document.getElementById('symbol-response-container');
+    const recentSymbols = document.getElementById('recent-symbols').querySelector('.d-flex');
+    const autoSpeak = document.getElementById('auto-speak');
+    
+    // Audio playback function
+    function playAudio(url) {
+        console.log('Playing audio from:', url);
+        
+        // Create a visible audio element to ensure it works across browsers
+        let audioContainer = document.getElementById('audio-container');
+        if (!audioContainer) {
+            audioContainer = document.createElement('div');
+            audioContainer.id = 'audio-container';
+            audioContainer.style.position = 'absolute';
+            audioContainer.style.bottom = '0';
+            audioContainer.style.left = '0';
+            audioContainer.style.width = '1px';
+            audioContainer.style.height = '1px';
+            audioContainer.style.overflow = 'hidden';
+            document.body.appendChild(audioContainer);
+        }
+        
+        // Clear previous audio if any
+        audioContainer.innerHTML = '';
+        
+        // Create the audio element with controls
+        const audioPlayer = document.createElement('audio');
+        audioPlayer.controls = false; // Set to true for debugging
+        audioPlayer.src = url;
+        audioPlayer.style.width = '1px';
+        audioPlayer.style.height = '1px';
+        
+        // Add to DOM
+        audioContainer.appendChild(audioPlayer);
+        
+        // Add error handling
+        audioPlayer.onerror = function(error) {
+            console.error('Error playing audio:', error);
+        };
+        
+        // Play the audio
+        setTimeout(() => {
+            try {
+                audioPlayer.play()
+                    .then(() => console.log('Audio playback started successfully'))
+                    .catch(error => {
+                        console.error('Error playing audio:', error);
+                        
+                        // If autoplay fails, show controls and try again
+                        audioPlayer.controls = true;
+                        audioPlayer.style.width = '300px';
+                        audioPlayer.style.height = '40px';
+                    });
+            } catch (error) {
+                console.error('Exception while playing audio:', error);
+            }
+        }, 100);
+    }
+    
+    // Symbol to icon mapping
+    const symbolIcons = {
+        'food': '<i class="fas fa-utensils text-warning"></i>',
+        'drink': '<i class="fas fa-glass-water text-info"></i>',
+        'bathroom': '<i class="fas fa-toilet text-primary"></i>',
+        'medicine': '<i class="fas fa-pills text-danger"></i>',
+        'happy': '<i class="fas fa-smile-beam text-warning"></i>',
+        'sad': '<i class="fas fa-sad-tear text-info"></i>',
+        'pain': '<i class="fas fa-head-side-virus text-danger"></i>',
+        'tired': '<i class="fas fa-bed text-secondary"></i>',
+        'yes': '<i class="fas fa-check-circle text-success"></i>',
+        'no': '<i class="fas fa-times-circle text-danger"></i>',
+        'help': '<i class="fas fa-hands-helping text-warning"></i>',
+        'question': '<i class="fas fa-question-circle text-info"></i>',
+        'play': '<i class="fas fa-gamepad text-success"></i>',
+        'music': '<i class="fas fa-music text-primary"></i>',
+        'book': '<i class="fas fa-book text-secondary"></i>',
+        'outside': '<i class="fas fa-tree text-success"></i>'
+    };
+    
+    // Symbol click handler
+    symbolCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const symbol = this.getAttribute('data-symbol');
+            
+            // Process the symbol
+            processSymbol(symbol);
+            
+            // Visual feedback
+            symbolCards.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Add to recent symbols (if not already there)
+            addToRecentSymbols(symbol);
+        });
+    });
+    
+    // Process a symbol - use global function from cyber-ui.js
+    function processSymbol(symbol) {
+        // If auto-speak is enabled, we need to handle that after the response
+        const handleAutoSpeak = autoSpeak.checked;
+        
+        // Use the global function from cyber-ui.js if available, otherwise fallback
+        if (window.processSymbol) {
+            window.processSymbol(symbol);
+            
+            // Handle auto-speak if needed
+            if (handleAutoSpeak) {
+                // The global function will add speech functionality
+            }
+        } else {
+            // Fallback to local implementation
+            console.warn('Global processSymbol function not found. Using local implementation.');
+            
+            // Show processing state
+            responseContainer.innerHTML = `
+                <div class="alert alert-info cyber-response">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-th-large fa-2x fa-pulse"></i>
+                        </div>
+                        <div>
+                            <div class="mb-2">Processing symbol: ${symbol}</div>
+                            <div class="progress cyber-progress" style="height: 5px;">
+                                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Call the API
+            fetch(`/symbol/${symbol}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the response
+                const alertClass = getAlertClassForEmotion(data.expression, data.emotion_tier);
+                
+                // Play audio if auto-speak is enabled and speech URL is available
+                if (handleAutoSpeak && data.speech_url) {
+                    playAudio(data.speech_url);
+                }
+                
+                responseContainer.innerHTML = `
+                    <div class="alert ${alertClass} cyber-response">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3 fs-4">
+                                ${symbolIcons[symbol] || '<i class="fas fa-comment"></i>'}
+                            </div>
+                            <div>
+                                <p class="mb-1">${data.message}</p>
+                                <small class="text-muted">Intent: ${data.intent} (Confidence: ${Math.round(data.confidence * 100)}%)</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error processing symbol:', error);
+                responseContainer.innerHTML = `
+                    <div class="alert alert-danger cyber-response">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error processing symbol. Please try again.
+                    </div>
+                `;
+            });
+        }
+    }
+    
+    // Add a symbol to the recent symbols list
+    function addToRecentSymbols(symbol) {
+        // Check if it's already in the list
+        const existingSymbol = document.querySelector(`.recent-symbol[data-symbol="${symbol}"]`);
+        if (existingSymbol) {
+            // Move to the beginning
+            recentSymbols.removeChild(existingSymbol);
+            recentSymbols.insertBefore(existingSymbol, recentSymbols.firstChild);
+            return;
+        }
+        
+        // Create new recent symbol
+        const symbolElement = document.createElement('div');
+        symbolElement.className = 'recent-symbol';
+        symbolElement.setAttribute('data-symbol', symbol);
+        symbolElement.innerHTML = `
+            ${symbolIcons[symbol] || '<i class="fas fa-comment"></i>'}
+            <span>${symbol}</span>
+        `;
+        
+        // Add click handler
+        symbolElement.addEventListener('click', function() {
+            const symbolName = this.getAttribute('data-symbol');
+            processSymbol(symbolName);
+            
+            // Find and activate the corresponding card
+            const card = document.querySelector(`.symbol-card[data-symbol="${symbolName}"]`);
+            if (card) {
+                symbolCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                
+                // Scroll to the card
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+        
+        // Add to the beginning of the list
+        recentSymbols.insertBefore(symbolElement, recentSymbols.firstChild);
+        
+        // Keep only the last 8 symbols
+        while (recentSymbols.children.length > 8) {
+            recentSymbols.removeChild(recentSymbols.lastChild);
+        }
+    }
+    
+    // Get alert class based on emotion
+    function getAlertClassForEmotion(expression, tier) {
+        if (expression === 'positive') {
+            return 'alert-success';
+        } else if (expression === 'negative') {
+            return 'alert-warning';
+        } else if (expression === 'urgent') {
+            return 'alert-danger';
+        } else if (expression === 'inquisitive') {
+            return 'alert-info';
+        } else {
+            return 'alert-secondary';
+        }
+    }
+    
+    // Handle symbol set change
+    document.getElementById('symbol-set').addEventListener('change', function() {
+        // In a real implementation, this would reload the symbols
+        alert('Symbol set would be changed to: ' + this.value);
+    });
+    
+    // Handle grid size change
+    document.getElementById('grid-size').addEventListener('change', function() {
+        // In a real implementation, this would adjust the grid
+        const size = parseInt(this.value);
+        alert(`Grid size would be changed to ${size}x${size}`);
+    });
+    
+    // ---------- Custom Symbols Functionality ----------
+    
+    // Icon mapping for custom symbols - extends the standard symbolIcons
+    const customIconMapping = {
+        'star': '<i class="fas fa-star text-warning"></i>',
+        'heart': '<i class="fas fa-heart text-danger"></i>',
+        'bell': '<i class="fas fa-bell text-warning"></i>',
+        'gift': '<i class="fas fa-gift text-primary"></i>',
+        'home': '<i class="fas fa-home text-success"></i>',
+        'car': '<i class="fas fa-car text-info"></i>',
+        'phone': '<i class="fas fa-phone text-secondary"></i>',
+        'clock': '<i class="fas fa-clock text-warning"></i>',
+        'tv': '<i class="fas fa-tv text-primary"></i>',
+        'computer': '<i class="fas fa-laptop text-info"></i>',
+        'pizza': '<i class="fas fa-pizza-slice text-danger"></i>',
+        'hamburger': '<i class="fas fa-hamburger text-warning"></i>',
+        'ice-cream': '<i class="fas fa-ice-cream text-info"></i>'
+    };
+    
+    // Custom symbol storage in localStorage
+    const getCustomSymbols = () => {
+        const symbols = localStorage.getItem('alphavox_custom_symbols');
+        return symbols ? JSON.parse(symbols) : [];
+    };
+    
+    const saveCustomSymbols = (symbols) => {
+        localStorage.setItem('alphavox_custom_symbols', JSON.stringify(symbols));
+    };
+    
+    // Display custom symbols in the grid
+    const renderCustomSymbols = () => {
+        const customSymbols = getCustomSymbols();
+        const container = document.getElementById('custom-symbols-grid');
+        container.innerHTML = '';
+        
+        if (customSymbols.length === 0) {
+            container.innerHTML = '<div class="col-12"><div class="alert alert-secondary">No custom symbols yet. Add your first one!</div></div>';
+            return;
+        }
+        
+        customSymbols.forEach(symbol => {
+            const symbolCard = document.createElement('div');
+            symbolCard.className = 'col';
+            symbolCard.innerHTML = `
+                <div class="card bg-dark border-secondary symbol-card custom-symbol-card" data-symbol="${symbol.name}" data-message="${symbol.message}">
+                    <div class="card-body text-center position-relative">
+                        ${customIconMapping[symbol.icon] || '<i class="fas fa-shapes text-primary"></i>'}
+                        <h5 class="card-title mt-2">${symbol.name}</h5>
+                        <button class="btn btn-sm btn-outline-danger remove-symbol-btn position-absolute" 
+                                style="top: 5px; right: 5px;" data-symbol="${symbol.name}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(symbolCard);
+            
+            // Add click handler for the new symbol card
+            const newCard = symbolCard.querySelector('.symbol-card');
+            newCard.addEventListener('click', function() {
+                const symbolName = this.getAttribute('data-symbol');
+                const message = this.getAttribute('data-message');
+                
+                // Process custom symbol with its message
+                processCustomSymbol(symbolName, message);
+                
+                // Visual feedback
+                document.querySelectorAll('.symbol-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Add to recent symbols
+                addToRecentSymbols(symbolName);
+            });
+            
+            // Add remove button handler
+            symbolCard.querySelector('.remove-symbol-btn').addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent triggering the card click
+                const symbolName = this.getAttribute('data-symbol');
+                removeCustomSymbol(symbolName);
+            });
+        });
+    };
+    
+    // Process a custom symbol - with simplified reliable playback
+    const processCustomSymbol = (symbolName, message) => {
+        try {
+            // Show processing state with the message
+            responseContainer.innerHTML = `
+                <div class="alert alert-info cyber-response">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-shapes fa-2x"></i>
+                        </div>
+                        <div>
+                            <div class="mb-2">${symbolName}</div>
+                            <p>${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Create audio container if it doesn't exist
+            let audioContainer = document.getElementById('custom-symbol-audio-container');
+            if (!audioContainer) {
+                audioContainer = document.createElement('div');
+                audioContainer.id = 'custom-symbol-audio-container';
+                document.body.appendChild(audioContainer);
+            }
+            
+            // Clear previous audio
+            audioContainer.innerHTML = '';
+            
+            // Create the HTML5 audio element with controls for reliability
+            audioContainer.innerHTML = `
+                <audio id="custom-symbol-audio" style="display:none;">
+                    <source src="#" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            `;
+            
+            // Get a timestamp to prevent caching
+            const timestamp = new Date().getTime();
+            
+            // Set the audio source with direct GET parameters (more reliable than POST)
+            const audioElement = document.getElementById('custom-symbol-audio');
+            
+            // Set the URL parameters for direct TTS (simpler than an API call)
+            const encodedMessage = encodeURIComponent(message);
+            const audioSrc = `/speak?text=${encodedMessage}&cache=${timestamp}`;
+            
+            // Update the audio source
+            audioElement.querySelector('source').src = audioSrc;
+            audioElement.load();
+            
+            // Attempt to play the audio
+            audioElement.play()
+                .then(() => {
+                    console.log('Custom symbol audio playback started');
+                })
+                .catch(err => {
+                    console.error('Error playing custom symbol audio:', err);
+                    
+                    // Show the visual message since audio failed
+                    responseContainer.innerHTML += `
+                        <div class="alert alert-secondary mt-2">
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">
+                                    <i class="fas fa-volume-mute"></i>
+                                </div>
+                                <div>
+                                    <small>I'd say: "${message}"</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            
+        } catch (error) {
+            console.error('Error processing custom symbol:', error);
+            
+            // Show fallback message
+            responseContainer.innerHTML += `
+                <div class="alert alert-secondary mt-2">
+                    <div class="d-flex align-items-center">
+                        <div class="me-2">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div>
+                            <small>Message: "${message}"</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    };
+    
+    // Add a new custom symbol
+    const addCustomSymbol = () => {
+        const nameInput = document.getElementById('custom-symbol-name');
+        const messageInput = document.getElementById('custom-symbol-message');
+        const iconSelect = document.getElementById('custom-symbol-icon');
+        
+        const name = nameInput.value.trim();
+        const message = messageInput.value.trim();
+        const icon = iconSelect.value;
+        
+        if (!name || !message) {
+            alert('Please provide both a name and message for your custom symbol');
+            return;
+        }
+        
+        // Get existing symbols and add the new one
+        const customSymbols = getCustomSymbols();
+        
+        // Check for duplicate names
+        if (customSymbols.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+            alert('A symbol with this name already exists. Please use a different name.');
+            return;
+        }
+        
+        customSymbols.push({ name, message, icon });
+        saveCustomSymbols(customSymbols);
+        
+        // Update the display
+        renderCustomSymbols();
+        
+        // Clear form and hide it
+        nameInput.value = '';
+        messageInput.value = '';
+        document.getElementById('custom-symbol-form').style.display = 'none';
+        
+        // Show confirmation
+        alert(`Custom symbol "${name}" has been added successfully!`);
+    };
+    
+    // Remove a custom symbol
+    const removeCustomSymbol = (symbolName) => {
+        if (confirm(`Are you sure you want to delete the "${symbolName}" symbol?`)) {
+            const customSymbols = getCustomSymbols().filter(s => s.name !== symbolName);
+            saveCustomSymbols(customSymbols);
+            renderCustomSymbols();
+        }
+    };
+    
+    // UI Event Handlers for custom symbols
+    document.getElementById('add-custom-symbol-btn').addEventListener('click', function() {
+        document.getElementById('custom-symbol-form').style.display = 'block';
+        document.getElementById('custom-symbol-name').focus();
+    });
+    
+    document.getElementById('cancel-custom-symbol').addEventListener('click', function() {
+        document.getElementById('custom-symbol-form').style.display = 'none';
+        document.getElementById('custom-symbol-name').value = '';
+        document.getElementById('custom-symbol-message').value = '';
+    });
+    
+    document.getElementById('save-custom-symbol').addEventListener('click', addCustomSymbol);
+    
+    // Initialize custom symbols display
+    renderCustomSymbols();
+});
+</script>
+{% endblock %}

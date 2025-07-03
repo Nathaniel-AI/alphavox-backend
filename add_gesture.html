@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox - Add Gesture</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; }
+        .form-container { 
+            max-width: 500px; 
+            margin: 30px auto; 
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input, select, button { 
+            padding: 10px; 
+            margin: 10px; 
+            font-size: 16px;
+            width: 80%;
+        }
+        button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .message {
+            color: #0066cc;
+            margin: 10px 0;
+        }
+        .back-link {
+            margin-top: 20px;
+            display: block;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Add New Gesture</h1>
+        {% if message %}
+        <div class="message">{{ message }}</div>
+        {% endif %}
+        <form method="POST" action="/add_gesture">
+            <input type="text" name="gesture" placeholder="Enter gesture (e.g., nod_twice)" required>
+            <input type="text" name="meaning" placeholder="What does it mean?" required>
+            <input type="text" name="category" placeholder="Category (optional)" value="Uncategorized">
+            <button type="submit">Add Gesture</button>
+        </form>
+        <a href="/" class="back-link">Back to Translation</a>
+    </div>
+</body>
+</html>

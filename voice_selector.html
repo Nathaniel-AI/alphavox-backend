@@ -1,0 +1,18 @@
+<!-- templates/voice_selector.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voice Selector</title>
+</head>
+<body>
+  <h2>Select Voice for AlphaVox</h2>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <label for="voice">{{ form.voice.label }}</label>
+    {{ form.voice() }}
+    <button type="submit">Set Voice</button>
+  </form>
+</body>
+</html>
+

@@ -1,0 +1,244 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Hub | AlphaVox{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card bg-dark text-white mb-4 cyber-card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-graduation-cap me-2"></i>Learning Hub
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Welcome to the AlphaVox Learning Hub, your gateway to personalized learning and knowledge exploration.
+                    </p>
+                    
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-6">
+                            <div class="card bg-dark text-white h-100 cyber-card-sm border-primary">
+                                <div class="card-body text-center">
+                                    <div class="my-3">
+                                        <i class="fas fa-book fa-3x text-primary"></i>
+                                    </div>
+                                    <h4>Topics</h4>
+                                    <p>Explore a wide range of communication topics from nonverbal cues to assistive technology.</p>
+                                    <a href="/learning/topics" class="btn btn-primary cyber-btn stretched-link">
+                                        <i class="fas fa-arrow-right me-1"></i>Browse Topics
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-dark text-white h-100 cyber-card-sm border-success">
+                                <div class="card-body text-center">
+                                    <div class="my-3">
+                                        <i class="fas fa-route fa-3x text-success"></i>
+                                    </div>
+                                    <h4>Learning Journey</h4>
+                                    <p>Track your progress and see personalized recommendations for your learning path.</p>
+                                    <a href="/learning/journey" class="btn btn-success cyber-btn stretched-link">
+                                        <i class="fas fa-arrow-right me-1"></i>View Journey
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-dark text-white h-100 cyber-card-sm border-info">
+                                <div class="card-body text-center">
+                                    <div class="my-3">
+                                        <i class="fas fa-lightbulb fa-3x text-info"></i>
+                                    </div>
+                                    <h4>Facts Database</h4>
+                                    <p>Discover interesting facts about communication, assistive technology, and more.</p>
+                                    <a href="/learning/facts" class="btn btn-info cyber-btn stretched-link">
+                                        <i class="fas fa-arrow-right me-1"></i>Explore Facts
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-dark text-white h-100 cyber-card-sm border-warning">
+                                <div class="card-body text-center">
+                                    <div class="my-3">
+                                        <i class="fas fa-project-diagram fa-3x text-warning"></i>
+                                    </div>
+                                    <h4>Knowledge Graph</h4>
+                                    <p>Visualize connections between topics and concepts in an interactive network.</p>
+                                    <a href="/learning/graph" class="btn btn-warning cyber-btn stretched-link">
+                                        <i class="fas fa-arrow-right me-1"></i>View Graph
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Topics -->
+            <div class="card bg-dark text-white mb-4 cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Featured Topics</h4>
+                    <a href="/learning/topics" class="btn btn-sm btn-outline-primary cyber-btn-sm">
+                        <i class="fas fa-list me-1"></i>View All
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for topic in topics[:3] %}
+                            <div class="col-md-4">
+                                <div class="card h-100 bg-dark border-secondary cyber-card-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-2">{{ topic.name }}</h5>
+                                        <p class="card-text small" style="min-height: 80px;">
+                                            {{ topic.description|truncate(80) }}
+                                        </p>
+                                        <span class="badge bg-{{ 'primary' if topic.difficulty == 'beginner' else 'warning' if topic.difficulty == 'intermediate' else 'danger' }} mb-2">
+                                            {{ topic.difficulty|capitalize }}
+                                        </span>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0">
+                                        <a href="/learning/topics/{{ topic.name }}" class="btn btn-sm btn-outline-primary cyber-btn-sm w-100">
+                                            <i class="fas fa-book-open me-1"></i>Explore
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Learning Statistics -->
+            {% if stats %}
+                <div class="card bg-dark text-white mb-4 cyber-card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>Learning Stats
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Topics Explored</span>
+                                <span class="badge bg-primary">{{ stats.topics_explored }}/{{ stats.total_topics }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-primary" role="progressbar" 
+                                    style="width: {{ (stats.topics_explored / stats.total_topics * 100) if stats.total_topics > 0 else 0 }}%;"
+                                    aria-valuenow="{{ stats.topics_explored }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="{{ stats.total_topics }}"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Facts Learned</span>
+                                <span class="badge bg-info">{{ stats.facts_learned }}/{{ stats.total_facts }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                    style="width: {{ (stats.facts_learned / stats.total_facts * 100) if stats.total_facts > 0 else 0 }}%;"
+                                    aria-valuenow="{{ stats.facts_learned }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="{{ stats.total_facts }}"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Active Days</span>
+                                <span class="badge bg-success">{{ stats.learning_days }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                    style="width: {{ (stats.learning_days / 30 * 100) if stats.learning_days else 0 }}%;"
+                                    aria-valuenow="{{ stats.learning_days }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="30"></div>
+                            </div>
+                        </div>
+                        
+                        <a href="/learning/journey" class="btn btn-outline-primary cyber-btn w-100">
+                            <i class="fas fa-chart-pie me-1"></i>View Detailed Stats
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="card bg-dark text-white cyber-card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-history me-2"></i>Recent Activity
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if stats.recent_activities %}
+                            <div class="list-group bg-dark">
+                                {% for activity in stats.recent_activities[:3] %}
+                                    <div class="list-group-item bg-dark border-secondary text-white">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                {% if activity.event_type == 'topic_explored' %}
+                                                    <i class="fas fa-book-open text-primary"></i>
+                                                {% elif activity.event_type == 'fact_learned' %}
+                                                    <i class="fas fa-lightbulb text-warning"></i>
+                                                {% else %}
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <p class="mb-1">
+                                                    {% if activity.event_type == 'topic_explored' %}
+                                                        Explored <strong>{{ activity.details.topic }}</strong>
+                                                    {% elif activity.event_type == 'fact_learned' %}
+                                                        Learned a new fact
+                                                    {% else %}
+                                                        {{ activity.event_type|capitalize }}
+                                                    {% endif %}
+                                                </p>
+                                                <small class="text-muted">
+                                                    {{ activity.timestamp.split('T')[0] }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <a href="/learning/journey" class="btn btn-sm btn-outline-secondary cyber-btn-sm w-100 mt-3">
+                                <i class="fas fa-history me-1"></i>View All Activity
+                            </a>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>No recent learning activity recorded yet.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="card bg-dark text-white mb-4 cyber-card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Get Started</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Your learning journey is just beginning! Start exploring topics to track your progress.</p>
+                        <a href="/learning/topics" class="btn btn-primary cyber-btn w-100">
+                            <i class="fas fa-rocket me-1"></i>Begin Learning
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
